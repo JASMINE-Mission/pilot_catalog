@@ -1,0 +1,19 @@
+version: "3"
+services:
+  jasmine_catalog:
+    build: ./psql
+    container_name: "jasmine"
+    ports:
+      - "15432:5432"
+    sysctls:
+      kernel.sem: 50100 128256000 50100 2560
+    environment:
+      POSTGRES_USER: "admine"
+      POSTGRES_PASSWORD: "jasmine"
+    command: 'postgres -c config_file="/etc/postgresql/postgresql.conf"'
+    volumes:
+      - "./psql/conf/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      - "./psql/conf/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro"
+      - "./data/catalog:/data/catalog:ro"
+      - "./data/postgresql/:/var/lib/postgresql/data:rw"
+      - "./psql/sql:/docker-entrypoint-initdb.d"
