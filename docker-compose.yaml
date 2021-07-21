@@ -8,7 +8,8 @@ services:
     sysctls:
       kernel.sem: 50100 128256000 50100 2560
     environment:
-      POSTGRES_USER: "admine"
+      POSTGRES_USER: "admin"
+      POSTGRES_DB: "jasmine"
       POSTGRES_PASSWORD: "jasmine"
     command: 'postgres -c config_file="/etc/postgresql/postgresql.conf"'
     volumes:
