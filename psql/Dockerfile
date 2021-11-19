@@ -1,4 +1,5 @@
-FROM postgres:10.0
+FROM postgres:13
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get -y upgrade && \
@@ -19,4 +20,10 @@ RUN apt-get install -y \
     cd /tmp/q3c && \
     make all install
 
-RUN apt-get install -y python-psycopg2 python-dateutil
+RUN apt-get install -y \
+      python3-psycopg2 \
+      python3-dateutil
+
+COPY conf/pg_hba.conf /etc/pg_hba.conf
+COPY conf/postgresql.conf /etc/postgresql.conf
+COPY sql /docker-entry-point-initdb.d
