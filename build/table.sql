@@ -1,0 +1,20 @@
+CREATE TABLE sirius_sources (
+  sirius_id          BIGSERIAL PRIMARY KEY,
+  glon               FLOAT(10) NOT NULL,
+  glat               FLOAT(10) NOT NULL,
+  ra                 FLOAT(10) NOT NULL,
+  dec                FLOAT(10) NOT NULL,
+  position_j_x       FLOAT(10),
+  position_j_y       FLOAT(10),
+  phot_j_mag         FLOAT(10),
+  phot_j_mag_error   FLOAT(10),
+  position_h_x       FLOAT(10),
+  position_h_y       FLOAT(10),
+  phot_h_mag         FLOAT(10),
+  phot_h_mag_error   FLOAT(10),
+  position_k_x       FLOAT(10),
+  position_k_y       FLOAT(10),
+  phot_k_mag         FLOAT(10),
+  phot_k_mag_error   FLOAT(10),
+  plate_name         VARCHAR(16) NOT NULL
+);
