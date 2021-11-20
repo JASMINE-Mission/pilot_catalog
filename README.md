@@ -1,6 +1,5 @@
 # JASMINE master source catalog
 
-
 ### Sirius Galactic Center catalog
 Sirius Galactic Center catalog is obtained from Kataza-san. The original catalog is given in a text table format. To import the catalog into the PostgreSQL database, the catalog is converted into the CSV format.
 
@@ -28,14 +27,16 @@ screen -dmS sirius \
   python script/convert_sirius.py sirius_WGCCatAll.dat sirius_WGCCatAll.csv
 ```
 
+The converted CSV file is imported into the database by `COPY` command.
+
+``` sh
+psql -h localhost -p 15432 -d jasmine -U admin \
+  -c "COPY sirius_sources (glon,glat,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_k_x,position_k_y,phot_k_mag,phot_k_mag_error,plate_name) FROM '/data/catalog/sirius_WGCCatAll.csv' DELIMITER',' CSV HEADER;"
+```
+
 
 ### 2mass Point-Source catalog
-2MASS Point-Source catalog can be obtained from the [Gator catalog query][gator] in [IRSA][irsa].
-
-[gator]: https://irsa.ipac.caltech.edu/cgi-bin/Gator/nph-dd?catalog=fp_psc
-[irsa]: https://irsa.ipac.caltech.edu/frontpage/
-
-The constrains are as follows:
+2MASS Point-Source catalog can be obtained from the [Gator catalog query][gator] in [IRSA][irsa]. The extraction constrains are as follows:
 
 - Galactic longitude between -2.5&degree; and 1.2&degree;.
 - Galactic latitude between -1.2&degree; and 1.2&degree;.
@@ -45,7 +46,7 @@ The constrains are as follows:
 mp_flg =0 and glon >=-2.5 and glon <=1.2 and glat >=-1.2 and glat <=1.2
 ```
 
-The original 2mass catalog is not compatible with the database.
+The original 2mass catalog is not compatible with the database. Invalid records are replaced with the `null` value.
 
 ``` sh
 sed 's/\r$//;s/null//g;s/,-,-,/,,,/;s/,-,/,,/;s/,-$/,/' \
@@ -58,3 +59,51 @@ The revised CSV file is imported into the database by `COPY` command.
 psql -h localhost -p 15432 -d jasmine -U admin \
   -c "COPY tmass_sources (ra,dec,designation,phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,phot_k_mag,phot_k_cmsig,phot_k_mag_error,phot_k_snr,quality_flag,contaminated,glon,glat,rd_flg,color_j_h,color_h_k,color_j_k) FROM '/data/catalog/2mass_gccat.mod.csv' DELIMITER',' CSV HEADER;"
 ```
+
+[gator]: https://irsa.ipac.caltech.edu/cgi-bin/Gator/nph-dd?catalog=fp_psc
+[irsa]: https://irsa.ipac.caltech.edu/frontpage/
+
+
+### Gaia EDR3 catalog around Galactic Center
+
+The Gaia EDR3 catalog is obtained from the [Gaia Archive][gaia]. The advanced query mode is used to extract the source around the Galactic center. The extraction constrains are as follows:
+
+- Galactic longitude between -2.5&degree; and 1.2&degree;.
+- Galactic latitude between -1.2&degree; and 1.2&degree;.
+
+The SQL query is described below:
+
+``` sql
+SELECT
+  source_id,
+  ra,
+  dec,
+  l AS glon,
+  b AS glat,
+  parallax,
+  parallax_error,
+  pm,
+  pmra,
+  pmra_error,
+  pmdec,
+  pmdec_error,
+  phot_g_mean_mag AS phot_g_mag,
+  2.5*log10(1+1.0/phot_g_mean_flux_over_error) AS phot_g_mag_error,
+  phot_bp_mean_mag AS phot_bp_mag,
+  2.5*log10(1+1.0/phot_bp_mean_flux_over_error) AS phot_bp_mag_error,
+  phot_rp_mean_mag AS phot_rp_mag,
+  2.5*log10(1+1.0/phot_rp_mean_flux_over_error) AS phot_rp_mag_error
+FROM
+  gaiaedr3.gaia_source
+WHERE
+  (l BETWEEN -2.5 AND 1.2) AND (b BETWEEN -1.2 AND 1.2);
+```
+
+The obtained CSV file is imported into the database by `COPY` command.
+
+``` sh
+psql -h localhost -p 15432 -d jasmine -U admin \
+  -c "COPY edr3_sources (source_id,ra,dec,glon,glat,parallax,parallax_error,pm,pmra,pmra_error,pmdec,pmdec_error,phot_g_mag,phot_g_mag_error,phot_bp_mag,phot_bp_mag_error,phot_rp_mag,phot_rp_mag_error) FROM '/data/catalog/2mass_gccat.mod.csv' DELIMITER',' CSV HEADER;"
+```
+
+[gaia]: https://gea.esac.esa.int/archive/
