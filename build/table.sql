@@ -48,6 +48,37 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
 );
 
 
+CREATE TABLE IF NOT EXISTS vvv_sources (
+  source_id          BIGINT PRIMARY KEY,
+  glon               FLOAT(10) NOT NULL,
+  glat               FLOAT(10) NOT NULL,
+  ra                 FLOAT(10) NOT NULL,
+  dec                FLOAT(10) NOT NULL,
+  phot_z1_mag        FLOAT(10),
+  phot_z1_mag_error  FLOAT(10),
+  phot_z2_mag        FLOAT(10),
+  phot_z2_mag_error  FLOAT(10),
+  phot_y1_mag        FLOAT(10),
+  phot_y1_mag_error  FLOAT(10),
+  phot_y2_mag        FLOAT(10),
+  phot_y2_mag_error  FLOAT(10),
+  phot_j1_mag        FLOAT(10),
+  phot_j1_mag_error  FLOAT(10),
+  phot_j2_mag        FLOAT(10),
+  phot_j2_mag_error  FLOAT(10),
+  phot_h1_mag        FLOAT(10),
+  phot_h1_mag_error  FLOAT(10),
+  phot_h2_mag        FLOAT(10),
+  phot_h2_mag_error  FLOAT(10),
+  phot_k1_mag        FLOAT(10),
+  phot_k1_mag_error  FLOAT(10),
+  phot_k2_mag        FLOAT(10),
+  phot_k2_mag_error  FLOAT(10),
+  pstar              FLOAT(10) NOT NULL,
+  psaturated         FLOAT(10) NOT NULL
+);
+
+
 CREATE TABLE IF NOT EXISTS edr3_sources (
   source_id          BIGINT PRIMARY KEY,
   ra                 FLOAT(10) NOT NULL,

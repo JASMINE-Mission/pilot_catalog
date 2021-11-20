@@ -26,6 +26,34 @@ CLUSTER tmass_sources_glonglat ON tmass_sources;
 ANALYZE tmass_sources;
 
 
+CREATE INDEX IF NOT EXISTS vvv_sources_radec
+  ON vvv_sources (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS vvv_sources_glonglat
+  ON vvv_sources (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS vvv_sources_z1mag
+  ON vvv_sources (phot_z1_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_z2mag
+  ON vvv_sources (phot_z2_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_y1mag
+  ON vvv_sources (phot_y1_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_y2mag
+  ON vvv_sources (phot_y2_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_j1mag
+  ON vvv_sources (phot_j1_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_j2mag
+  ON vvv_sources (phot_j2_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_h1mag
+  ON vvv_sources (phot_h1_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_h2mag
+  ON vvv_sources (phot_h2_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_k1mag
+  ON vvv_sources (phot_k1_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_k2mag
+  ON vvv_sources (phot_k2_mag);
+CLUSTER vvv_sources_glonglat ON vvv_sources;
+ANALYZE vvv_sources;
+
+
 CREATE INDEX IF NOT EXISTS edr3_sources_radec
   ON edr3_sources (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS edr3_sources_glonglat

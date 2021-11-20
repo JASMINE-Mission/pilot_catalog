@@ -35,6 +35,66 @@ psql -h localhost -p 15432 -d jasmine -U admin \
 ```
 
 
+### VVV Band-Merged Source Catalog
+
+``` sql
+SELECT
+  sourceid as source_id,
+  l as glon,
+  b as glat,
+  ra2000 as ra,
+  dec2000 as dec,
+  z_1apermag4 as phot_z1_mag,
+  z_1apermag4err as phot_z1_mag_error,
+  z_2apermag4 as phot_z2_mag,
+  z_2apermag4err as phot_z2_mag_error,
+  y_1apermag4 as phot_y1_mag,
+  y_1apermag4err as phot_y1_mag_error,
+  y_2apermag4 as phot_y2_mag,
+  y_2apermag4err as phot_y2_mag_error,
+  j_1apermag4 as phot_j1_mag,
+  j_1apermag4err as phot_j1_mag_error,
+  j_2apermag4 as phot_j2_mag,
+  j_2apermag4err as phot_j2_mag_error,
+  h_1apermag4 as phot_h1_mag,
+  h_1apermag4err as phot_h1_mag_error,
+  h_2apermag4 as phot_h2_mag,
+  h_2apermag4err as phot_h2_mag_error,
+  ks_1apermag4 as phot_k1_mag,
+  ks_1apermag4err as phot_k1_mag_error,
+  ks_2apermag4 as phot_k2_mag,
+  ks_2apermag4err as phot_k2_mag_error,
+  pstar,
+  psaturated
+FROM
+  VVV_bandMergedSourceCat_V3
+WHERE
+  (l BETWEEN -2.5 AND 1.2) AND (b BETWEEN -1.2 AND 1.2)
+```
+
+The obtained catalog is converted into a CSV file using `astropy.io.votable`.
+
+```
+from astropy.io.votable as vot
+from numpy as np
+from pandas as pd
+
+votab = vot.parse('./vvv_bandmerged.votable')
+table = votab.resources[0].tables[0]
+df = pd.DataFrame(np.array(table.array))
+df.to_csv('./vvv_bandmerged.csv', index=False)
+```
+
+Then, the CSV file is imported to the database.
+
+``` sh
+psql -h localhost -p 15432 -d jasmine -U admin \
+  -c "COPY vvv_sources (source_id,glon,glat,ra,dec,phot_z1_mag,phot_z1_mag_error,phot_z2_mag,phot_z2_mag_error,phot_y1_mag,phot_y1_mag_error,phot_y2_mag,phot_y2_mag_error,phot_j1_mag,phot_j1_mag_error,phot_j2_mag,phot_j2_mag_error,phot_h1_mag,phot_h1_mag_error,phot_h2_mag,phot_h2_mag_error,phot_k1_mag,phot_k1_mag_error,phot_k2_mag,phot_k2_mag_error,pstar,psaturated) FROM '/data/catalog/vvv_bandmerged.csv' DELIMITER',' CSV HEADER;"
+```
+
+[esotap]: http://archive.eso.org/programmatic/
+
+
 ### 2mass Point-Source catalog
 2MASS Point-Source catalog can be obtained from the [Gator catalog query][gator] in [IRSA][irsa]. The extraction constrains are as follows:
 
