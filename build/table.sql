@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS sirius_sources (
-  sirius_id          BIGSERIAL PRIMARY KEY,
+  source_id          BIGSERIAL PRIMARY KEY,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
   ra                 FLOAT(10) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS sirius_sources (
 
 
 CREATE TABLE IF NOT EXISTS tmass_sources (
-  tmass_id           BIGSERIAL PRIMARY KEY,
+  source_id           BIGSERIAL PRIMARY KEY,
   ra                 FLOAT(10) NOT NULL,
   dec                FLOAT(10) NOT NULL,
   designation        VARCHAR(32) NOT NULL,
