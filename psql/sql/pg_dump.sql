@@ -68,7 +68,7 @@ ALTER TABLE public.edr3_sources OWNER TO admin;
 --
 
 CREATE TABLE public.sirius_sources (
-    sirius_id bigint NOT NULL,
+    source_id bigint NOT NULL,
     glon real NOT NULL,
     glat real NOT NULL,
     ra real NOT NULL,
@@ -109,7 +109,7 @@ ALTER TABLE public.sirius_sources_sirius_id_seq OWNER TO admin;
 -- Name: sirius_sources_sirius_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
 --
 
-ALTER SEQUENCE public.sirius_sources_sirius_id_seq OWNED BY public.sirius_sources.sirius_id;
+ALTER SEQUENCE public.sirius_sources_sirius_id_seq OWNED BY public.sirius_sources.source_id;
 
 
 --
@@ -117,7 +117,7 @@ ALTER SEQUENCE public.sirius_sources_sirius_id_seq OWNED BY public.sirius_source
 --
 
 CREATE TABLE public.tmass_sources (
-    tmass_id bigint NOT NULL,
+    source_id bigint NOT NULL,
     ra real NOT NULL,
     "dec" real NOT NULL,
     designation character varying(32) NOT NULL,
@@ -164,21 +164,58 @@ ALTER TABLE public.tmass_sources_tmass_id_seq OWNER TO admin;
 -- Name: tmass_sources_tmass_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
 --
 
-ALTER SEQUENCE public.tmass_sources_tmass_id_seq OWNED BY public.tmass_sources.tmass_id;
+ALTER SEQUENCE public.tmass_sources_tmass_id_seq OWNED BY public.tmass_sources.source_id;
 
 
 --
--- Name: sirius_sources sirius_id; Type: DEFAULT; Schema: public; Owner: admin
+-- Name: vvv_sources; Type: TABLE; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.sirius_sources ALTER COLUMN sirius_id SET DEFAULT nextval('public.sirius_sources_sirius_id_seq'::regclass);
+CREATE TABLE public.vvv_sources (
+    source_id bigint NOT NULL,
+    glon real NOT NULL,
+    glat real NOT NULL,
+    ra real NOT NULL,
+    "dec" real NOT NULL,
+    phot_z1_mag real,
+    phot_z1_mag_error real,
+    phot_z2_mag real,
+    phot_z2_mag_error real,
+    phot_y1_mag real,
+    phot_y1_mag_error real,
+    phot_y2_mag real,
+    phot_y2_mag_error real,
+    phot_j1_mag real,
+    phot_j1_mag_error real,
+    phot_j2_mag real,
+    phot_j2_mag_error real,
+    phot_h1_mag real,
+    phot_h1_mag_error real,
+    phot_h2_mag real,
+    phot_h2_mag_error real,
+    phot_k1_mag real,
+    phot_k1_mag_error real,
+    phot_k2_mag real,
+    phot_k2_mag_error real,
+    pstar real NOT NULL,
+    psaturated real NOT NULL
+);
+
+
+ALTER TABLE public.vvv_sources OWNER TO admin;
+
+--
+-- Name: sirius_sources source_id; Type: DEFAULT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.sirius_sources ALTER COLUMN source_id SET DEFAULT nextval('public.sirius_sources_sirius_id_seq'::regclass);
 
 
 --
--- Name: tmass_sources tmass_id; Type: DEFAULT; Schema: public; Owner: admin
+-- Name: tmass_sources source_id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.tmass_sources ALTER COLUMN tmass_id SET DEFAULT nextval('public.tmass_sources_tmass_id_seq'::regclass);
+ALTER TABLE ONLY public.tmass_sources ALTER COLUMN source_id SET DEFAULT nextval('public.tmass_sources_tmass_id_seq'::regclass);
 
 
 --
