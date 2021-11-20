@@ -1,4 +1,4 @@
-CREATE TABLE sirius_sources (
+CREATE TABLE IF NOT EXISTS sirius_sources (
   sirius_id          BIGSERIAL PRIMARY KEY,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
@@ -17,4 +17,32 @@ CREATE TABLE sirius_sources (
   phot_k_mag         FLOAT(10),
   phot_k_mag_error   FLOAT(10),
   plate_name         VARCHAR(16) NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS tmass_sources (
+  tmass_id           BIGSERIAL PRIMARY KEY,
+  ra                 FLOAT(10) NOT NULL,
+  dec                FLOAT(10) NOT NULL,
+  designation        VARCHAR(32) NOT NULL,
+  phot_j_mag         FLOAT(10),
+  phot_j_cmsig       FLOAT(10),
+  phot_j_mag_error   FLOAT(10),
+  phot_j_snr         FLOAT(10),
+  phot_h_mag         FLOAT(10),
+  phot_h_cmsig       FLOAT(10),
+  phot_h_mag_error   FLOAT(10),
+  phot_h_snr         FLOAT(10),
+  phot_k_mag         FLOAT(10),
+  phot_k_cmsig       FLOAT(10),
+  phot_k_mag_error   FLOAT(10),
+  phot_k_snr         FLOAT(10),
+  quality_flag       VARCHAR(3) NOT NULL,
+  contaminated       INT NOT NULL,
+  glon               FLOAT(10) NOT NULL,
+  glat               FLOAT(10) NOT NULL,
+  rd_flg             VARCHAR(3) NOT NULL,
+  color_j_h          FLOAT(10),
+  color_h_k          FLOAT(10),
+  color_j_k          FLOAT(10)
 );
