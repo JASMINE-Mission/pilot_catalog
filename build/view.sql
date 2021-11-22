@@ -56,7 +56,7 @@ ON
   q3c_join(t.glon,t.glat,v.glon,v.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,v.phot_j_mag,t.phot_h_mag,v.phot_h_mag,
-    t.phot_k_mag,v.phot_k_mag,0.5)
+    t.phot_k_mag,v.phot_k_mag,2.0)
 UNION ALL
 SELECT
   t.source_id AS tmass_source_id,
@@ -83,7 +83,7 @@ ON
   q3c_join(t.glon,t.glat,v.glon,v.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,v.phot_j_mag,t.phot_h_mag,v.phot_h_mag,
-    t.phot_k_mag,v.phot_k_mag,0.5)
+    t.phot_k_mag,v.phot_k_mag,2.0)
 WHERE
   t.source_id IS NULL;
 
@@ -116,7 +116,7 @@ ON
   q3c_join(s.glon,s.glat,t.glon,t.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,s.phot_j_mag,t.phot_h_mag,s.phot_h_mag,
-    t.phot_k_mag,s.phot_k_mag,0.5)
+    t.phot_k_mag,s.phot_k_mag,2.0)
 UNION ALL
 SELECT
   t.tmass_source_id AS tmass_source_id,
@@ -144,6 +144,6 @@ ON
   q3c_join(s.glon,s.glat,t.glon,t.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,s.phot_j_mag,t.phot_h_mag,s.phot_h_mag,
-    t.phot_k_mag,s.phot_k_mag,0.5)
+    t.phot_k_mag,s.phot_k_mag,2.0)
 WHERE
   s.source_id IS NULL;
