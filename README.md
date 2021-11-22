@@ -98,19 +98,35 @@ psql -h localhost -p 15432 -d jasmine -U admin \
 ### 2mass Point-Source catalog
 2MASS Point-Source catalog can be obtained from the [Gator catalog query][gator] in [IRSA][irsa]. The extraction constrains are as follows:
 
-- Galactic longitude between -2.5&degree; and 1.2&degree;.
-- Galactic latitude between -1.2&degree; and 1.2&degree;.
+- Galactic longitude between -2.5 and 1.2 degree.
+- Galactic latitude between -1.2 and 1.2 degree.
 - Not flagged as minor planets.
 
 ``` sql
 mp_flg =0 and glon >=-2.5 and glon <=1.2 and glat >=-1.2 and glat <=1.2
 ```
 
-The original 2mass catalog is not compatible with the database. Invalid records are replaced with the `null` value.
+The original 2mass catalog is not compatible with the database, and the precisions of `glon` and `glat` records are not sufficient. Use `convert_2mass.py` to reformat the original CSV catalog. The usage of the `convert_2mass.py` is as follows.
 
 ``` sh
-sed 's/\r$//;s/null//g;s/,-,-,/,,,/;s/,-,/,,/;s/,-$/,/' \
-    2mass_gccat.csv > 2mass_gccat.mod.csv
+$ ./script/convert_2mass.py -h
+usage: convert_2mass.py [-h] [-f] src csv
+
+Reformat 2MASS catalog
+
+positional arguments:
+  src              input CSV catalog
+  csv              output CSV catalog
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -f, --overwrite  overwrite if the output file exists.
+```
+
+The following command reformats `2mass_gccat.csv`.
+
+``` sh
+python script/convert_2mass.py 2mass_gccat.csv 2mass_gccat.mod.csv
 ```
 
 The revised CSV file is imported into the database by `COPY` command.
@@ -128,8 +144,8 @@ psql -h localhost -p 15432 -d jasmine -U admin \
 
 The Gaia EDR3 catalog is obtained from the [Gaia Archive][gaia]. The advanced query mode is used to extract the source around the Galactic center. The extraction constrains are as follows:
 
-- Galactic longitude between -2.5&degree; and 1.2&degree;.
-- Galactic latitude between -1.2&degree; and 1.2&degree;.
+- Galactic longitude between -2.5 and 1.2 degree.
+- Galactic latitude between -1.2 and 1.2 degree.
 
 The SQL query is described below:
 
