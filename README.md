@@ -31,8 +31,10 @@ The converted CSV file is imported into the database by `COPY` command.
 
 ``` sh
 psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY sirius_sources (glon,glat,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_k_x,position_k_y,phot_k_mag,phot_k_mag_error,plate_name) FROM '/data/catalog/sirius_WGCCatAll.csv' DELIMITER',' CSV HEADER;"
+  -c "COPY sirius_sources_orig (glon,glat,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_k_x,position_k_y,phot_k_mag,phot_k_mag_error,plate_name) FROM '/data/catalog/sirius_WGCCatAll.csv' DELIMITER',' CSV HEADER;"
 ```
+
+The original catalog contains objects outside of the nominal field. The `sirius_sources` is a view of `sirius_sources_orig`, where objects outside of the JASMINE field are removed.
 
 
 ### VVV Band-Merged Source Catalog

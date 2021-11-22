@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS sirius_sources (
+CREATE TABLE IF NOT EXISTS sirius_sources_orig (
   source_id          BIGSERIAL PRIMARY KEY,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
 );
 
 
-CREATE TABLE IF NOT EXISTS vvv_sources (
+CREATE TABLE IF NOT EXISTS vvv_sources_orig (
   source_id          BIGINT PRIMARY KEY,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
