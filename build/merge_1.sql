@@ -1,10 +1,10 @@
-DROP VIEW IF EXISTS tmass_vvv_merged_sources CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS tmass_vvv_merged_sources CASCADE;
 CREATE MATERIALIZED VIEW tmass_vvv_merged_sources AS
 SELECT
   t.source_id AS tmass_source_id,
   v.source_id AS vvv_source_id,
   COALESCE(v.glon,t.glon) AS glon,
-  COALESCE(v.glon,t.glat) AS glat,
+  COALESCE(v.glat,t.glat) AS glat,
   COALESCE(v.ra,t.ra) AS ra,
   COALESCE(v.dec,t.dec) AS dec,
   ifthenelse(v.source_id,'V','2') AS position_source,
@@ -26,12 +26,12 @@ ON
   AND jhk_match(
     t.phot_j_mag,v.phot_j_mag,t.phot_h_mag,v.phot_h_mag,
     t.phot_k_mag,v.phot_k_mag,2.0)
-UNION ALL
+UNION
 SELECT
   t.source_id AS tmass_source_id,
   v.source_id AS vvv_source_id,
   COALESCE(v.glon,t.glon) AS glon,
-  COALESCE(v.glon,t.glat) AS glat,
+  COALESCE(v.glat,t.glat) AS glat,
   COALESCE(v.ra,t.ra) AS ra,
   COALESCE(v.dec,t.dec) AS dec,
   ifthenelse(v.source_id,'V','2') AS position_source,

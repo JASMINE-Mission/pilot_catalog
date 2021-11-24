@@ -5,6 +5,7 @@ PSRC=build/extension.sql \
      build/table.sql \
      build/view.sql \
      build/index.sql \
+     build/sirius.sql \
      build/merge_1.sql \
      build/merge_2.sql \
      build/user.sql

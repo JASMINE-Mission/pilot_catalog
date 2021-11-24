@@ -1,13 +1,3 @@
-DROP VIEW IF EXISTS sirius_sources CASCADE;
-CREATE MATERIALIZED VIEW sirius_sources AS
-SELECT
-  *
-FROM
-  sirius_sources_orig
-WHERE
-  (glon BETWEEN -2.5 AND 1.2) AND (glat BETWEEN -1.2 AND 1.2);
-
-
 CREATE OR REPLACE VIEW vvv_sources AS
 SELECT
   source_id,
