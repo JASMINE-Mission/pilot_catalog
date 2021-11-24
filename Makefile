@@ -1,8 +1,13 @@
 IMAGE=jasmine-psql
 VER=0.1
 OPTS=
-PSRC=build/table.sql build/user.sql build/extension.sql \
-     build/view.sql build/merge_1.sql build/merge_2.sql
+PSRC=build/extension.sql \
+     build/table.sql \
+     build/view.sql \
+     build/index.sql \
+     build/merge_1.sql \
+     build/merge_2.sql \
+     build/user.sql
 PSQL=psql -h localhost -p 15432 -d jasmine -U admin
 PGDUMP=docker-compose exec catalog pg_dump -d jasmine -U admin
 

@@ -57,3 +57,25 @@ ON
     t.phot_k_mag,s.phot_k_mag,2.0)
 WHERE
   s.source_id IS NULL;
+
+
+CREATE INDEX IF NOT EXISTS merged_sources_radec
+  ON merged_sources (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS merged_sources_glonglat
+  ON merged_sources (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS merged_sources_jmag
+  ON merged_sources (phot_j_mag);
+CREATE INDEX IF NOT EXISTS merged_sources_hmag
+  ON merged_sources (phot_h_mag);
+CREATE INDEX IF NOT EXISTS merged_sources_kmag
+  ON merged_sources (phot_k_mag);
+CREATE INDEX IF NOT EXISTS merged_sources_ra
+  ON merged_sources (ra);
+CREATE INDEX IF NOT EXISTS merged_sources_dec
+  ON merged_sources (dec);
+CREATE INDEX IF NOT EXISTS merged_sources_glon
+  ON merged_sources (glon);
+CREATE INDEX IF NOT EXISTS merged_sources_glat
+  ON merged_sources (glat);
+CLUSTER merged_sources_glonglat ON merged_sources;
+ANALYZE merged_sources;

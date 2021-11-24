@@ -55,3 +55,25 @@ ON
     t.phot_k_mag,v.phot_k_mag,2.0)
 WHERE
   t.source_id IS NULL;
+
+
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_radec
+  ON tmass_vvv_merged_sources (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_glonglat
+  ON tmass_vvv_merged_sources (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_jmag
+  ON tmass_vvv_merged_sources (phot_j_mag);
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_hmag
+  ON tmass_vvv_merged_sources (phot_h_mag);
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_kmag
+  ON tmass_vvv_merged_sources (phot_k_mag);
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_ra
+  ON tmass_vvv_merged_sources (ra);
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_dec
+  ON tmass_vvv_merged_sources (dec);
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_glon
+  ON tmass_vvv_merged_sources (glon);
+CREATE INDEX IF NOT EXISTS tmass_vvv_merged_sources_glat
+  ON tmass_vvv_merged_sources (glat);
+CLUSTER tmass_vvv_merged_sources_glonglat ON tmass_vvv_merged_sources;
+ANALYZE tmass_vvv_merged_sources;
