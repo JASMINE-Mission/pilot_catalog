@@ -71,19 +71,23 @@ SELECT
 FROM
   VVV_bandMergedSourceCat_V3
 WHERE
-  (l BETWEEN -2.5 AND 1.2) AND (b BETWEEN -1.2 AND 1.2)
+  (l < 1.2 OR 360-2.5 < l) AND (b BETWEEN -1.2 AND 1.2)
 ```
 
-The obtained catalog is converted into a CSV file using `astropy.io.votable`.
+The requested catalog is, however, too large to retrieve. The catalog is separated into the positive and negative halfs in the galactic latitude. The obtained catalog is converted into a CSV file using `astropy.io.votable`.
 
-```
-from astropy.io.votable as vot
-from numpy as np
-from pandas as pd
+``` python
+import astropy.io.votable as vot
+import numpy as np
+import pandas as pd
 
-votab = vot.parse('./vvv_bandmerged.votable')
-table = votab.resources[0].tables[0]
-df = pd.DataFrame(np.array(table.array))
+votab_p = vot.parse('./vvv_bandmerged_p.votable')
+votab_m = vot.parse('./vvv_bandmerged_m.votable')
+table_p = votab_p.resources[0].tables[0]
+table_m = votab_m.resources[0].tables[0]
+df_p = pd.DataFrame(np.array(table_p.array))
+df_m = pd.DataFrame(np.array(table_m.array))
+df = pd.concat((df_p,df_m))
 df.to_csv('./vvv_bandmerged.csv', index=False)
 ```
 
