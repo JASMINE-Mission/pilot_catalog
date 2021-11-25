@@ -166,6 +166,54 @@ $_$;
 
 ALTER FUNCTION public.mag_match(numeric, numeric, numeric) OWNER TO admin;
 
+--
+-- Name: select_better(real, real, real, real); Type: FUNCTION; Schema: public; Owner: admin
+--
+
+CREATE FUNCTION public.select_better(real, real, real, real) RETURNS real
+    LANGUAGE sql
+    AS $_$
+  SELECT CASE
+    WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
+    WHEN COALESCE($2,1000) > COALESCE($4,1000) THEN $3
+    ELSE NULL
+  END
+$_$;
+
+
+ALTER FUNCTION public.select_better(real, real, real, real) OWNER TO admin;
+
+--
+-- Name: select_char(real, real, character varying, character varying); Type: FUNCTION; Schema: public; Owner: admin
+--
+
+CREATE FUNCTION public.select_char(real, real, character varying, character varying) RETURNS character varying
+    LANGUAGE sql
+    AS $_$
+  SELECT CASE
+    WHEN COALESCE($1,1000) < COALESCE($2,1000) THEN $3
+    WHEN COALESCE($1,1000) > COALESCE($2,1000) THEN $4
+    ELSE NULL
+  END
+$_$;
+
+
+ALTER FUNCTION public.select_char(real, real, character varying, character varying) OWNER TO admin;
+
+--
+-- Name: wrap(real); Type: FUNCTION; Schema: public; Owner: admin
+--
+
+CREATE FUNCTION public.wrap(real) RETURNS real
+    LANGUAGE sql
+    AS $_$
+  SELECT CASE
+    WHEN $1 <= 180.0 THEN $1 ELSE $1-360.0 END
+$_$;
+
+
+ALTER FUNCTION public.wrap(real) OWNER TO admin;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -197,6 +245,55 @@ CREATE TABLE public.edr3_sources (
 
 
 ALTER TABLE public.edr3_sources OWNER TO admin;
+
+--
+-- Name: merged_sources; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.merged_sources (
+    source_id bigint NOT NULL,
+    tmass_source_id bigint,
+    sirius_source_id bigint,
+    vvv_source_id bigint,
+    glon real,
+    glat real,
+    ra real,
+    "dec" real,
+    position_source character varying(1),
+    phot_j_mag real,
+    phot_j_mag_error real,
+    phot_j_mag_source character varying(1),
+    phot_h_mag real,
+    phot_h_mag_error real,
+    phot_h_mag_source character varying(1),
+    phot_k_mag real,
+    phot_k_mag_error real,
+    phot_k_mag_source character varying(1)
+);
+
+
+ALTER TABLE public.merged_sources OWNER TO admin;
+
+--
+-- Name: merged_sources_source_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+CREATE SEQUENCE public.merged_sources_source_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.merged_sources_source_id_seq OWNER TO admin;
+
+--
+-- Name: merged_sources_source_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
+--
+
+ALTER SEQUENCE public.merged_sources_source_id_seq OWNED BY public.merged_sources.source_id;
+
 
 --
 -- Name: sirius_sources_orig; Type: TABLE; Schema: public; Owner: admin
@@ -395,52 +492,11 @@ CREATE VIEW public.vvv_sources AS
 ALTER TABLE public.vvv_sources OWNER TO admin;
 
 --
--- Name: tmass_vvv_merged_sources; Type: MATERIALIZED VIEW; Schema: public; Owner: admin
+-- Name: merged_sources source_id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
-CREATE MATERIALIZED VIEW public.tmass_vvv_merged_sources AS
- SELECT t.source_id AS tmass_source_id,
-    v.source_id AS vvv_source_id,
-    COALESCE(v.glon, t.glon) AS glon,
-    COALESCE(v.glon, t.glat) AS glat,
-    COALESCE(v.ra, t.ra) AS ra,
-    COALESCE(v."dec", t."dec") AS "dec",
-    public.ifthenelse(v.source_id, 'V'::character varying, '2'::character varying) AS position_source,
-    COALESCE(v.phot_j_mag, t.phot_j_mag) AS phot_j_mag,
-    COALESCE(v.phot_j_mag_error, t.phot_j_mag_error) AS phot_j_mag_error,
-    public.ifthenelse(v.phot_j_mag, 'V'::character varying, '2'::character varying) AS phot_j_mag_source,
-    COALESCE(v.phot_h_mag, t.phot_h_mag) AS phot_h_mag,
-    COALESCE(v.phot_h_mag_error, t.phot_h_mag_error) AS phot_h_mag_error,
-    public.ifthenelse(v.phot_h_mag, 'V'::character varying, '2'::character varying) AS phot_h_mag_source,
-    COALESCE(v.phot_k_mag, t.phot_k_mag) AS phot_k_mag,
-    COALESCE(v.phot_k_mag_error, t.phot_k_mag_error) AS phot_k_mag_error,
-    public.ifthenelse(v.phot_k_mag, 'V'::character varying, '2'::character varying) AS phot_k_mag_source
-   FROM (public.tmass_sources t
-     LEFT JOIN public.vvv_sources v ON ((public.q3c_join((t.glon)::double precision, (t.glat)::double precision, v.glon, v.glat, (('1'::numeric / '3600'::numeric))::double precision) AND public.jhk_match(t.phot_j_mag, v.phot_j_mag, t.phot_h_mag, v.phot_h_mag, t.phot_k_mag, v.phot_k_mag, (2.0)::real))))
-UNION ALL
- SELECT t.source_id AS tmass_source_id,
-    v.source_id AS vvv_source_id,
-    COALESCE(v.glon, t.glon) AS glon,
-    COALESCE(v.glon, t.glat) AS glat,
-    COALESCE(v.ra, t.ra) AS ra,
-    COALESCE(v."dec", t."dec") AS "dec",
-    public.ifthenelse(v.source_id, 'V'::character varying, '2'::character varying) AS position_source,
-    COALESCE(v.phot_j_mag, t.phot_j_mag) AS phot_j_mag,
-    COALESCE(v.phot_j_mag_error, t.phot_j_mag_error) AS phot_j_mag_error,
-    public.ifthenelse(v.phot_j_mag, 'V'::character varying, '2'::character varying) AS phot_j_mag_source,
-    COALESCE(v.phot_h_mag, t.phot_h_mag) AS phot_h_mag,
-    COALESCE(v.phot_h_mag_error, t.phot_h_mag_error) AS phot_h_mag_error,
-    public.ifthenelse(v.phot_h_mag, 'V'::character varying, '2'::character varying) AS phot_h_mag_source,
-    COALESCE(v.phot_k_mag, t.phot_k_mag) AS phot_k_mag,
-    COALESCE(v.phot_k_mag_error, t.phot_k_mag_error) AS phot_k_mag_error,
-    public.ifthenelse(v.phot_k_mag, 'V'::character varying, '2'::character varying) AS phot_k_mag_source
-   FROM (public.vvv_sources v
-     LEFT JOIN public.tmass_sources t ON ((public.q3c_join((v.glon)::double precision, (v.glat)::double precision, t.glon, t.glat, (('1'::numeric / '3600'::numeric))::double precision) AND public.jhk_match(t.phot_j_mag, v.phot_j_mag, t.phot_h_mag, v.phot_h_mag, t.phot_k_mag, v.phot_k_mag, (2.0)::real))))
-  WHERE (t.source_id IS NULL)
-  WITH NO DATA;
+ALTER TABLE ONLY public.merged_sources ALTER COLUMN source_id SET DEFAULT nextval('public.merged_sources_source_id_seq'::regclass);
 
-
-ALTER TABLE public.tmass_vvv_merged_sources OWNER TO admin;
 
 --
 -- Name: sirius_sources_orig source_id; Type: DEFAULT; Schema: public; Owner: admin
@@ -461,6 +517,13 @@ ALTER TABLE ONLY public.tmass_sources ALTER COLUMN source_id SET DEFAULT nextval
 --
 
 GRANT SELECT ON TABLE public.edr3_sources TO jasmine_user;
+
+
+--
+-- Name: TABLE merged_sources; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT ON TABLE public.merged_sources TO jasmine_user;
 
 
 --

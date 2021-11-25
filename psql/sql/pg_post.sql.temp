@@ -28,6 +28,14 @@ ALTER TABLE ONLY public.edr3_sources
 
 
 --
+-- Name: merged_sources merged_sources_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.merged_sources
+    ADD CONSTRAINT merged_sources_pkey PRIMARY KEY (source_id);
+
+
+--
 -- Name: sirius_sources_orig sirius_sources_orig_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -44,76 +52,127 @@ ALTER TABLE ONLY public.tmass_sources
 
 
 --
--- Name: vvv_sources_orig vvv_source_orig_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: vvv_sources_orig vvv_sources_orig_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.vvv_sources_orig
-    ADD CONSTRAINT vvv_source_orig_pkey PRIMARY KEY (source_id);
+    ADD CONSTRAINT vvv_sources_orig_pkey PRIMARY KEY (source_id);
 
 
 --
--- Name: edr3_sources_bpmag; Type: INDEX; Schema: public; Owner: admin
+-- Name: merged_sources_dec; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX edr3_sources_bpmag ON public.edr3_sources USING btree (phot_bp_mag);
-
-
---
--- Name: edr3_sources_dec; Type: INDEX; Schema: public; Owner: admin
---
-
-CREATE INDEX edr3_sources_dec ON public.edr3_sources USING btree ("dec");
+CREATE INDEX merged_sources_dec ON public.merged_sources USING btree ("dec");
 
 
 --
--- Name: edr3_sources_glat; Type: INDEX; Schema: public; Owner: admin
+-- Name: merged_sources_glat; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX edr3_sources_glat ON public.edr3_sources USING btree (glat);
-
-
---
--- Name: edr3_sources_glon; Type: INDEX; Schema: public; Owner: admin
---
-
-CREATE INDEX edr3_sources_glon ON public.edr3_sources USING btree (glon);
+CREATE INDEX merged_sources_glat ON public.merged_sources USING btree (glat);
 
 
 --
--- Name: edr3_sources_glonglat; Type: INDEX; Schema: public; Owner: admin
+-- Name: merged_sources_glon; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX edr3_sources_glonglat ON public.edr3_sources USING btree (public.q3c_ang2ipix(glon, glat));
-
-ALTER TABLE public.edr3_sources CLUSTER ON edr3_sources_glonglat;
+CREATE INDEX merged_sources_glon ON public.merged_sources USING btree (glon);
 
 
 --
--- Name: edr3_sources_gmag; Type: INDEX; Schema: public; Owner: admin
+-- Name: merged_sources_glonglat; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX edr3_sources_gmag ON public.edr3_sources USING btree (phot_g_mag);
+CREATE INDEX merged_sources_glonglat ON public.merged_sources USING btree (public.q3c_ang2ipix(glon, glat));
 
-
---
--- Name: edr3_sources_ra; Type: INDEX; Schema: public; Owner: admin
---
-
-CREATE INDEX edr3_sources_ra ON public.edr3_sources USING btree (ra);
+ALTER TABLE public.merged_sources CLUSTER ON merged_sources_glonglat;
 
 
 --
--- Name: edr3_sources_radec; Type: INDEX; Schema: public; Owner: admin
+-- Name: merged_sources_hmag; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX edr3_sources_radec ON public.edr3_sources USING btree (public.q3c_ang2ipix(ra, "dec"));
+CREATE INDEX merged_sources_hmag ON public.merged_sources USING btree (phot_h_mag);
 
 
 --
--- Name: edr3_sources_rpmag; Type: INDEX; Schema: public; Owner: admin
+-- Name: merged_sources_jmag; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX edr3_sources_rpmag ON public.edr3_sources USING btree (phot_rp_mag);
+CREATE INDEX merged_sources_jmag ON public.merged_sources USING btree (phot_j_mag);
+
+
+--
+-- Name: merged_sources_kmag; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX merged_sources_kmag ON public.merged_sources USING btree (phot_k_mag);
+
+
+--
+-- Name: merged_sources_ra; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX merged_sources_ra ON public.merged_sources USING btree (ra);
+
+
+--
+-- Name: merged_sources_radec; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX merged_sources_radec ON public.merged_sources USING btree (public.q3c_ang2ipix(ra, "dec"));
+
+
+--
+-- Name: sirius_sources_dec; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_dec ON public.sirius_sources USING btree ("dec");
+
+
+--
+-- Name: sirius_sources_glat; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_glat ON public.sirius_sources USING btree (glat);
+
+
+--
+-- Name: sirius_sources_glon; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_glon ON public.sirius_sources USING btree (glon);
+
+
+--
+-- Name: sirius_sources_glonglat; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_glonglat ON public.sirius_sources USING btree (public.q3c_ang2ipix(glon, glat));
+
+ALTER TABLE public.sirius_sources CLUSTER ON sirius_sources_glonglat;
+
+
+--
+-- Name: sirius_sources_hmag; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_hmag ON public.sirius_sources USING btree (phot_h_mag);
+
+
+--
+-- Name: sirius_sources_jmag; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_jmag ON public.sirius_sources USING btree (phot_j_mag);
+
+
+--
+-- Name: sirius_sources_kmag; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_kmag ON public.sirius_sources USING btree (phot_k_mag);
 
 
 --
@@ -179,6 +238,20 @@ CREATE INDEX sirius_sources_orig_ra ON public.sirius_sources_orig USING btree (r
 --
 
 CREATE INDEX sirius_sources_orig_radec ON public.sirius_sources_orig USING btree (public.q3c_ang2ipix(ra, "dec"));
+
+
+--
+-- Name: sirius_sources_ra; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_ra ON public.sirius_sources USING btree (ra);
+
+
+--
+-- Name: sirius_sources_radec; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX sirius_sources_radec ON public.sirius_sources USING btree (public.q3c_ang2ipix(ra, "dec"));
 
 
 --
@@ -365,13 +438,6 @@ CREATE INDEX vvv_sources_orig_z2mag ON public.vvv_sources_orig USING btree (phot
 --
 
 REFRESH MATERIALIZED VIEW public.sirius_sources;
-
-
---
--- Name: tmass_vvv_merged_sources; Type: MATERIALIZED VIEW DATA; Schema: public; Owner: admin
---
-
-REFRESH MATERIALIZED VIEW public.tmass_vvv_merged_sources;
 
 
 --

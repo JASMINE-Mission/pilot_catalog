@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from argparse import ArgumentParser as ap
-from astropy.coordinates import SkyCoord
+from astropy.coordinates import SkyCoord, Longitude
 import pandas as pd
 import sys,os
 
@@ -58,8 +58,8 @@ if __name__ == '__main__':
     df['rd_flg'] = df.rd_flg.apply(lambda x: f'{x:03d}')
 
     galactic = SkyCoord(df.ra,df.dec,frame='fk5',unit='degree').galactic
-    df['glon'] = galactic.l
-    df['glat'] = galactic.b
+    df['glon'] = Longitude(galactic.l,wrap_angle='180d').deg
+    df['glat'] = galactic.b.deg
 
     if os.path.exists(args.csv):
         print(f'Warning: file "{args.csv}" already exists.')

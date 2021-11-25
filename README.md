@@ -95,7 +95,7 @@ Then, the CSV file is imported to the database.
 
 ``` sh
 psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY vvv_sources (source_id,glon,glat,ra,dec,phot_z1_mag,phot_z1_mag_error,phot_z2_mag,phot_z2_mag_error,phot_y1_mag,phot_y1_mag_error,phot_y2_mag,phot_y2_mag_error,phot_j1_mag,phot_j1_mag_error,phot_j2_mag,phot_j2_mag_error,phot_h1_mag,phot_h1_mag_error,phot_h2_mag,phot_h2_mag_error,phot_k1_mag,phot_k1_mag_error,phot_k2_mag,phot_k2_mag_error,pstar,psaturated) FROM '/data/catalog/vvv_bandmerged.csv' DELIMITER',' CSV HEADER;"
+  -c "COPY vvv_sources_orig (source_id,glon,glat,ra,dec,phot_z1_mag,phot_z1_mag_error,phot_z2_mag,phot_z2_mag_error,phot_y1_mag,phot_y1_mag_error,phot_y2_mag,phot_y2_mag_error,phot_j1_mag,phot_j1_mag_error,phot_j2_mag,phot_j2_mag_error,phot_h1_mag,phot_h1_mag_error,phot_h2_mag,phot_h2_mag_error,phot_k1_mag,phot_k1_mag_error,phot_k2_mag,phot_k2_mag_error,pstar,psaturated) FROM '/data/catalog/vvv_bandmerged.csv' DELIMITER',' CSV HEADER;"
 ```
 
 [esotap]: http://archive.eso.org/programmatic/
@@ -153,14 +153,14 @@ The Gaia EDR3 catalog is obtained from the [Gaia Archive][gaia]. The advanced qu
 - Galactic longitude between -2.5 and 1.2 degree.
 - Galactic latitude between -1.2 and 1.2 degree.
 
-The SQL query is described below:
+The SQL query is described below. Note that the Galactic longitude is constraind between -180 and 180 degrees.
 
 ``` sql
 SELECT
   source_id,
   ra,
   dec,
-  l AS glon,
+  l-360.0*floor(l/180.0) AS glon,
   b AS glat,
   parallax,
   parallax_error,
@@ -185,7 +185,7 @@ The obtained CSV file is imported into the database by `COPY` command.
 
 ``` sh
 psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY edr3_sources (source_id,ra,dec,glon,glat,parallax,parallax_error,pm,pmra,pmra_error,pmdec,pmdec_error,phot_g_mag,phot_g_mag_error,phot_bp_mag,phot_bp_mag_error,phot_rp_mag,phot_rp_mag_error) FROM '/data/catalog/2mass_gccat.mod.csv' DELIMITER',' CSV HEADER;"
+  -c "COPY edr3_sources (source_id,ra,dec,glon,glat,parallax,parallax_error,pm,pmra,pmra_error,pmdec,pmdec_error,phot_g_mag,phot_g_mag_error,phot_bp_mag,phot_bp_mag_error,phot_rp_mag,phot_rp_mag_error) FROM '/data/catalog/gaia_edr3_gccat.csv' DELIMITER',' CSV HEADER;"
 ```
 
 [gaia]: https://gea.esac.esa.int/archive/
