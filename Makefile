@@ -6,8 +6,7 @@ PSRC=build/extension.sql \
      build/view.sql \
      build/index.sql \
      build/sirius.sql \
-     build/merge_1.sql \
-     build/merge_2.sql \
+     build/merge.sql \
      build/user.sql
 PSQL=psql -h localhost -p 15432 -d jasmine -U admin
 PGDUMP=docker-compose exec catalog pg_dump -d jasmine -U admin
