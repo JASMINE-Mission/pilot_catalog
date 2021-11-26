@@ -68,3 +68,29 @@ RETURNS REAL AS $$
   SELECT CASE
     WHEN $1 <= 180.0 THEN $1 ELSE $1-360.0 END
 $$ LANGUAGE SQL;
+
+
+CREATE OR REPLACE FUNCTION within_jasmine_field(
+  REAL, -- Galactic Longitude
+  REAL) -- Galactic Latitude
+RETURNS BOOLEAN AS $$
+  SELECT
+    q3c_radial_query($1,$2,0.0,0.0,0.7)
+    OR (($1 BETWEEN -2.0 AND 0.0) AND ($2 BETWEEN 0.0 AND 0.3))
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION within_jasmine_region_1(
+  REAL, -- Galactic Longitude
+  REAL) -- Galactic Latitude
+RETURNS BOOLEAN AS $$
+  SELECT
+    q3c_radial_query($1,$2,0.0,0.0,0.7)
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION within_jasmine_region_2(
+  REAL, -- Galactic Longitude
+  REAL) -- Galactic Latitude
+RETURNS BOOLEAN AS $$
+  SELECT
+    (($1 BETWEEN -2.0 AND 0.0) AND ($2 BETWEEN 0.0 AND 0.3))
+$$ LANGUAGE SQL;
