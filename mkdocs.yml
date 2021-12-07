@@ -1,0 +1,68 @@
+site_name: Jasmine Input Catalog
+site_url:
+site_author: Ryou Ohsawa
+site_description:
+  Jasmine Input Catalog.
+
+repo_name:
+repo_url: https://github.com/xr0038/jasmine_catalog
+edit_url: ""
+
+copyright: Ryou Ohsawa 2021
+
+theme:
+  name: "material"
+  icon:
+    logo: logo
+  languatge: "en"
+  palette:
+    scheme: default
+    primary: blue grey
+    accent: deep orange
+  features:
+    - navigation.instant
+    - header.autohide
+
+extra_css:
+  - css/config_local.css
+extra_javascript:
+  - js/config_mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+plugins:
+  - img2fig
+
+markdown_extensions:
+  - toc:
+      toc_depth: 2
+  - extra
+  - admonition
+  - smarty
+  - sane_lists
+  - meta
+  - attr_list
+  - pymdownx.details
+  - pymdownx.critic
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.snippets:
+      check_paths: True
+  - pymdownx.arithmatex:
+      generic: true
+
+nav:
+  - Top Page: index.md
+  - Source Catalogs:
+    - SIRIUS: sirius.md
+    - VIRAC: virac.md
+    - 2MASS: 2mass.md
+    - Gaia EDR3: gaia_edr3.md
+    - VVV DR2: vvv_dr2.md
+    - VVV Band Merged: vvv_merged.md
+  - Merge Procedure: merge.md
+  - Project Page: http://jasmine.nao.ac.jp/
+  - Github Project: https://github.com/JASMINE-Mission
+  - Repository: https://github.com/xr0038/jasmine_catalog

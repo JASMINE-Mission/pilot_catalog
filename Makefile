@@ -33,3 +33,10 @@ psql/sql/pg_post.sql.temp:
 	    | tr -d '\r' > psql/sql/pg_post.sql.temp
 
 dump: psql/sql/pg_dump.sql psql/sql/pg_post.sql.temp
+
+
+test:
+	mkdocs serve
+
+update:
+	mkdocs gh-pages
