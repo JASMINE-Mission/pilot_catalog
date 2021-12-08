@@ -53,7 +53,7 @@ psql -h localhost -p 15432 -d jasmine -U admin \
    phot_y_flag,phot_y_mag,phot_y_error,\
    phot_j_flag,phot_j_mag,phot_j_error,\
    phot_h_flag,phot_h_mag,phot_h_error,\
-   phot_ks_flag,phot_ks_mag,phot_ks_error) \
+   phot_ks_flag,phot_ks_mag,phot_ks_error,glon,glat) \
   FROM '/data/catalog/vvv_virac_catalog.csv' \
   DELIMITER ',' CSV HEADER;"
 ```

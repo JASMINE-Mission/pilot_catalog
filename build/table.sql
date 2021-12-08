@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
   glat               FLOAT(10) NOT NULL,
   rd_flg             VARCHAR(3) NOT NULL,
   color_j_h          FLOAT(10),
-  color_h_k          FLOAT(10),
-  color_j_k          FLOAT(10)
+  color_h_ks         FLOAT(10),
+  color_j_ks         FLOAT(10)
 );
 
 
@@ -71,7 +71,9 @@ CREATE TABLE IF NOT EXISTS virac_sources (
   phot_h_mag_error  FLOAT(10),
   phot_ks_flag      FLOAT(10),
   phot_ks_mag       FLOAT(10),
-  phot_ks_mag_error FLOAT(10)
+  phot_ks_mag_error FLOAT(10),
+  glon              FLOAT(10) NOT NULL,
+  glat              FLOAT(10) NOT NULL
 );
 
 
