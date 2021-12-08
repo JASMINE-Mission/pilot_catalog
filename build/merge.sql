@@ -216,6 +216,15 @@ SELECT
   COALESCE(v.dec,t.dec) AS dec,
   ifthenelse(v.source_id,'V',t.position_source) AS position_source,
   select_better(
+    v.phot_hw_mag,v.phot_hw_mag_error,
+    t.phot_hw_mag,t.phot_hw_mag_error) AS phot_hw_mag,
+  select_better(
+    v.phot_hw_mag_error,v.phot_hw_mag_error,
+    t.phot_hw_mag_error,t.phot_hw_mag_error) AS phot_hw_mag_error,
+  select_char(
+    v.phot_hw_mag_error,t.phot_hw_mag_error,
+    'V',t.phot_hw_mag_source) AS phot_hw_mag_source,
+  select_better(
     v.phot_j_mag,v.phot_j_mag_error,
     t.phot_j_mag,t.phot_j_mag_error) AS phot_j_mag,
   select_better(
@@ -262,6 +271,15 @@ SELECT
   COALESCE(v.ra,t.ra) AS ra,
   COALESCE(v.dec,t.dec) AS dec,
   ifthenelse(v.source_id,'V',t.position_source) AS position_source,
+  select_better(
+    v.phot_hw_mag,v.phot_hw_mag_error,
+    t.phot_hw_mag,t.phot_hw_mag_error) AS phot_hw_mag,
+  select_better(
+    v.phot_hw_mag_error,v.phot_hw_mag_error,
+    t.phot_hw_mag_error,t.phot_hw_mag_error) AS phot_hw_mag_error,
+  select_char(
+    v.phot_hw_mag_error,t.phot_hw_mag_error,
+    'V',t.phot_hw_mag_source) AS phot_hw_mag_source,
   select_better(
     v.phot_j_mag,v.phot_j_mag_error,
     t.phot_j_mag,t.phot_j_mag_error) AS phot_j_mag,
