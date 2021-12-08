@@ -6,8 +6,8 @@ CREATE INDEX IF NOT EXISTS sirius_sources_orig_jmag
   ON sirius_sources_orig (phot_j_mag);
 CREATE INDEX IF NOT EXISTS sirius_sources_orig_hmag
   ON sirius_sources_orig (phot_h_mag);
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_kmag
-  ON sirius_sources_orig (phot_k_mag);
+CREATE INDEX IF NOT EXISTS sirius_sources_orig_ksmag
+  ON sirius_sources_orig (phot_ks_mag);
 CREATE INDEX IF NOT EXISTS sirius_sources_orig_ra
   ON sirius_sources_orig (ra);
 CREATE INDEX IF NOT EXISTS sirius_sources_orig_dec
@@ -28,8 +28,8 @@ CREATE INDEX IF NOT EXISTS tmass_sources_jmag
   ON tmass_sources (phot_j_mag);
 CREATE INDEX IF NOT EXISTS tmass_sources_hmag
   ON tmass_sources (phot_h_mag);
-CREATE INDEX IF NOT EXISTS tmass_sources_kmag
-  ON tmass_sources (phot_k_mag);
+CREATE INDEX IF NOT EXISTS tmass_sources_ksmag
+  ON tmass_sources (phot_ks_mag);
 CREATE INDEX IF NOT EXISTS tmass_sources_ra
   ON tmass_sources (ra);
 CREATE INDEX IF NOT EXISTS tmass_sources_dec
@@ -63,9 +63,9 @@ CREATE INDEX IF NOT EXISTS vvv_sources_orig_h1mag
 CREATE INDEX IF NOT EXISTS vvv_sources_orig_h2mag
   ON vvv_sources_orig (phot_h2_mag);
 CREATE INDEX IF NOT EXISTS vvv_sources_orig_k1mag
-  ON vvv_sources_orig (phot_k1_mag);
+  ON vvv_sources_orig (phot_ks1_mag);
 CREATE INDEX IF NOT EXISTS vvv_sources_orig_k2mag
-  ON vvv_sources_orig (phot_k2_mag);
+  ON vvv_sources_orig (phot_ks2_mag);
 CREATE INDEX IF NOT EXISTS vvv_sources_orig_ra
   ON vvv_sources_orig (ra);
 CREATE INDEX IF NOT EXISTS vvv_sources_orig_dec

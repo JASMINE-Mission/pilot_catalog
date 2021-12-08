@@ -5,7 +5,7 @@
 
 ``` sql
 CREATE TABLE IF NOT EXISTS tmass_sources (
-  source_id           BIGSERIAL PRIMARY KEY,
+  source_id          BIGSERIAL PRIMARY KEY,
   ra                 FLOAT(10) NOT NULL,
   dec                FLOAT(10) NOT NULL,
   designation        VARCHAR(32) NOT NULL,
@@ -17,18 +17,18 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
   phot_h_cmsig       FLOAT(10),
   phot_h_mag_error   FLOAT(10),
   phot_h_snr         FLOAT(10),
-  phot_k_mag         FLOAT(10),
-  phot_k_cmsig       FLOAT(10),
-  phot_k_mag_error   FLOAT(10),
-  phot_k_snr         FLOAT(10),
+  phot_ks_mag        FLOAT(10),
+  phot_ks_cmsig      FLOAT(10),
+  phot_ks_mag_error  FLOAT(10),
+  phot_ks_snr        FLOAT(10),
   quality_flag       VARCHAR(3) NOT NULL,
   contaminated       INT NOT NULL,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
   rd_flg             VARCHAR(3) NOT NULL,
   color_j_h          FLOAT(10),
-  color_h_k          FLOAT(10),
-  color_j_k          FLOAT(10)
+  color_h_ks         FLOAT(10),
+  color_j_ks         FLOAT(10)
 );
 ```
 
@@ -75,9 +75,9 @@ psql -h localhost -p 15432 -d jasmine -U admin \
   (ra,dec,designation,\
    phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,\
    phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,\
-   phot_k_mag,phot_k_cmsig,phot_k_mag_error,phot_k_snr,\
+   phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,\
    quality_flag,contaminated,glon,glat,rd_flg,\
-   color_j_h,color_h_k,color_j_k) \
+   color_j_h,color_h_ks,color_j_ks) \
   FROM '/data/catalog/2mass_gccat.mod.csv' \
   DELIMITER',' CSV HEADER;"
 ```

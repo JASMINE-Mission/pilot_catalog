@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS vvv_sources_orig (
   phot_h1_mag_error  FLOAT(10),
   phot_h2_mag        FLOAT(10),
   phot_h2_mag_error  FLOAT(10),
-  phot_k1_mag        FLOAT(10),
-  phot_k1_mag_error  FLOAT(10),
-  phot_k2_mag        FLOAT(10),
-  phot_k2_mag_error  FLOAT(10),
+  phot_ks1_mag       FLOAT(10),
+  phot_ks1_mag_error FLOAT(10),
+  phot_ks2_mag       FLOAT(10),
+  phot_ks2_mag_error FLOAT(10),
   pstar              FLOAT(10) NOT NULL,
   psaturated         FLOAT(10) NOT NULL
 );
@@ -52,8 +52,8 @@ SELECT
   COALESCE(phot_j2_mag_error,phot_j1_mag_error) AS phot_j_mag_error,
   COALESCE(phot_h2_mag,phot_h1_mag) AS phot_h_mag,
   COALESCE(phot_h2_mag_error,phot_h1_mag_error) AS phot_h_mag_error,
-  COALESCE(phot_k2_mag,phot_k1_mag) AS phot_k_mag,
-  COALESCE(phot_k2_mag_error,phot_k1_mag_error) AS phot_k_mag_error
+  COALESCE(phot_ks2_mag,phot_ks1_mag) AS phot_ks_mag,
+  COALESCE(phot_ks2_mag_error,phot_ks1_mag_error) AS phot_ks_mag_error
 FROM
   vvv_sources_orig;
 ```
@@ -82,10 +82,10 @@ SELECT
   h_1apermag4err as phot_h1_mag_error,
   h_2apermag4 as phot_h2_mag,
   h_2apermag4err as phot_h2_mag_error,
-  ks_1apermag4 as phot_k1_mag,
-  ks_1apermag4err as phot_k1_mag_error,
-  ks_2apermag4 as phot_k2_mag,
-  ks_2apermag4err as phot_k2_mag_error,
+  ks_1apermag4 as phot_ks1_mag,
+  ks_1apermag4err as phot_ks1_mag_error,
+  ks_2apermag4 as phot_ks2_mag,
+  ks_2apermag4err as phot_ks2_mag_error,
   pstar,
   psaturated
 FROM
@@ -121,7 +121,7 @@ psql -h localhost -p 15432 -d jasmine -U admin \
    phot_y1_mag,phot_y1_mag_error,phot_y2_mag,phot_y2_mag_error,\
    phot_j1_mag,phot_j1_mag_error,phot_j2_mag,phot_j2_mag_error,\
    phot_h1_mag,phot_h1_mag_error,phot_h2_mag,phot_h2_mag_error,\
-   phot_k1_mag,phot_k1_mag_error,phot_k2_mag,phot_k2_mag_error,\
+   phot_ks1_mag,phot_ks1_mag_error,phot_ks2_mag,phot_ks2_mag_error,\
    pstar,psaturated) \
   FROM '/data/catalog/vvv_bandmerged.csv' \
   DELIMITER',' CSV HEADER;"

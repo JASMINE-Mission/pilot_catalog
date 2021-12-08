@@ -16,8 +16,8 @@ CREATE INDEX IF NOT EXISTS sirius_sources_jmag
   ON sirius_sources (phot_j_mag);
 CREATE INDEX IF NOT EXISTS sirius_sources_hmag
   ON sirius_sources (phot_h_mag);
-CREATE INDEX IF NOT EXISTS sirius_sources_kmag
-  ON sirius_sources (phot_k_mag);
+CREATE INDEX IF NOT EXISTS sirius_sources_ksmag
+  ON sirius_sources (phot_ks_mag);
 CREATE INDEX IF NOT EXISTS sirius_sources_ra
   ON sirius_sources (ra);
 CREATE INDEX IF NOT EXISTS sirius_sources_dec

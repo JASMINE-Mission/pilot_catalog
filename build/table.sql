@@ -12,16 +12,16 @@ CREATE TABLE IF NOT EXISTS sirius_sources_orig (
   position_h_y       FLOAT(10),
   phot_h_mag         FLOAT(10),
   phot_h_mag_error   FLOAT(10),
-  position_k_x       FLOAT(10),
-  position_k_y       FLOAT(10),
-  phot_k_mag         FLOAT(10),
-  phot_k_mag_error   FLOAT(10),
+  position_ks_x      FLOAT(10),
+  position_ks_y      FLOAT(10),
+  phot_ks_mag        FLOAT(10),
+  phot_ks_mag_error  FLOAT(10),
   plate_name         VARCHAR(16) NOT NULL
 );
 
 
 CREATE TABLE IF NOT EXISTS tmass_sources (
-  source_id           BIGSERIAL PRIMARY KEY,
+  source_id          BIGSERIAL PRIMARY KEY,
   ra                 FLOAT(10) NOT NULL,
   dec                FLOAT(10) NOT NULL,
   designation        VARCHAR(32) NOT NULL,
@@ -33,10 +33,10 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
   phot_h_cmsig       FLOAT(10),
   phot_h_mag_error   FLOAT(10),
   phot_h_snr         FLOAT(10),
-  phot_k_mag         FLOAT(10),
-  phot_k_cmsig       FLOAT(10),
-  phot_k_mag_error   FLOAT(10),
-  phot_k_snr         FLOAT(10),
+  phot_ks_mag        FLOAT(10),
+  phot_ks_cmsig      FLOAT(10),
+  phot_ks_mag_error  FLOAT(10),
+  phot_ks_snr        FLOAT(10),
   quality_flag       VARCHAR(3) NOT NULL,
   contaminated       INT NOT NULL,
   glon               FLOAT(10) NOT NULL,
@@ -48,7 +48,34 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
 );
 
 
-CREATE TABLE IF NOT EXISTS vvv_sources_orig (
+CREATE TABLE IF NOT EXISTS virac_sources (
+  source_id         BIGINT PRIMARY KEY,
+  ra                FLOAT(10) NOT NULL,
+  dec               FLOAT(10) NOT NULL,
+  pm                FLOAT(10),
+  pmra              FLOAT(10),
+  pmra_error        FLOAT(10),
+  pmdec             FLOAT(10),
+  pmdec_error       FLOAT(10),
+  phot_z_flag       FLOAT(10),
+  phot_z_mag        FLOAT(10),
+  phot_z_mag_error  FLOAT(10),
+  phot_y_flag       FLOAT(10),
+  phot_y_mag        FLOAT(10),
+  phot_y_mag_error  FLOAT(10),
+  phot_j_flag       FLOAT(10),
+  phot_j_mag        FLOAT(10),
+  phot_j_mag_error  FLOAT(10),
+  phot_h_flag       FLOAT(10),
+  phot_h_mag        FLOAT(10),
+  phot_h_mag_error  FLOAT(10),
+  phot_ks_flag      FLOAT(10),
+  phot_ks_mag       FLOAT(10),
+  phot_ks_mag_error FLOAT(10)
+);
+
+
+CREATE TABLE IF NOT EXISTS vvv_merged_sources (
   source_id          BIGINT PRIMARY KEY,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
@@ -70,10 +97,10 @@ CREATE TABLE IF NOT EXISTS vvv_sources_orig (
   phot_h1_mag_error  FLOAT(10),
   phot_h2_mag        FLOAT(10),
   phot_h2_mag_error  FLOAT(10),
-  phot_k1_mag        FLOAT(10),
-  phot_k1_mag_error  FLOAT(10),
-  phot_k2_mag        FLOAT(10),
-  phot_k2_mag_error  FLOAT(10),
+  phot_ks1_mag       FLOAT(10),
+  phot_ks1_mag_error FLOAT(10),
+  phot_ks2_mag       FLOAT(10),
+  phot_ks2_mag_error FLOAT(10),
   pstar              FLOAT(10) NOT NULL,
   psaturated         FLOAT(10) NOT NULL
 );

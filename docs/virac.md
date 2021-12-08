@@ -28,8 +28,8 @@ SELECT
   Hdetflg as phot_h_flag,
   Hmag as phot_h_mag,
   e_Hmag as phot_h_mag_error,
-  Ksmag as phot_k_mag,
-  e_Ksmag as phot_k_mag_error
+  Ksmag as phot_ks_mag,
+  e_Ksmag as phot_ks_mag_error
 FROM
   "II/364/virac"
 WHERE

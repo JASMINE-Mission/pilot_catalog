@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS sirius_sources_orig (
   position_h_y       FLOAT(10),
   phot_h_mag         FLOAT(10),
   phot_h_mag_error   FLOAT(10),
-  position_k_x       FLOAT(10),
-  position_k_y       FLOAT(10),
-  phot_k_mag         FLOAT(10),
-  phot_k_mag_error   FLOAT(10),
+  position_ks_x      FLOAT(10),
+  position_ks_y      FLOAT(10),
+  phot_ks_mag        FLOAT(10),
+  phot_ks_mag_error  FLOAT(10),
   plate_name         VARCHAR(16) NOT NULL
 );
 ```
@@ -71,8 +71,8 @@ psql -h localhost -p 15432 -d jasmine -U admin \
   -c "COPY sirius_sources_orig \
   (glon,glat,ra,dec,position_j_x,position_j_y,phot_j_mag,\
    phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,\
-   phot_h_mag_error,position_k_x,position_k_y,phot_k_mag,\
-   phot_k_mag_error,plate_name) \
+   phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,\
+   phot_ks_mag_error,plate_name) \
   FROM '/data/catalog/sirius_WGCCatAll.csv' \
   DELIMITER',' CSV HEADER;"
 ```

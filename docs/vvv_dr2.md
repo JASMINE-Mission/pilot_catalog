@@ -20,8 +20,8 @@ SELECT
   e_Jmag3 as phot_j_mag_error,
   Hmag3 as phot_h_mag,
   e_Hmag3 as phot_h_mag_error,
-  Ksmag3 as phot_k_mag,
-  e_Ksmag3 as phot_k_mag_error
+  Ksmag3 as phot_ks_mag,
+  e_Ksmag3 as phot_ks_mag_error
 FROM
   "II/348/vvv2"
 WHERE

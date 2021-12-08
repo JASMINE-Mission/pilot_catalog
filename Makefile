@@ -3,8 +3,6 @@ VER=0.1
 OPTS=
 PSRC=build/extension.sql \
      build/table.sql \
-     build/view.sql \
-     build/index.sql \
      build/sirius.sql \
      build/merge.sql \
      build/user.sql
@@ -24,6 +22,9 @@ combined.sql: $(PSRC)
 initialize: combined.sql
 	$(PSQL) -f $<
 
+index: bulid/index.sql
+	$(PSQL) -f $<
+
 psql/sql/pg_dump.sql:
 	{ echo "BEGIN;"; $(PGDUMP) --section=pre-data; echo "COMMIT;"; } \
 	    | tr -d '\r' > psql/sql/pg_dump.sql
@@ -39,4 +40,4 @@ test:
 	mkdocs serve
 
 update:
-	mkdocs gh-pages
+	mkdocs gh-deploy
