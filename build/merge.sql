@@ -2,13 +2,13 @@ CREATE TEMP VIEW tmass_hw AS
   SELECT
     *,
     0.7829*phot_j_mag + 0.2171*phot_h_mag
-    - 0.0323*(phot_j_mag-phot_h_mag)**2
+    - 0.0323*(phot_j_mag-phot_h_mag)^2
     AS phot_hw_mag,
-    sqrt(0.035**2
-     + (0.7829*phot_j_mag_error)**2
-     + (0.2171*phot_h_mag_error)**2
-     + (0.0323*2*(phot_j_mag-phot_h_mag)*phot_j_mag_error)**2
-     + (0.0323*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)**2)
+    sqrt(0.035^2
+     + (0.7829*phot_j_mag_error)^2
+     + (0.2171*phot_h_mag_error)^2
+     + (0.0323*2*(phot_j_mag-phot_h_mag)*phot_j_mag_error)^2
+     + (0.0323*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)^2)
     AS phot_hw_mag_error
   FROM
     tmass_sources;
@@ -17,13 +17,13 @@ CREATE TEMP VIEW sirius_hw AS
   SELECT
     *,
     0.7796*phot_j_mag + 0.2204*phot_h_mag
-    - 0.0326*(phot_j_mag-phot_h_mag)**2
+    - 0.0326*(phot_j_mag-phot_h_mag)^2
     AS phot_hw_mag,
-    sqrt(0.063**2
-     + (0.7796*phot_j_mag_error)**2
-     + (0.2204*phot_h_mag_error)**2
-     + (0.0326*2*(phot_j_mag-phot_h_mag)*phot_j_mag_error)**2
-     + (0.0326*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)**2)
+    sqrt(0.063^2
+     + (0.7796*phot_j_mag_error)^2
+     + (0.2204*phot_h_mag_error)^2
+     + (0.0326*2*(phot_j_mag-phot_h_mag)*phot_j_mag_error)^2
+     + (0.0326*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)^2)
     AS phot_hw_mag_error
   FROM
     sirius_sources;
@@ -32,13 +32,13 @@ CREATE TEMP VIEW virac_hw AS
   SELECT
     *,
     0.7988*phot_j_mag + 0.2012*phot_h_mag
-    - 0.0315*(phot_j_mag-phot_h_mag)**2
+    - 0.0315*(phot_j_mag-phot_h_mag)^2
     AS phot_hw_mag,
-    sqrt(0.033**2
-     + (0.7988*phot_j_mag_error)**2
-     + (0.2012*phot_h_mag_error)**2
-     + (0.0315*2*(phot_j_mag-phot_h_mag)*phot_j_mag_error)**2
-     + (0.0315*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)**2)
+    sqrt(0.033^2
+     + (0.7988*phot_j_mag_error)^2
+     + (0.2012*phot_h_mag_error)^2
+     + (0.0315*2*(phot_j_mag-phot_h_mag)*phot_j_mag_error)^2
+     + (0.0315*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)^2)
     AS phot_hw_mag_error
   FROM
     virac_sources;
@@ -110,9 +110,9 @@ SELECT
   select_char(
     s.phot_ks_mag_error,t.phot_ks_mag_error,'S','2') AS phot_ks_mag_source
 FROM
-  tmass_sources AS t
+  tmass_hw AS t
 LEFT JOIN
-  sirius_sources AS s
+  sirius_hw AS s
 ON
   q3c_join(t.glon,t.glat,s.glon,s.glat,1./3600.)
   AND jhk_match(
@@ -161,9 +161,9 @@ SELECT
   select_char(
     s.phot_ks_mag_error,t.phot_ks_mag_error,'S','2') AS phot_ks_mag_source
 FROM
-  sirius_sources AS s
+  sirius_hw AS s
 LEFT JOIN
-  tmass_sources AS t
+  tmass_hw AS t
 ON
   q3c_join(s.glon,s.glat,t.glon,t.glat,1./3600.)
   AND jhk_match(
@@ -243,7 +243,7 @@ SELECT
     v.phot_ks_mag_error,t.phot_ks_mag_error,
     'V',t.phot_ks_mag_source) AS phot_ks_mag_source
 FROM
-  virac_sources AS v
+  virac_hw AS v
 LEFT JOIN
   temp_merged_sources AS t
 ON
@@ -292,7 +292,7 @@ SELECT
 FROM
   temp_merged_sources AS t
 LEFT JOIN
-  virac_sources AS v
+  virac_hw AS v
 ON
   q3c_join(t.glon,t.glat,v.glon,v.glat,1./3600.)
   AND jhk_match(
