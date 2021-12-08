@@ -47,7 +47,7 @@ WHERE
 
 ``` sql
 psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY sirius_sources_orig \
+  -c "COPY virac_sources_orig \
   (source_id,ra,dec,pm,pmra,pmra_error,pmdec,pmdec_error,\
    phot_z_flag,phot_z_mag,phot_z_error,\
    phot_y_flag,phot_y_mag,phot_y_error,\

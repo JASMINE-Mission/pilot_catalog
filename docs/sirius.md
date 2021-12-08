@@ -68,7 +68,7 @@ The converted CSV file is imported into the database by `COPY` command.
 
 ``` sh
 psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY virac_sources_orig \
+  -c "COPY sirius_sources_orig \
   (glon,glat,ra,dec,position_j_x,position_j_y,phot_j_mag,\
    phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,\
    phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,\
