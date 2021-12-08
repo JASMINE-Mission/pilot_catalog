@@ -324,6 +324,8 @@ CREATE INDEX IF NOT EXISTS merged_sources_radec
   ON merged_sources (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS merged_sources_glonglat
   ON merged_sources (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS merged_sources_hwmag
+  ON merged_sources (phot_hw_mag);
 CREATE INDEX IF NOT EXISTS merged_sources_jmag
   ON merged_sources (phot_j_mag);
 CREATE INDEX IF NOT EXISTS merged_sources_hmag
