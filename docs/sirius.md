@@ -74,7 +74,7 @@ psql -h localhost -p 15432 -d jasmine -U admin \
    phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,\
    phot_ks_mag_error,plate_name) \
   FROM '/data/catalog/sirius_WGCCatAll.csv' \
-  DELIMITER',' CSV HEADER;"
+  DELIMITER ',' CSV HEADER;"
 ```
 
 The original catalog contains objects outside of the nominal field. The `sirius_sources` is a view of `sirius_sources_orig`, where objects outside of the JASMINE field are removed.

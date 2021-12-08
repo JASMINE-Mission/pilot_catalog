@@ -43,3 +43,17 @@ WHERE
 ```
 
 [tapvizier]: http://tapvizier.u-strasbg.fr/adql/
+
+
+``` sql
+psql -h localhost -p 15432 -d jasmine -U admin \
+  -c "COPY sirius_sources_orig \
+  (source_id,ra,dec,pm,pmra,pmra_error,pmdec,pmdec_error,\
+   phot_z_flag,phot_z_mag,phot_z_error,\
+   phot_y_flag,phot_y_mag,phot_y_error,\
+   phot_j_flag,phot_j_mag,phot_j_error,\
+   phot_h_flag,phot_h_mag,phot_h_error,\
+   phot_ks_flag,phot_ks_mag,phot_ks_error) \
+  FROM '/data/catalog/vvv_virac_catalog.csv' \
+  DELIMITER ',' CSV HEADER;"
+```

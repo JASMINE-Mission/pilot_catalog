@@ -115,7 +115,7 @@ Then, the CSV file is imported to the database.
 
 ``` sh
 psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY vvv_sources_orig \
+  -c "COPY vvv_merged_sources \
   (source_id,glon,glat,ra,dec,\
    phot_z1_mag,phot_z1_mag_error,phot_z2_mag,phot_z2_mag_error,\
    phot_y1_mag,phot_y1_mag_error,phot_y2_mag,phot_y2_mag_error,\
