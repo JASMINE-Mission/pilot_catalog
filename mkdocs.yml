@@ -20,7 +20,7 @@ theme:
     primary: blue grey
     accent: deep orange
   features:
-    - navigation.instant
+    - navigation.sections
     - header.autohide
 
 extra_css:
@@ -55,6 +55,7 @@ markdown_extensions:
 
 nav:
   - Top Page: index.md
+  - merge.md
   - Source Catalogs:
     - SIRIUS: sirius.md
     - VIRAC: virac.md
@@ -62,7 +63,7 @@ nav:
     - Gaia EDR3: gaia_edr3.md
     - VVV DR2: vvv_dr2.md
     - VVV Band Merged: vvv_merged.md
-  - Merge Procedure: merge.md
-  - Project Page: http://jasmine.nao.ac.jp/
-  - Github Project: https://github.com/JASMINE-Mission
-  - Repository: https://github.com/xr0038/jasmine_catalog
+  - Links:
+    - Project Page: http://jasmine.nao.ac.jp/
+    - Github Project: https://github.com/JASMINE-Mission
+    - Repository: https://github.com/xr0038/jasmine_catalog
