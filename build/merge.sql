@@ -204,6 +204,17 @@ CREATE TABLE merged_sources (
   phot_ks_mag_source VARCHAR(1)
 );
 
+ALTER TABLE merged_sources ADD CONSTRAINT
+  FK_merged_tmass_id FOREIGN KEY (tmass_source_id)
+  REFERENCES tmass_sources (source_id) ON DELETE CASCADE;
+ALTER TABLE merged_sources ADD CONSTRAINT
+  FK_merged_sirius_id FOREIGN KEY  (sirius_source_id)
+  REFERENCES sirius_sources_orig (source_id) ON DELETE CASCADE;
+ALTER TABLE merged_sources ADD CONSTRAINT
+  FK_merged_vvv_id FOREIGN KEY (vvv_source_id)
+  REFERENCES virac_sources (source_id) ON DELETE CASCADE;
+
+
 INSERT INTO merged_sources
 SELECT
   nextval('merged_sources_source_id_seq') AS source_id,
