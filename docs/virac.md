@@ -2,6 +2,36 @@
 
 ## Schema
 
+``` sql
+CREATE TABLE IF NOT EXISTS virac_sources (
+  source_id         BIGINT PRIMARY KEY,
+  ra                FLOAT(10) NOT NULL,
+  dec               FLOAT(10) NOT NULL,
+  pm                FLOAT(10),
+  pmra              FLOAT(10),
+  pmra_error        FLOAT(10),
+  pmdec             FLOAT(10),
+  pmdec_error       FLOAT(10),
+  phot_z_flag       FLOAT(10),
+  phot_z_mag        FLOAT(10),
+  phot_z_mag_error  FLOAT(10),
+  phot_y_flag       FLOAT(10),
+  phot_y_mag        FLOAT(10),
+  phot_y_mag_error  FLOAT(10),
+  phot_j_flag       FLOAT(10),
+  phot_j_mag        FLOAT(10),
+  phot_j_mag_error  FLOAT(10),
+  phot_h_flag       FLOAT(10),
+  phot_h_mag        FLOAT(10),
+  phot_h_mag_error  FLOAT(10),
+  phot_ks_flag      FLOAT(10),
+  phot_ks_mag       FLOAT(10),
+  phot_ks_mag_error FLOAT(10),
+  glon              FLOAT(10) NOT NULL,
+  glat              FLOAT(10) NOT NULL
+);
+```
+
 ## Source
 [URL][tapvizier]
 
