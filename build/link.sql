@@ -19,7 +19,7 @@ INSERT INTO link_edr3
 SELECT
   m.source_id AS merged_source_id,
   g.source_id AS edr3_source_id,
-  q3c_dist(m.ra,m.dec,g.ra,g.dec) AS distance
+  3600.0*q3c_dist(m.ra,m.dec,g.ra,g.dec) AS distance
 FROM
   edr3_sources AS g
 JOIN
