@@ -6,6 +6,13 @@ CREATE TABLE link_edr3 (
   distance         FLOAT(10) NOT NULL
 );
 
+ALTER TABLE link_edr3 ADD CONSTRAINT
+  FK_link_edr3_0 FOREIGN KEY (merged_source_id)
+  REFERENCES merged_sources (source_id) ON DELETE CASCADE;
+ALTER TABLE link_edr3 ADD CONSTRAINT
+  FK_link_edr3_1 FOREIGN KEY (edr3_source_id)
+  REFERENCES edr3_sources (source_id) ON DELETE CASCADE;
+
 
 INSERT INTO link_edr3
   (merged_source_id,edr3_source_id,distance)
