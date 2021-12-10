@@ -10,7 +10,7 @@ PSQL=psql -h localhost -p 15432 -d jasmine -U admin
 PGDUMP=docker-compose exec catalog pg_dump -d jasmine -U admin
 
 .INTERMEDIATE: combined.sql
-.PHONY: build-psql initialize dump
+.PHONY: build-psql initialize dump index link
 
 build-psql:
 	docker build $(OPTS) -t $(IMAGE):$(VER) psql
@@ -23,6 +23,9 @@ initialize: combined.sql
 	$(PSQL) -f $<
 
 index: bulid/index.sql
+	$(PSQL) -f $<
+
+link: build/link.sql
 	$(PSQL) -f $<
 
 psql/sql/pg_dump.sql:
