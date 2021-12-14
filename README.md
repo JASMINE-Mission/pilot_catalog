@@ -1,4 +1,7 @@
-# JASMINE master source catalog
+# JASMINE source catalog
+
+JASMINE source catalog contains infrared point sources around the Galactic center region. The catalog involves 2MASS Point Source Catalog, SIRIUS Galactic Center Catalog, and VVV Infrared Astrometric Catalogue.
+
 
 ## Schema
 
