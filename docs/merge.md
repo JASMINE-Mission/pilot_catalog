@@ -75,16 +75,16 @@ The merged catalog contains 2789173 sources in the JASMINE field. The number of 
 
 The histogram of the _J_-band magnitudes is described below. The profile suggests that the sources with $m_J < 17$ are complete. However, the completeness limit should be investigated quantitatively.
 
-![J-band histogram in Jasmine Field](/image/histogram_j-band_jasmine_field.png)
+![J-band histogram in Jasmine Field](../image/histogram_j-band_jasmine_field.png)
 
 
 The histogram of the _Hw_-band magnitudes is illustrated. The completeness limit is possibly about 16.5 mag. Note that this limit should be evaluated in a proper way.
 
-![Hw-band histogram in Jasmine Field](/image/histogram_hw-band_jasmine_field.png)
+![Hw-band histogram in Jasmine Field](../image/histogram_hw-band_jasmine_field.png)
 
 The distribution of the sources brighter than 14.5 mag in the _Hw_-band is illustrated. The total number of the sources are 117230. The number is consistent with the original estimate of the JASMINE target sources.
 
-![Distribution of the sources with Hw < 14.5](/image/jasmine_field.png)
+![Distribution of the sources with Hw < 14.5](../image/jasmine_field.png)
 
 ## Merge procedure
 
