@@ -30,9 +30,6 @@ extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
-plugins:
-  - img2fig
-
 markdown_extensions:
   - toc:
       toc_depth: 2
@@ -42,6 +39,7 @@ markdown_extensions:
   - sane_lists
   - meta
   - attr_list
+  - markdown_captions
   - pymdownx.details
   - pymdownx.critic
   - pymdownx.highlight
