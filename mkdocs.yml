@@ -53,7 +53,10 @@ markdown_extensions:
 
 nav:
   - Top Page: index.md
-  - merge.md
+  - Install Guide:
+    - build.md
+    - download.md
+    - merge.md
   - Source Catalogs:
     - SIRIUS: sirius.md
     - VIRAC: virac.md
