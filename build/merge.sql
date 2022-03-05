@@ -41,7 +41,9 @@ CREATE TEMP VIEW virac_hw AS
      + (0.0315*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)^2)
     AS phot_hw_mag_error
   FROM
-    virac_sources;
+    virac_sources
+  WHERE
+    phot_ks_mag > 12.0;
 
 
 CREATE TEMP TABLE temp_merged_sources (
