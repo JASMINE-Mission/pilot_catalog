@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS sirius_sources_orig (
+CREATE TABLE IF NOT EXISTS sirius_sources (
   source_id          BIGSERIAL PRIMARY KEY,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
   phot_ks_mag_error  FLOAT(10),
   phot_ks_snr        FLOAT(10),
   quality_flag       VARCHAR(3) NOT NULL,
-  contaminated       INT NOT NULL,
+  contaminated       INTEGER NOT NULL,
   glon               FLOAT(10) NOT NULL,
   glat               FLOAT(10) NOT NULL,
   rd_flg             VARCHAR(3) NOT NULL,
@@ -48,32 +48,27 @@ CREATE TABLE IF NOT EXISTS tmass_sources (
 );
 
 
-CREATE TABLE IF NOT EXISTS virac_sources (
+CREATE TABLE IF NOT EXISTS vvv_sources (
   source_id         BIGINT PRIMARY KEY,
+  glon              FLOAT(10) NOT NULL,
+  glat              FLOAT(10) NOT NULL,
   ra                FLOAT(10) NOT NULL,
   dec               FLOAT(10) NOT NULL,
-  pm                FLOAT(10),
-  pmra              FLOAT(10),
-  pmra_error        FLOAT(10),
-  pmdec             FLOAT(10),
-  pmdec_error       FLOAT(10),
-  phot_z_flag       FLOAT(10),
+  phot_z_flag       INTEGER,
   phot_z_mag        FLOAT(10),
   phot_z_mag_error  FLOAT(10),
-  phot_y_flag       FLOAT(10),
+  phot_y_flag       INTEGER,
   phot_y_mag        FLOAT(10),
   phot_y_mag_error  FLOAT(10),
-  phot_j_flag       FLOAT(10),
+  phot_j_flag       INTEGER,
   phot_j_mag        FLOAT(10),
   phot_j_mag_error  FLOAT(10),
-  phot_h_flag       FLOAT(10),
+  phot_h_flag       INTEGER,
   phot_h_mag        FLOAT(10),
   phot_h_mag_error  FLOAT(10),
-  phot_ks_flag      FLOAT(10),
+  phot_ks_flag      INTEGER,
   phot_ks_mag       FLOAT(10),
-  phot_ks_mag_error FLOAT(10),
-  glon              FLOAT(10) NOT NULL,
-  glat              FLOAT(10) NOT NULL
+  phot_ks_mag_error FLOAT(10)
 );
 
 

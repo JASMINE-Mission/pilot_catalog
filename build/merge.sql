@@ -28,7 +28,7 @@ CREATE TEMP VIEW sirius_hw AS
   FROM
     sirius_sources;
 
-CREATE TEMP TABLE virac_hw AS
+CREATE TEMP TABLE vvv_hw AS
   SELECT
     *,
     0.7988*phot_j_mag + 0.2012*phot_h_mag
@@ -41,14 +41,14 @@ CREATE TEMP TABLE virac_hw AS
      + (0.0315*2*(phot_j_mag-phot_h_mag)*phot_h_mag_error)^2)
     AS phot_hw_mag_error
   FROM
-    virac_sources
+    vvv_sources
   WHERE
-    phot_ks_mag > 13.0;
+    phot_j_flag = 0 AND phot_h_flag = 0;
 
-CREATE INDEX IF NOT EXISTS temp_virac_hw_glonglat
-  ON virac_hw (q3c_ang2ipix(glon,glat));
-CLUSTER temp_virac_hw_glonglat ON virac_hw;
-ANALYZE virac_hw;
+CREATE INDEX IF NOT EXISTS temp_vvv_hw_glonglat
+  ON vvv_hw (q3c_ang2ipix(glon,glat));
+CLUSTER temp_vvv_hw_glonglat ON vvv_hw;
+ANALYZE vvv_hw;
 
 
 CREATE TEMP TABLE temp_merged_sources (
@@ -219,7 +219,7 @@ ALTER TABLE merged_sources ADD CONSTRAINT
   REFERENCES sirius_sources_orig (source_id) ON DELETE CASCADE;
 ALTER TABLE merged_sources ADD CONSTRAINT
   FK_merged_vvv_id FOREIGN KEY (vvv_source_id)
-  REFERENCES virac_sources (source_id) ON DELETE CASCADE;
+  REFERENCES vvv_sources (source_id) ON DELETE CASCADE;
 
 
 INSERT INTO merged_sources
@@ -270,7 +270,7 @@ SELECT
     v.phot_ks_mag_error,t.phot_ks_mag_error,
     'V',t.phot_ks_mag_source) AS phot_ks_mag_source
 FROM
-  virac_hw AS v
+  vvv_hw AS v
 LEFT JOIN
   temp_merged_sources AS t
 ON
@@ -328,7 +328,7 @@ SELECT
 FROM
   temp_merged_sources AS t
 LEFT JOIN
-  virac_hw AS v
+  vvv_hw AS v
 ON
   q3c_join(t.glon,t.glat,v.glon,v.glat,1./3600.)
   AND jhk_match(
