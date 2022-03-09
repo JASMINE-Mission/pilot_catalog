@@ -28,7 +28,7 @@ CREATE TEMP VIEW sirius_hw AS
   FROM
     sirius_sources;
 
-CREATE TEMP VIEW virac_hw AS
+CREATE TEMP TABLE virac_hw AS
   SELECT
     *,
     0.7988*phot_j_mag + 0.2012*phot_h_mag
@@ -43,7 +43,12 @@ CREATE TEMP VIEW virac_hw AS
   FROM
     virac_sources
   WHERE
-    phot_ks_mag > 12.0;
+    phot_ks_mag > 13.0;
+
+CREATE INDEX IF NOT EXISTS temp_virac_hw_glonglat
+  ON virac_hw (q3c_ang2ipix(glon,glat));
+CLUSTER temp_virac_hw_glonglat ON virac_hw;
+ANALYZE virac_hw;
 
 
 CREATE TEMP TABLE temp_merged_sources (
