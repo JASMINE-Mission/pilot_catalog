@@ -1,7 +1,6 @@
 name: Build Document with MkDocs
 on:
   push:
-  pull_request:
 
 
 jobs:
