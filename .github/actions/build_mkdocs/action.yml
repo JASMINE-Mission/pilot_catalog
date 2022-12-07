@@ -10,7 +10,8 @@ runs:
       shell: bash
       run: |
         pip install mkdocs mkdocs-bootstrap4 \
-                    mkdocs-material mkdocs-material-extensions
+                    mkdocs-material mkdocs-material-extensions \
+                    markdown-captions fontawesome-markdown
     - name: Build Document using MkDocs
       shell: bash
       run: |
