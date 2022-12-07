@@ -9,9 +9,7 @@ runs:
     - name: Install Requirements
       shell: bash
       run: |
-        pip install mkdocs mkdocs-bootstrap4 \
-                    mkdocs-material mkdocs-material-extensions \
-                    markdown-captions fontawesome-markdown
+        pip install -r requirements.txt
     - name: Build Document using MkDocs
       shell: bash
       run: |
