@@ -1,14 +1,14 @@
-site_name: Jasmine Input Catalog
+site_name: Jasmine Pilot Study Catalog
 site_url:
 site_author: Ryou Ohsawa
 site_description:
-  Jasmine Input Catalog.
+  Jasmine Pilot Study Catalog.
 
 repo_name:
-repo_url: https://github.com/xr0038/jasmine_catalog
+repo_url: https://github.com/JASMINE-Mission/pilot_catalog
 edit_uri: ""
 
-copyright: Ryou Ohsawa 2021
+copyright: Ryou Ohsawa 2022
 
 theme:
   name: "material"
@@ -59,10 +59,10 @@ nav:
     - merge.md
   - Source Catalogs:
     - SIRIUS: sirius.md
-    - VIRAC: virac.md
+    - VVV(DR2): vvv_dr2.md
     - 2MASS: 2mass.md
-    - Gaia EDR3: gaia_edr3.md
+    - Gaia EDR3: gaia_dr3.md
   - Links:
     - Project Page: http://jasmine.nao.ac.jp/
     - Github Project: https://github.com/JASMINE-Mission
-    - Repository: https://github.com/xr0038/jasmine_catalog
+    - Repository: https://github.com/JASMINE-Mission/pilot_catalog
