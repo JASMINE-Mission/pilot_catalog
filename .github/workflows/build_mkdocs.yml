@@ -1,7 +1,7 @@
-name: Build Documents with MkDocs
+name: Build Document with MkDocs
 on:
-  push
-  pull_requests
+  push:
+  pull_request:
 
 
 jobs:
@@ -15,5 +15,5 @@ jobs:
        with:
          python-version: 3.9
 
-     - name: Build Documents
+     - name: Build Document
        uses: ./.github/actions/build_mkdocs
