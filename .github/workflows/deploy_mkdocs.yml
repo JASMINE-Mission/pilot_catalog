@@ -1,4 +1,4 @@
-name: Build and Deploy Document to Github Pages
+name: Deploy Document to Github Pages
 on:
   push:
     branches: ["develop"]
@@ -18,4 +18,4 @@ jobs:
        uses: ./.github/actions/build_mkdocs
 
      - name: Deploy to GitHub Pages
-       uses: ./.github/actions/deploy_mkdocs
+       uses: ./.github/actions/deploy_ghpages
