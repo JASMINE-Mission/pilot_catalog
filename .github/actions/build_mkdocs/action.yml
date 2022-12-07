@@ -1,0 +1,18 @@
+name:
+  Build Document
+description:
+  Build a static document using MkDocs.
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Requirements
+      shell: bash
+      run: |
+        pip install mkdocs mkdocs-bootstrap4 \
+                    mkdocs-material mkdocs-material-extensions \
+                    markdown-captions fontawesome-markdown
+    - name: Build Document using MkDocs
+      shell: bash
+      run: |
+        mkdocs build

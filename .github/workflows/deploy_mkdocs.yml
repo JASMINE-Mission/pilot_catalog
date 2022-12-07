@@ -1,0 +1,21 @@
+name: Build and Deploy Document to Github Pages
+on:
+  push:
+    branches: ["develop"]
+
+jobs:
+  deployt-ghpages:
+    runs-on: ubuntu-latest
+
+    steps:
+     - uses: actions/checkout@v3
+     - name: Setup Python 3.9
+       uses: actions/setup-python@v3
+       with:
+         python-version: 3.9
+
+     - name: Build Document
+       uses: ./.github/actions/build_mkdocs
+
+     - name: Deploy to GitHub Pages
+       uses: ./.github/actions/deploy_mkdocs

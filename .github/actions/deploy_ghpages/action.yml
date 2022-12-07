@@ -1,0 +1,12 @@
+name:
+  Deploy Document
+description:
+  Deploy a MkDocs document to GitHub Pages
+
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy to GitHub Pages
+      shell: bash
+      run: |
+        mkdocs gh-deploy
