@@ -9,4 +9,4 @@ runs:
     - name: Deploy to GitHub Pages
       shell: bash
       run: |
-        mkdocs gh-deploy
+        mkdocs gh-deploy --force -m "Update by GitHub Actions"
