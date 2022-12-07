@@ -1,0 +1,8 @@
+runs:
+  using: "Composite"
+  steps:
+    - name: Build Package
+      run: |
+        pip install mkdocs mkdocs-bootstrap4 \
+                    mkdocs-material mkdocs-material-extensions
+        mkdocs build
