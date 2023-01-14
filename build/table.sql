@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
   phot_rp_mag        FLOAT(10),
   phot_rp_mag_error  FLOAT(10),
   phot_variable_flag VARCHAR(32),
-  non_single_star    INT(1),
+  non_single_star    INTEGER,
   distance           FLOAT(10),
   distance_lower     FLOAT(10),
   distance_upper     FLOAT(10),
