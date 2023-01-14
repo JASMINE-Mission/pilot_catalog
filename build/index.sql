@@ -1,23 +1,23 @@
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_radec
-  ON sirius_sources_orig (q3c_ang2ipix(ra,dec));
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_glonglat
-  ON sirius_sources_orig (q3c_ang2ipix(glon,glat));
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_jmag
-  ON sirius_sources_orig (phot_j_mag);
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_hmag
-  ON sirius_sources_orig (phot_h_mag);
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_ksmag
-  ON sirius_sources_orig (phot_ks_mag);
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_ra
-  ON sirius_sources_orig (ra);
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_dec
-  ON sirius_sources_orig (dec);
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_glon
-  ON sirius_sources_orig (glon);
-CREATE INDEX IF NOT EXISTS sirius_sources_orig_glat
-  ON sirius_sources_orig (glat);
-CLUSTER sirius_sources_orig_glonglat ON sirius_sources_orig;
-ANALYZE sirius_sources_orig;
+CREATE INDEX IF NOT EXISTS sirius_sources_radec
+  ON sirius_sources (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS sirius_sources_glonglat
+  ON sirius_sources (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS sirius_sources_jmag
+  ON sirius_sources (phot_j_mag);
+CREATE INDEX IF NOT EXISTS sirius_sources_hmag
+  ON sirius_sources (phot_h_mag);
+CREATE INDEX IF NOT EXISTS sirius_sources_ksmag
+  ON sirius_sources (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS sirius_sources_ra
+  ON sirius_sources (ra);
+CREATE INDEX IF NOT EXISTS sirius_sources_dec
+  ON sirius_sources (dec);
+CREATE INDEX IF NOT EXISTS sirius_sources_glon
+  ON sirius_sources (glon);
+CREATE INDEX IF NOT EXISTS sirius_sources_glat
+  ON sirius_sources (glat);
+CLUSTER sirius_sources_glonglat ON sirius_sources;
+ANALYZE sirius_sources;
 
 
 CREATE INDEX IF NOT EXISTS tmass_sources_radec
@@ -62,6 +62,28 @@ CREATE INDEX IF NOT EXISTS virac_sources_glat
   ON virac_sources (glat);
 CLUSTER virac_sources_glonglat ON virac_sources;
 ANALYZE virac_sources;
+
+
+CREATE INDEX IF NOT EXISTS vvv_sources_radec
+  ON vvv_sources (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS vvv_sources_glonglat
+  ON vvv_sources (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS vvv_sources_jmag
+  ON vvv_sources (phot_j_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_hmag
+  ON vvv_sources (phot_h_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_ksmag
+  ON vvv_sources (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_ra
+  ON vvv_sources (ra);
+CREATE INDEX IF NOT EXISTS vvv_sources_dec
+  ON vvv_sources (dec);
+CREATE INDEX IF NOT EXISTS vvv_sources_glon
+  ON vvv_sources (glon);
+CREATE INDEX IF NOT EXISTS vvv_sources_glat
+  ON vvv_sources (glat);
+CLUSTER vvv_sources_glonglat ON vvv_sources;
+ANALYZE vvv_sources;
 
 
 CREATE INDEX IF NOT EXISTS edr3_sources_radec
