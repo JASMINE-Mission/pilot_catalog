@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
 
 ## Source
 
-The Gaia EDR3 catalog is obtained from the [Gaia Archive][gaia]. The advanced query mode is used to extract the source around the Galactic center. The extraction constrains are as follows:
+The Gaia DR3 catalog is obtained from the [Gaia Archive][gaia]. The advanced query mode is used to extract the source around the Galactic center. The extraction constrains are as follows:
 
 - Galactic longitude between -2.5 and 1.2 degree.
 - Galactic latitude between -1.2 and 1.2 degree.

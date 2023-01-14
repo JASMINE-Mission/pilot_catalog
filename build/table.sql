@@ -92,3 +92,41 @@ CREATE TABLE IF NOT EXISTS edr3_sources (
   phot_rp_mag        FLOAT(10),
   phot_rp_mag_error  FLOAT(10)
 );
+
+
+CREATE TABLE IF NOT EXISTS gdr3_sources (
+  source_id          BIGINT PRIMARY KEY,
+  ra                 FLOAT(10) NOT NULL,
+  dec                FLOAT(10) NOT NULL,
+  glon               FLOAT(10) NOT NULL,
+  glat               FLOAT(10) NOT NULL,
+  elon               FLOAT(10) NOT NULL,
+  elat               FLOAT(10) NOT NULL,
+  parallax           FLOAT(10),
+  parallax_error     FLOAT(10),
+  ruwe               FLOAT(10),
+  pm                 FLOAT(10),
+  pmra               FLOAT(10),
+  pmra_error         FLOAT(10),
+  pmdec              FLOAT(10),
+  pmdec_error        FLOAT(10),
+  rv                 FLOAT(10),
+  rv_error           FLOAT(10),
+  phot_g_mag         FLOAT(10),
+  phot_g_mag_error   FLOAT(10),
+  phot_bp_mag        FLOAT(10),
+  phot_bp_mag_error  FLOAT(10),
+  phot_rp_mag        FLOAT(10),
+  phot_rp_mag_error  FLOAT(10),
+  phot_variable_flag VARCHAR(32),
+  non_single_star    INT(1),
+  distance           FLOAT(10),
+  distance_lower     FLOAT(10),
+  distance_upper     FLOAT(10),
+  ag                 FLOAT(10),
+  ag_lower           FLOAT(10),
+  ag_upper           FLOAT(10),
+  a0                 FLOAT(10),
+  a0_lower           FLOAT(10),
+  a0_upper           FLOAT(10)
+);
