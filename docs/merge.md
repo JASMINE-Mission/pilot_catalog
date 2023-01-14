@@ -32,18 +32,18 @@ CREATE TABLE merged_sources (
 );
 ```
 
-The `link_edr3` table is prepared for a cross match with the Gaia EDR3 catalog. The structure of the table is as follows. Use this table as a link to retrieve the Gaia EDR3 sources around sources in the merged catalog.
+The `link_gdr3` table is prepared for a cross match with the Gaia DR3 catalog. The structure of the table is as follows. Use this table as a link to retrieve the Gaia DR3 sources around sources in the merged catalog.
 
 ``` sql
-CREATE TABLE link_edr3 (
+CREATE TABLE link_gdr3 (
   link_id          BIGSERIAL PRIMARY KEY,   --- unique link ID
   merged_source_id BIGINT NOT NULL,         --- source ID in merged table
-  edr3_source_id   BIGINT NOT NULL,         --- source ID in Gaia EDR3 table
+  gdr3_source_id   BIGINT NOT NULL,         --- source ID in Gaia DR3 table
   distance         FLOAT(10) NOT NULL       --- distance in arcseconds
 );
 ```
 
-Select sources from the merged catalog. Then, the selected sources are linked to objects in the Gaia EDR3 catalog. The following query extracts the sources in the JASMINE field. The data of the Gaia EDR3 catalog are attached if matched.
+Select sources from the merged catalog. Then, the selected sources are linked to objects in the Gaia DR3 catalog. The following query extracts the sources in the JASMINE field. The data of the Gaia DR3 catalog are attached if matched.
 
 ``` sql
 SELECT
@@ -54,9 +54,9 @@ FROM (
   WHERE within_jasmine_field(glon,glat)
 ) as m
 LEFT JOIN
-  link_edr3 as l ON m.source_id = l.merged_source_id
+  link_gdr3 as l ON m.source_id = l.merged_source_id
 LEFT JOIN
-  edr3_sources as e ON l.edr3_source_id = e.source_id;
+  gdr3_sources as e ON l.gdr3_source_id = e.source_id;
 ```
 
 

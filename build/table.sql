@@ -72,28 +72,6 @@ CREATE TABLE IF NOT EXISTS vvv_sources (
 );
 
 
-CREATE TABLE IF NOT EXISTS edr3_sources (
-  source_id          BIGINT PRIMARY KEY,
-  ra                 FLOAT(10) NOT NULL,
-  dec                FLOAT(10) NOT NULL,
-  glon               FLOAT(10) NOT NULL,
-  glat               FLOAT(10) NOT NULL,
-  parallax           FLOAT(10),
-  parallax_error     FLOAT(10),
-  pm                 FLOAT(10),
-  pmra               FLOAT(10),
-  pmra_error         FLOAT(10),
-  pmdec              FLOAT(10),
-  pmdec_error        FLOAT(10),
-  phot_g_mag         FLOAT(10),
-  phot_g_mag_error   FLOAT(10),
-  phot_bp_mag        FLOAT(10),
-  phot_bp_mag_error  FLOAT(10),
-  phot_rp_mag        FLOAT(10),
-  phot_rp_mag_error  FLOAT(10)
-);
-
-
 CREATE TABLE IF NOT EXISTS gdr3_sources (
   source_id          BIGINT PRIMARY KEY,
   ra                 FLOAT(10) NOT NULL,
