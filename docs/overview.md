@@ -1,6 +1,5 @@
-# Merged Catalog
-
-## Catalog Overview
+# Catalog Overview
+## Catalog Schema
 
 The structure of the merged catalog is as follows. The catalog contains the coordinates (Galactic and ICRS) and _Hw_-, _J_-, _H_-, and _Ks_-band magnitudes. Note that the Galactic Longitude is wrapped around 180&deg;. Thus, the range of `glon` is (-180&deg;, 180&deg;). Indexes are created for all the coordinates and magnitudes. The arrangement of the records are optimized for searching by (`glon`, `glat`). Use [`q3c` functions][q3c] for efficient search by coordinates.
 

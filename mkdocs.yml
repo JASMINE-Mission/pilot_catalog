@@ -54,13 +54,12 @@ markdown_extensions:
 
 nav:
   - Top Page: index.md
+  - Overview: overview.md
   - Install Guide:
     - build.md
-    - download.md
-    - merge.md
   - Source Catalogs:
     - SIRIUS: sirius.md
-    - VVV(DR2): vvv_dr2.md
+    - VVV (DR2): vvv_dr2.md
     - 2MASS: 2mass.md
     - Gaia EDR3: gaia_dr3.md
   - Links:
