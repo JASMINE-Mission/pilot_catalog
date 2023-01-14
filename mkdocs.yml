@@ -22,6 +22,7 @@ theme:
   features:
     - navigation.sections
     - header.autohide
+    - content.code.copy
 
 extra_css:
   - css/config_local.css
