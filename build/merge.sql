@@ -124,7 +124,7 @@ ON
   q3c_join(t.glon,t.glat,s.glon,s.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,s.phot_j_mag,t.phot_h_mag,s.phot_h_mag,
-    t.phot_ks_mag,s.phot_ks_mag,2.0)
+    t.phot_ks_mag,s.phot_ks_mag,2.0::FLOAT8)
 UNION
 SELECT
   nextval('temp_merged_sources_source_id_seq') AS source_id,
@@ -175,7 +175,7 @@ ON
   q3c_join(s.glon,s.glat,t.glon,t.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,s.phot_j_mag,t.phot_h_mag,s.phot_h_mag,
-    t.phot_ks_mag,s.phot_ks_mag,2.0)
+    t.phot_ks_mag,s.phot_ks_mag,2.0::FLOAT8)
 WHERE
   t.source_id IS NULL;
 
@@ -216,7 +216,7 @@ ALTER TABLE merged_sources ADD CONSTRAINT
   REFERENCES tmass_sources (source_id) ON DELETE CASCADE;
 ALTER TABLE merged_sources ADD CONSTRAINT
   FK_merged_sirius_id FOREIGN KEY  (sirius_source_id)
-  REFERENCES sirius_sources_orig (source_id) ON DELETE CASCADE;
+  REFERENCES sirius_sources (source_id) ON DELETE CASCADE;
 ALTER TABLE merged_sources ADD CONSTRAINT
   FK_merged_vvv_id FOREIGN KEY (vvv_source_id)
   REFERENCES vvv_sources (source_id) ON DELETE CASCADE;
@@ -277,7 +277,7 @@ ON
   q3c_join(v.glon,v.glat,t.glon,t.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,v.phot_j_mag,t.phot_h_mag,v.phot_h_mag,
-    t.phot_ks_mag,v.phot_ks_mag,2.0)
+    t.phot_ks_mag,v.phot_ks_mag,2.0::FLOAT8)
 UNION
 SELECT
   nextval('merged_sources_source_id_seq') AS source_id,
@@ -333,7 +333,7 @@ ON
   q3c_join(t.glon,t.glat,v.glon,v.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,v.phot_j_mag,t.phot_h_mag,v.phot_h_mag,
-    t.phot_ks_mag,v.phot_ks_mag,2.0)
+    t.phot_ks_mag,v.phot_ks_mag,2.0::FLOAT8)
 WHERE
   v.source_id IS NULL;
 
