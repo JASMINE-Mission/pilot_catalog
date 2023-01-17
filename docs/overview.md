@@ -1,6 +1,5 @@
-# Merged Catalog
-
-## Catalog Overview
+# Catalog Overview
+## Catalog Schema
 
 The structure of the merged catalog is as follows. The catalog contains the coordinates (Galactic and ICRS) and _Hw_-, _J_-, _H_-, and _Ks_-band magnitudes. Note that the Galactic Longitude is wrapped around 180&deg;. Thus, the range of `glon` is (-180&deg;, 180&deg;). Indexes are created for all the coordinates and magnitudes. The arrangement of the records are optimized for searching by (`glon`, `glat`). Use [`q3c` functions][q3c] for efficient search by coordinates.
 
@@ -32,18 +31,18 @@ CREATE TABLE merged_sources (
 );
 ```
 
-The `link_edr3` table is prepared for a cross match with the Gaia EDR3 catalog. The structure of the table is as follows. Use this table as a link to retrieve the Gaia EDR3 sources around sources in the merged catalog.
+The `link_gdr3` table is prepared for a cross match with the Gaia DR3 catalog. The structure of the table is as follows. Use this table as a link to retrieve the Gaia DR3 sources around sources in the merged catalog.
 
 ``` sql
-CREATE TABLE link_edr3 (
+CREATE TABLE link_gdr3 (
   link_id          BIGSERIAL PRIMARY KEY,   --- unique link ID
   merged_source_id BIGINT NOT NULL,         --- source ID in merged table
-  edr3_source_id   BIGINT NOT NULL,         --- source ID in Gaia EDR3 table
+  gdr3_source_id   BIGINT NOT NULL,         --- source ID in Gaia DR3 table
   distance         FLOAT(10) NOT NULL       --- distance in arcseconds
 );
 ```
 
-Select sources from the merged catalog. Then, the selected sources are linked to objects in the Gaia EDR3 catalog. The following query extracts the sources in the JASMINE field. The data of the Gaia EDR3 catalog are attached if matched.
+Select sources from the merged catalog. Then, the selected sources are linked to objects in the Gaia DR3 catalog. The following query extracts the sources in the JASMINE field. The data of the Gaia DR3 catalog are attached if matched.
 
 ``` sql
 SELECT
@@ -54,9 +53,9 @@ FROM (
   WHERE within_jasmine_field(glon,glat)
 ) as m
 LEFT JOIN
-  link_edr3 as l ON m.source_id = l.merged_source_id
+  link_gdr3 as l ON m.source_id = l.merged_source_id
 LEFT JOIN
-  edr3_sources as e ON l.edr3_source_id = e.source_id;
+  gdr3_sources as e ON l.gdr3_source_id = e.source_id;
 ```
 
 
@@ -75,16 +74,16 @@ The merged catalog contains 2789173 sources in the JASMINE field. The number of 
 
 The histogram of the _J_-band magnitudes is described below. The profile suggests that the sources with $m_J < 17$ are complete. However, the completeness limit should be investigated quantitatively.
 
-![J-band histogram in Jasmine Field](../image/histogram_j-band_jasmine_field.png)
+![J-band histogram in Jasmine Field](./image/histogram_j-band_jasmine_field.png)
 
 
 The histogram of the _Hw_-band magnitudes is illustrated. The completeness limit is possibly about 16.5 mag. Note that this limit should be evaluated in a proper way.
 
-![Hw-band histogram in Jasmine Field](../image/histogram_hw-band_jasmine_field.png)
+![Hw-band histogram in Jasmine Field](./image/histogram_hw-band_jasmine_field.png)
 
 The distribution of the sources brighter than 14.5 mag in the _Hw_-band is illustrated. The total number of the sources are 117230. The number is consistent with the original estimate of the JASMINE target sources.
 
-![Distribution of the sources with Hw < 14.5](../image/jasmine_field.png)
+![Distribution of the sources with Hw < 14.5](./image/jasmine_field.png)
 
 ## Merge procedure
 

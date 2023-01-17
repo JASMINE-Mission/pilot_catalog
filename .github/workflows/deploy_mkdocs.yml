@@ -14,6 +14,7 @@ jobs:
        uses: actions/setup-python@v3
        with:
          python-version: 3.9
+         lfs: true
 
      - name: Build Document
        uses: ./.github/actions/build_mkdocs

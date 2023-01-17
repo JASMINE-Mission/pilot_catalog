@@ -82,22 +82,5 @@ CREATE OR REPLACE FUNCTION within_jasmine_field(
   FLOAT) -- Galactic Latitude
 RETURNS BOOLEAN AS $$
   SELECT
-    q3c_radial_query($1,$2,0.0,0.0,0.7)
-    OR (($1 BETWEEN -2.0 AND 0.0) AND ($2 BETWEEN 0.0 AND 0.3))
-$$ LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION within_jasmine_region_1(
-  FLOAT, -- Galactic Longitude
-  FLOAT) -- Galactic Latitude
-RETURNS BOOLEAN AS $$
-  SELECT
-    q3c_radial_query($1,$2,0.0,0.0,0.7)
-$$ LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION within_jasmine_region_2(
-  FLOAT, -- Galactic Longitude
-  FLOAT) -- Galactic Latitude
-RETURNS BOOLEAN AS $$
-  SELECT
-    (($1 BETWEEN -2.0 AND 0.0) AND ($2 BETWEEN 0.0 AND 0.3))
+    (($1 BETWEEN -1.4 AND 0.7) AND ($2 BETWEEN -0.6 AND 0.6))
 $$ LANGUAGE SQL;

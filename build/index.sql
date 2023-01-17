@@ -86,23 +86,23 @@ CLUSTER vvv_sources_glonglat ON vvv_sources;
 ANALYZE vvv_sources;
 
 
-CREATE INDEX IF NOT EXISTS edr3_sources_radec
-  ON edr3_sources (q3c_ang2ipix(ra,dec));
-CREATE INDEX IF NOT EXISTS edr3_sources_glonglat
-  ON edr3_sources (q3c_ang2ipix(glon,glat));
-CREATE INDEX IF NOT EXISTS edr3_sources_gmag
-  ON edr3_sources (phot_g_mag);
-CREATE INDEX IF NOT EXISTS edr3_sources_bpmag
-  ON edr3_sources (phot_bp_mag);
-CREATE INDEX IF NOT EXISTS edr3_sources_rpmag
-  ON edr3_sources (phot_rp_mag);
-CREATE INDEX IF NOT EXISTS edr3_sources_ra
-  ON edr3_sources (ra);
-CREATE INDEX IF NOT EXISTS edr3_sources_dec
-  ON edr3_sources (dec);
-CREATE INDEX IF NOT EXISTS edr3_sources_glon
-  ON edr3_sources (glon);
-CREATE INDEX IF NOT EXISTS edr3_sources_glat
-  ON edr3_sources (glat);
-CLUSTER edr3_sources_glonglat ON edr3_sources;
-ANALYZE edr3_sources;
+CREATE INDEX IF NOT EXISTS gdr3_sources_radec
+  ON gdr3_sources (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS gdr3_sources_glonglat
+  ON gdr3_sources (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS gdr3_sources_gmag
+  ON gdr3_sources (phot_g_mag);
+CREATE INDEX IF NOT EXISTS gdr3_sources_bpmag
+  ON gdr3_sources (phot_bp_mag);
+CREATE INDEX IF NOT EXISTS gdr3_sources_rpmag
+  ON gdr3_sources (phot_rp_mag);
+CREATE INDEX IF NOT EXISTS gdr3_sources_ra
+  ON gdr3_sources (ra);
+CREATE INDEX IF NOT EXISTS gdr3_sources_dec
+  ON gdr3_sources (dec);
+CREATE INDEX IF NOT EXISTS gdr3_sources_glon
+  ON gdr3_sources (glon);
+CREATE INDEX IF NOT EXISTS gdr3_sources_glat
+  ON gdr3_sources (glat);
+CLUSTER gdr3_sources_glonglat ON gdr3_sources;
+ANALYZE gdr3_sources;

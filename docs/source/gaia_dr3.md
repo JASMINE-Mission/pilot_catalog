@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
   phot_rp_mag        FLOAT(10),
   phot_rp_mag_error  FLOAT(10),
   phot_variable_flag VARCHAR(32),
-  non_single_star    INT(1),
+  non_single_star    INTEGER,
   distance           FLOAT(10),
   distance_lower     FLOAT(10),
   distance_upper     FLOAT(10),
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
 
 ## Source
 
-The Gaia EDR3 catalog is obtained from the [Gaia Archive][gaia]. The advanced query mode is used to extract the source around the Galactic center. The extraction constrains are as follows:
+The Gaia DR3 catalog is obtained from the [Gaia Archive][gaia]. The advanced query mode is used to extract the source around the Galactic center. The extraction constrains are as follows:
 
 - Galactic longitude between -2.5 and 1.2 degree.
 - Galactic latitude between -1.2 and 1.2 degree.
@@ -103,7 +103,7 @@ psql -h localhost -p 15432 -d jasmine -U admin \
    phot_g_mag,phot_g_mag_error,\
    phot_bp_mag,phot_bp_mag_error,\
    phot_rp_mag,phot_rp_mag_error,\
-   phot_variable_flatg,non_single_star,\
+   phot_variable_flag,non_single_star,\
    distance,distance_lower,distance_upper,\
    ag,ag_lower,ag_upper,a0,a0_lower,a0_upper) \
   FROM '/data/catalog/gaia_dr3_gccat.csv' \
