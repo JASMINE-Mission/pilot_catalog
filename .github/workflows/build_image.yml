@@ -27,6 +27,15 @@ jobs:
        run: |
          docker-compose up -d
 
+     - name: Check docker-compose status
+       run: |
+         docker-compose config
+         docker-compose ps
+         docker-compose top
+         docker-compsoe logs --tail=20
+         docker-compose port catalog 5432
+
+
      - name: Initialize the database
        run: |
          make initialize
