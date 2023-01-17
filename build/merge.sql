@@ -124,7 +124,7 @@ ON
   q3c_join(t.glon,t.glat,s.glon,s.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,s.phot_j_mag,t.phot_h_mag,s.phot_h_mag,
-    t.phot_ks_mag,s.phot_ks_mag,2.0::FLOAT8)
+    t.phot_ks_mag,s.phot_ks_mag,2.0::FLOAT)
 UNION
 SELECT
   nextval('temp_merged_sources_source_id_seq') AS source_id,
@@ -175,7 +175,7 @@ ON
   q3c_join(s.glon,s.glat,t.glon,t.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,s.phot_j_mag,t.phot_h_mag,s.phot_h_mag,
-    t.phot_ks_mag,s.phot_ks_mag,2.0::FLOAT8)
+    t.phot_ks_mag,s.phot_ks_mag,2.0::FLOAT)
 WHERE
   t.source_id IS NULL;
 
@@ -277,7 +277,7 @@ ON
   q3c_join(v.glon,v.glat,t.glon,t.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,v.phot_j_mag,t.phot_h_mag,v.phot_h_mag,
-    t.phot_ks_mag,v.phot_ks_mag,2.0::FLOAT8)
+    t.phot_ks_mag,v.phot_ks_mag,2.0::FLOAT)
 UNION
 SELECT
   nextval('merged_sources_source_id_seq') AS source_id,
@@ -333,7 +333,7 @@ ON
   q3c_join(t.glon,t.glat,v.glon,v.glat,1./3600.)
   AND jhk_match(
     t.phot_j_mag,v.phot_j_mag,t.phot_h_mag,v.phot_h_mag,
-    t.phot_ks_mag,v.phot_ks_mag,2.0::FLOAT8)
+    t.phot_ks_mag,v.phot_ks_mag,2.0::FLOAT)
 WHERE
   v.source_id IS NULL;
 
