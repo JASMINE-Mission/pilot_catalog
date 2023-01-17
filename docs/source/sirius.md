@@ -42,7 +42,7 @@ SIRIUS Galactic Center catalog is obtained from private communication. The origi
 
 A Python script `convert_sirius.py` is available to convert the SIRIUS catalog. The usage of the script is as follows.
 
-```
+``` console
 $ ./script/convert_sirius.py -h
 usage: convert_sirius.py [-h] [-f] src csv
 
@@ -59,9 +59,9 @@ optional arguments:
 
 The SIRIUS GC catalog contains about 12230000 objects. The conversion takes a good amount of time. I recommend to use `screen` for conversion. The following command launches a background screen environment that runs a job to convert the catalog.
 
-``` sh
-screen -dmS sirius \
-  python script/convert_sirius.py sirius_WGCCatAll.dat sirius_jasmine_field.csv
+``` console
+$ screen -dmS sirius \
+    python script/convert_sirius.py sirius_WGCCatAll.dat sirius_jasmine_field.csv
 ```
 
 The converted CSV file is hosted in [the catalog download page][download].

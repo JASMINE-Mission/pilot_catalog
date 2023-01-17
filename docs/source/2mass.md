@@ -46,7 +46,7 @@ mp_flg =0 and glon >=-2.5 and glon <=1.2 and glat >=-1.2 and glat <=1.2
 
 The original 2mass catalog is not compatible with the database, and the precisions of `glon` and `glat` records are not sufficient. Use `convert_2mass.py` to reformat the original CSV catalog. The usage of the `convert_2mass.py` is as follows.
 
-``` sh
+``` console
 $ ./script/convert_2mass.py -h
 usage: convert_2mass.py [-h] [-f] src csv
 
@@ -63,8 +63,8 @@ optional arguments:
 
 The following command reformats `2mass_gccat.csv`.
 
-``` sh
-python script/convert_2mass.py 2mass_gccat.csv 2mass_.csv
+``` console
+$ python script/convert_2mass.py 2mass_gccat.csv 2mass_psc_jasmine_field.csv
 ```
 
 
