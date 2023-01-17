@@ -25,7 +25,7 @@ merge.sql: build/merge.sql build/user.sql
 merge: merge.sql
 	$(PSQL) -f $<
 
-index: bulid/index.sql
+index: build/index.sql
 	$(PSQL) -f $<
 
 link: build/link.sql
