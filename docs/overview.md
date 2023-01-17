@@ -11,22 +11,22 @@ CREATE TABLE merged_sources (
   tmass_source_id    BIGINT,                --- source ID in 2MASS table
   sirius_source_id   BIGINT,                --- source ID in SIRIUS table
   vvv_source_id      BIGINT,                --- source ID in VIRAC table
-  glon               FLOAT(10),             --- Galactic Longitude (deg)
-  glat               FLOAT(10),             --- Galactic Latitude (deg)
-  ra                 FLOAT(10),             --- Right Ascension (deg)
-  dec                FLOAT(10),             --- Declination (deg)
+  glon               FLOAT,                 --- Galactic Longitude (deg)
+  glat               FLOAT,                 --- Galactic Latitude (deg)
+  ra                 FLOAT,                 --- Right Ascension (deg)
+  dec                FLOAT,                 --- Declination (deg)
   position_source    VARCHAR(1),            --- position reference (V,S,2)
-  phot_hw_mag        FLOAT(10),             --- Hw-band magnitude
-  phot_hw_mag_error  FLOAT(10),             --- Hw-band magnitude error
+  phot_hw_mag        FLOAT,                 --- Hw-band magnitude
+  phot_hw_mag_error  FLOAT,                 --- Hw-band magnitude error
   phot_hw_mag_source VARCHAR(1),            --- Hw mag. reference (V,S,2)
-  phot_j_mag         FLOAT(10),             --- J-band magnitude
-  phot_j_mag_error   FLOAT(10),             --- J-band magnitude error
+  phot_j_mag         FLOAT,                 --- J-band magnitude
+  phot_j_mag_error   FLOAT,                 --- J-band magnitude error
   phot_j_mag_source  VARCHAR(1),            --- J mag. reference (V,S,2)
-  phot_h_mag         FLOAT(10),             --- H-band magnitude
-  phot_h_mag_error   FLOAT(10),             --- H-band magnitude error
+  phot_h_mag         FLOAT,                 --- H-band magnitude
+  phot_h_mag_error   FLOAT,                 --- H-band magnitude error
   phot_h_mag_source  VARCHAR(1),            --- H mag. reference (V,S,2)
-  phot_ks_mag        FLOAT(10),             --- Ks-band magnitude
-  phot_ks_mag_error  FLOAT(10),             --- Ks-band magnitude
+  phot_ks_mag        FLOAT,                 --- Ks-band magnitude
+  phot_ks_mag_error  FLOAT,                 --- Ks-band magnitude
   phot_ks_mag_source VARCHAR(1)             --- Ks mag. reference (V,S,2)
 );
 ```
@@ -38,7 +38,7 @@ CREATE TABLE link_gdr3 (
   link_id          BIGSERIAL PRIMARY KEY,   --- unique link ID
   merged_source_id BIGINT NOT NULL,         --- source ID in merged table
   gdr3_source_id   BIGINT NOT NULL,         --- source ID in Gaia DR3 table
-  distance         FLOAT(10) NOT NULL       --- distance in arcseconds
+  distance         FLOAT NOT NULL           --- distance in arcseconds
 );
 ```
 

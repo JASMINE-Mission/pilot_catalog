@@ -5,25 +5,25 @@
 ``` sql
 CRATE TABLE IF NOT EXISTS vvv_sources (
   source_id         BIGINT PRIMARY KEY,
-  glon              FLOAT(10) NOT NULL,
-  glat              FLOAT(10) NOT NULL,
-  ra                FLOAT(10) NOT NULL,
-  dec               FLOAT(10) NOT NULL,
+  glon              FLOAT NOT NULL,
+  glat              FLOAT NOT NULL,
+  ra                FLOAT NOT NULL,
+  dec               FLOAT NOT NULL,
   phot_z_flag       INTEGER(4),
-  phot_z_mag        FLOAT(10),
-  phot_z_mag_error  FLOAT(10),
+  phot_z_mag        FLOAT,
+  phot_z_mag_error  FLOAT,
   phot_y_flag       INTEGER(4),
-  phot_y_mag        FLOAT(10),
-  phot_y_mag_error  FLOAT(10),
+  phot_y_mag        FLOAT,
+  phot_y_mag_error  FLOAT,
   phot_j_flag       INTEGER(4),
-  phot_j_mag        FLOAT(10),
-  phot_j_mag_error  FLOAT(10),
+  phot_j_mag        FLOAT,
+  phot_j_mag_error  FLOAT,
   phot_h_flag       INTEGER(4),
-  phot_h_mag        FLOAT(10),
-  phot_h_mag_error  FLOAT(10),
+  phot_h_mag        FLOAT,
+  phot_h_mag_error  FLOAT,
   phot_ks_flag      INTEGER(4),
-  phot_ks_mag       FLOAT(10),
-  phot_ks_mag_error FLOAT(10)
+  phot_ks_mag       FLOAT,
+  phot_ks_mag_error FLOAT
 );
 ```
 
