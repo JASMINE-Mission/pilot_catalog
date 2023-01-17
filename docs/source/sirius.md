@@ -57,7 +57,7 @@ optional arguments:
   -f, --overwrite  overwrite if the output file exists.
 ```
 
-The SIRIUS GC catalog contains about 12230000 objects. The conversion takes a goo amount of time. I recommend to use `screen` for conversion. The following command launches a background screen environment that runs a job to convert the catalog.
+The SIRIUS GC catalog contains about 12230000 objects. The conversion takes a good amount of time. I recommend to use `screen` for conversion. The following command launches a background screen environment that runs a job to convert the catalog.
 
 ``` sh
 screen -dmS sirius \

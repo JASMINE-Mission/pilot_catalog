@@ -1,4 +1,4 @@
-# Gaia EDR3 catalog
+# Gaia DR3 catalog
 
 ## Schema
 
@@ -92,22 +92,7 @@ WHERE
   (l <= 1.2 OR 360-2.5 <= l) AND (b BETWEEN -1.2 AND 1.2);
 ```
 
-The obtained CSV file is imported into the database by `COPY` command.
+The converted CSV file is hosted in [the catalog download page][download].
 
-``` sh
-psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY gdr3_sources \
-  (source_id,ra,dec,glon,glat,elon,elat,\
-   parallax,parallax_error,ruwe,\
-   pm,pmra,pmra_error,pmdec,pmdec_error,rv,rv_error,\
-   phot_g_mag,phot_g_mag_error,\
-   phot_bp_mag,phot_bp_mag_error,\
-   phot_rp_mag,phot_rp_mag_error,\
-   phot_variable_flag,non_single_star,\
-   distance,distance_lower,distance_upper,\
-   ag,ag_lower,ag_upper,a0,a0_lower,a0_upper) \
-  FROM '/data/catalog/gaia_dr3_gccat.csv' \
-  DELIMITER',' CSV HEADER;"
-```
-
+[download]: http://exoplanets.sakura.ne.jp/jasmine/
 [gaia]: https://gea.esac.esa.int/archive/

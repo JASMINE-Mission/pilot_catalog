@@ -64,23 +64,12 @@ optional arguments:
 The following command reformats `2mass_gccat.csv`.
 
 ``` sh
-python script/convert_2mass.py 2mass_gccat.csv 2mass_gccat.mod.csv
+python script/convert_2mass.py 2mass_gccat.csv 2mass_.csv
 ```
 
-The revised CSV file is imported into the database by `COPY` command.
 
-``` sh
-psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY tmass_sources \
-  (ra,dec,designation,\
-   phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,\
-   phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,\
-   phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,\
-   quality_flag,contaminated,glon,glat,rd_flg,\
-   color_j_h,color_h_ks,color_j_ks) \
-  FROM '/data/catalog/2mass_gccat.mod.csv' \
-  DELIMITER',' CSV HEADER;"
-```
+The converted CSV file is hosted in [the catalog download page][download].
 
+[download]: http://exoplanets.sakura.ne.jp/jasmine/
 [gator]: https://irsa.ipac.caltech.edu/cgi-bin/Gator/nph-dd?catalog=fp_psc
 [irsa]: https://irsa.ipac.caltech.edu/frontpage/

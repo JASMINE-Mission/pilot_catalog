@@ -65,18 +65,7 @@ WHERE
            266.07860638, -31.69475218))
 ```
 
+The converted CSV file is hosted in [the catalog download page][download].
+
+[download]: http://exoplanets.sakura.ne.jp/jasmine/
 [tapvizier]: http://tapvizier.u-strasbg.fr/adql/
-
-
-```
-psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY vvv_sources \
-  (source_id,glon,glat,ra,dec,\
-   phot_z_flag,phot_z_mag,phot_z_mag_error,\
-   phot_y_flag,phot_y_mag,phot_y_mag_error,\
-   phot_j_flag,phot_j_mag,phot_j_mag_error,\
-   phot_h_flag,phot_h_mag,phot_h_mag_error,\
-   phot_ks_flag,phot_ks_mag,phot_ks_mag_error) \
-  FROM '/data/catalog/vvv_348dr2_catalog.csv' \
-  DELIMITER ',' CSV HEADER;"
-```
