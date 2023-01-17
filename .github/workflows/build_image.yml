@@ -22,3 +22,16 @@ jobs:
      - name: Build using docker-compose
        run: |
          docker-compose build
+
+  build-database:
+    needs: build-image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Launch a database process
+        run: |
+          docker-compose up -d
+
+      - name: Initialize the database
+        run: |
+          make initialize
