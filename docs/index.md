@@ -1,6 +1,6 @@
-# JASMINE source catalog
+# JASMINE Pilot Study Catalog
 
-JASMINE source catalog contains infrared point sources around the Galactic center region. The catalog involves 2MASS Point Source Catalog, SIRIUS Galactic Center Catalog, and VVV Infrared Astrometric Catalogue.
+JASMINE Pilot Study catalog contains infrared point sources around the Galactic center region. The catalog involves 2MASS Point Source Catalog, SIRIUS Galactic Center Catalog, and VVV DR2 Catalogue.
 
 
 ## How to access the database
