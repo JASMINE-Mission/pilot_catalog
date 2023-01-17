@@ -1,5 +1,6 @@
 [![pytest](https://github.com/JASMINE-Mission/pilot_catalog/actions/workflows/build_mkdocs.yml/badge.svg?branch=develop)](https://github.com/JASMINE-Mission/pilot_catalog/actions/workflows/build_mkdocs.yml)
 [![build](https://github.com/JASMINE-Mission/pilot_catalog/actions/workflows/deploy_mkdocs.yml/badge.svg?branch=develop)](https://github.com/JASMINE-Mission/pilot_catalog/actions/workflows/deploy_mkdocs.yml)
+[![build](https://github.com/JASMINE-Mission/pilot_catalog/actions/workflows/build_image.yml/badge.svg?branch=develop)](https://github.com/JASMINE-Mission/pilot_catalog/actions/workflows/build_image.yml)
 # JASMINE Pilot Study Catalog
 
 JASMINE Pilot Study catalog contains infrared point sources around the Galactic center region. The catalog involves 2MASS Point Source Catalog, SIRIUS Galactic Center Catalog, and VVV DR2 Catalogue.
