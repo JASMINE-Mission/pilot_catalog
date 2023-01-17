@@ -25,6 +25,7 @@ jobs:
 
      - name: Launch a database process
        run: |
+         docker-compose up
          docker-compose up -d
 
      - name: Initialize the database
