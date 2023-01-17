@@ -92,7 +92,7 @@ Download `sirius_jasmine_field.csv` from [the catalog download page][download] a
 
 ``` console
 $ psql -h localhost -p 15432 -d jasmine -U admin \
-    -c "COPY sirius_sources_orig \
+    -c "COPY sirius_sources \
     (glon,glat,ra,dec,position_j_x,position_j_y,phot_j_mag,\
      phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,\
      phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,\
@@ -100,9 +100,6 @@ $ psql -h localhost -p 15432 -d jasmine -U admin \
     FROM '/data/catalog/sirius_jasmine_field.csv' \
     DELIMITER ',' CSV HEADER;"
 ```
-
-The original catalog contains objects outside of the nominal field. The `sirius_sources` is a view of `sirius_sources_orig`, where objects outside of the JASMINE field are removed.
-
 
 How the CSV file is prepared is described in [the SIRIUS page][sirius].
 

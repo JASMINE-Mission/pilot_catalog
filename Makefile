@@ -13,7 +13,7 @@ build-psql:
 	docker build $(OPTS) -t $(IMAGE):$(VER) psql
 
 
-initialize.sql: build/extension.sql build/table.sql build/sirius.sql
+initialize.sql: build/extension.sql build/table.sql
 	cat $^ > $@
 
 initialize: initialize.sql
