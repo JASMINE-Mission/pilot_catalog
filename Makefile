@@ -3,7 +3,7 @@ VER=0.1
 OPTS=
 POST=build/merge.sql \
      build/user.sql
-PSQL=psql -h localhost -p 15432 -d jasmine -U admin
+PSQL=psql -h 0.0.0.0 -p 15432 -d jasmine -U admin
 PGDUMP=docker-compose exec catalog pg_dump -d jasmine -U admin
 
 .INTERMEDIATE: initialize.sql merge.sql
