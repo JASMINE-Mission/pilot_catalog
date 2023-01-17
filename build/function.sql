@@ -8,7 +8,7 @@ RETURNS VARCHAR AS $$
   END
 $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION ifthenelse(
-  DOUBLE PRECISION,
+  FLOAT,
   VARCHAR,
   VARCHAR)
 RETURNS VARCHAR AS $$
@@ -18,20 +18,20 @@ RETURNS VARCHAR AS $$
 $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION ifthenelse(
   BOOLEAN,
-  DOUBLE PRECISION,
-  DOUBLE PRECISION)
-RETURNS DOUBLE PRECISION AS $$
+  FLOAT,
+  FLOAT)
+RETURNS FLOAT AS $$
   SELECT CASE
     WHEN $1 IS True THEN $2 ELSE $3
   END
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION select_better(
-  DOUBLE PRECISION, -- magnitude in the first catalog
-  DOUBLE PRECISION, -- magnitude uncertainty in the first catalog
-  DOUBLE PRECISION, -- magnitude in the second catalog
-  DOUBLE PRECISION) -- magnitude uncertainty in the second catalog
-RETURNS DOUBLE PRECISION AS $$
+  FLOAT, -- magnitude in the first catalog
+  FLOAT, -- magnitude uncertainty in the first catalog
+  FLOAT, -- magnitude in the second catalog
+  FLOAT) -- magnitude uncertainty in the second catalog
+RETURNS FLOAT AS $$
   SELECT CASE
     WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
     WHEN COALESCE($2,1000) > COALESCE($4,1000) THEN $3
@@ -39,8 +39,8 @@ RETURNS DOUBLE PRECISION AS $$
   END
 $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION select_char(
-  DOUBLE PRECISION, -- magnitude uncertainty in the first catalog
-  DOUBLE PRECISION, -- magnitude uncertainty in the second catalog
+  FLOAT, -- magnitude uncertainty in the first catalog
+  FLOAT, -- magnitude uncertainty in the second catalog
   VARCHAR, -- letter of the first catalog
   VARCHAR) -- letter of the second catalog
 RETURNS VARCHAR AS $$
@@ -52,21 +52,21 @@ RETURNS VARCHAR AS $$
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION mag_match(
-  DOUBLE PRECISION, -- magnitude in the first catalog
-  DOUBLE PRECISION, -- magnitude in the second catalog
-  DOUBLE PRECISION) -- acceptable magnitude difference
+  FLOAT, -- magnitude in the first catalog
+  FLOAT, -- magnitude in the second catalog
+  FLOAT) -- acceptable magnitude difference
 RETURNS boolean AS $$
   SELECT ABS($1-$2)<$3
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION jhk_match(
-  DOUBLE PRECISION, -- J-band magnitude in the first catalog
-  DOUBLE PRECISION, -- J-band magnitude in the second catalog
-  DOUBLE PRECISION, -- H-band magnitude in the first catalog
-  DOUBLE PRECISION, -- H-band magnitude in the second catalog
-  DOUBLE PRECISION, -- K-band magnitude in the first catalog
-  DOUBLE PRECISION, -- K-band magnitude in the second catalog
-  DOUBLE PRECISION) -- acceptable magnitude difference
+  FLOAT, -- J-band magnitude in the first catalog
+  FLOAT, -- J-band magnitude in the second catalog
+  FLOAT, -- H-band magnitude in the first catalog
+  FLOAT, -- H-band magnitude in the second catalog
+  FLOAT, -- K-band magnitude in the first catalog
+  FLOAT, -- K-band magnitude in the second catalog
+  FLOAT) -- acceptable magnitude difference
 RETURNS BOOLEAN AS $$
   SELECT
     COALESCE(mag_match($1,$2,$7),True)
@@ -76,16 +76,16 @@ $$ LANGUAGE SQL;
 
 
 CREATE OR REPLACE FUNCTION wrap(
-  DOUBLE PRECISION) -- angle in [0, 360)
-RETURNS DOUBLE PRECISION AS $$
+  FLOAT) -- angle in [0, 360)
+RETURNS FLOAT AS $$
   SELECT CASE
     WHEN $1 <= 180.0 THEN $1 ELSE $1-360.0 END
 $$ LANGUAGE SQL;
 
 
 CREATE OR REPLACE FUNCTION within_jasmine_field(
-  DOUBLE PRECISION, -- Galactic Longitude
-  DOUBLE PRECISION) -- Galactic Latitude
+  FLOAT, -- Galactic Longitude
+  FLOAT) -- Galactic Latitude
 RETURNS BOOLEAN AS $$
   SELECT
     (($1 BETWEEN -1.4 AND 0.7) AND ($2 BETWEEN -0.6 AND 0.6))
