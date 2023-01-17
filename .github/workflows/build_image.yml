@@ -39,3 +39,6 @@ jobs:
      - name: Initialize the database
        run: |
          make initialize
+         make merge
+         make index
+         make link
