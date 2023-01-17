@@ -38,9 +38,9 @@ WHERE
 ```
 
 ## Source
-Sirius Galactic Center catalog is obtained from Kataza-san. The original catalog is given in a text table format. To import the catalog into the PostgreSQL database, the catalog is converted into the CSV format.
+SIRIUS Galactic Center catalog is obtained from private communication. The original catalog is given in a text table format. To import the catalog into the PostgreSQL database, the catalog is converted into the CSV format.
 
-A Python script `convert_sirius.py` is available to convert the Sirius catalog. The usage of the script is as follows.
+A Python script `convert_sirius.py` is available to convert the SIRIUS catalog. The usage of the script is as follows.
 
 ```
 $ ./script/convert_sirius.py -h
@@ -57,24 +57,13 @@ optional arguments:
   -f, --overwrite  overwrite if the output file exists.
 ```
 
-The Sirius GC catalog contains about 12230000 objects. The conversion takes a goo amount of time. I recommend to use `screen` for conversion. The following command launches a background screen environment that runs a job to convert the catalog.
+The SIRIUS GC catalog contains about 12230000 objects. The conversion takes a goo amount of time. I recommend to use `screen` for conversion. The following command launches a background screen environment that runs a job to convert the catalog.
 
 ``` sh
 screen -dmS sirius \
-  python script/convert_sirius.py sirius_WGCCatAll.dat sirius_WGCCatAll.csv
+  python script/convert_sirius.py sirius_WGCCatAll.dat sirius_jasmine_field.csv
 ```
 
-The converted CSV file is imported into the database by `COPY` command.
+The converted CSV file is hosted in [the catalog download page][download].
 
-``` sh
-psql -h localhost -p 15432 -d jasmine -U admin \
-  -c "COPY sirius_sources_orig \
-  (glon,glat,ra,dec,position_j_x,position_j_y,phot_j_mag,\
-   phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,\
-   phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,\
-   phot_ks_mag_error,plate_name) \
-  FROM '/data/catalog/sirius_WGCCatAll.csv' \
-  DELIMITER ',' CSV HEADER;"
-```
-
-The original catalog contains objects outside of the nominal field. The `sirius_sources` is a view of `sirius_sources_orig`, where objects outside of the JASMINE field are removed.
+[download]: http://exoplanets.sakura.ne.jp/jasmine/

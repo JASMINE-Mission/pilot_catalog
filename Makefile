@@ -1,25 +1,28 @@
 IMAGE=jasmine-psql
 VER=0.1
 OPTS=
-PSRC=build/extension.sql \
-     build/table.sql \
-     build/sirius.sql \
-     build/merge.sql \
+POST=build/merge.sql \
      build/user.sql
 PSQL=psql -h localhost -p 15432 -d jasmine -U admin
 PGDUMP=docker-compose exec catalog pg_dump -d jasmine -U admin
 
-.INTERMEDIATE: combined.sql
+.INTERMEDIATE: initialize.sql merge.sql
 .PHONY: build-psql initialize dump index link
 
 build-psql:
 	docker build $(OPTS) -t $(IMAGE):$(VER) psql
 
 
-combined.sql: $(PSRC)
-	cat $(PSRC) > $@
+initialize.sql: build/extension.sql build/table.sql build/sirius.sql
+	cat $^ > $@
 
-initialize: combined.sql
+initialize: initialize.sql
+	$(PSQL) -f $<
+
+merge.sql: build/merge.sql build/user.sql
+	cat $^ > $@
+
+merge: merge.sql
 	$(PSQL) -f $<
 
 index: bulid/index.sql

@@ -58,10 +58,10 @@ nav:
   - Install Guide:
     - build.md
   - Source Catalogs:
-    - SIRIUS: sirius.md
-    - VVV (DR2): vvv_dr2.md
-    - 2MASS: 2mass.md
-    - Gaia EDR3: gaia_dr3.md
+    - 2MASS: source/2mass.md
+    - VVV (DR2): source/vvv_dr2.md
+    - SIRIUS: source/sirius.md
+    - Gaia EDR3: source/gaia_dr3.md
   - Links:
     - Project Page: http://jasmine.nao.ac.jp/
     - Github Project: https://github.com/JASMINE-Mission
