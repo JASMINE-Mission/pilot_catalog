@@ -32,7 +32,7 @@ jobs:
          docker-compose config
          docker-compose ps
          docker-compose top
-         docker-compsoe logs --tail=20
+         docker-compose logs --tail=20
          docker-compose port catalog 5432
 
 
