@@ -9,12 +9,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-     - uses: actions/checkout@v3
+     - name: Checkout repository
+       uses: actions/checkout@v3
+       with:
+         lfs: true
+
      - name: Setup Python 3.9
        uses: actions/setup-python@v3
        with:
          python-version: 3.9
-         lfs: true
 
      - name: Build Document
        uses: ./.github/actions/build_mkdocs
