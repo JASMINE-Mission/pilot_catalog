@@ -7,6 +7,8 @@ RETURNS VARCHAR AS $$
     WHEN $1 IS NULL THEN $3 ELSE $2
   END
 $$ LANGUAGE SQL;
+
+
 CREATE OR REPLACE FUNCTION ifthenelse(
   FLOAT,
   VARCHAR,
@@ -16,6 +18,8 @@ RETURNS VARCHAR AS $$
     WHEN $1 IS NULL THEN $3 ELSE $2
   END
 $$ LANGUAGE SQL;
+
+
 CREATE OR REPLACE FUNCTION ifthenelse(
   BOOLEAN,
   FLOAT,
@@ -24,6 +28,16 @@ RETURNS FLOAT AS $$
   SELECT CASE
     WHEN $1 IS True THEN $2 ELSE $3
   END
+$$ LANGUAGE SQL;
+
+
+CREATE OR REPLACE FUNCTION compute_average(
+  FLOAT, -- magnitude in the first catalog
+  FLOAT, -- magnitude uncertainty in the first catalog
+  FLOAT, -- magnitude in the second catalog
+  FLOAT) -- magnitude uncertainty in the second catalog
+RETURNS FLOAT AS $$
+  SELECT (COALESCE($1*$2,0)+COALESCE($3*$4,0))/(COALESCE($2,1)*COALESCE($4,1))
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION select_better(
@@ -38,6 +52,8 @@ RETURNS FLOAT AS $$
     ELSE NULL
   END
 $$ LANGUAGE SQL;
+
+
 CREATE OR REPLACE FUNCTION select_char(
   FLOAT, -- magnitude uncertainty in the first catalog
   FLOAT, -- magnitude uncertainty in the second catalog
