@@ -5,7 +5,7 @@ CASE WHEN AVG(aux2.phot_j_mag_error) IS NULL THEN AVG(aux2.phot_j_mag) ELSE SUM(
 CASE WHEN AVG(aux2.phot_h_mag_error) IS NULL THEN AVG(aux2.phot_h_mag) ELSE SUM(aux2.phot_h_mag*aux2.phot_h_mag_error)/SUM(aux2.phot_h_mag_error) END as phot_h_mag, MAX(aux2.phot_h_cmsig) as phot_h_cmsig, MAX(aux2.phot_h_mag_error) as phot_h_mag_error, MIN(aux2.phot_h_snr) as phot_h_snr,  
 CASE WHEN AVG(aux2.phot_ks_mag_error) IS NULL THEN AVG(aux2.phot_ks_mag) ELSE SUM(aux2.phot_ks_mag*aux2.phot_ks_mag_error)/SUM(aux2.phot_ks_mag_error) END as phot_ks_mag, MAX(aux2.phot_ks_cmsig) as phot_ks_cmsig, MAX(aux2.phot_ks_mag_error) as phot_ks_mag_error, MIN(aux2.phot_ks_snr) as phot_ks_snr, 
 STRING_AGG(aux2.quality_flag,'-') as quality_flag, STRING_AGG(aux2.rd_flg,'-') as rd_flg, 
-STRING_AGG(aux2.pair_id,'-') as pair_id,MAX(aux.ang_dist) as ang_dist FROM
+STRING_AGG(aux2.pair_id,'-') as pair_id,MAX(aux2.ang_dist) as ang_dist FROM
 (SELECT MIN(aux.source_id) AS source_id,AVG(aux.ra) AS ra ,AVG(aux.dec) AS dec,MIN(aux.designation) AS designation, 
 CASE WHEN AVG(aux.phot_j_mag_error) IS NULL THEN AVG(aux.phot_j_mag) ELSE SUM(aux.phot_j_mag*aux.phot_j_mag_error)/SUM(aux.phot_j_mag_error) END as phot_j_mag, MAX(aux.phot_j_cmsig) as phot_j_cmsig, MAX(aux.phot_j_mag_error) as phot_j_mag_error, MIN(aux.phot_j_snr) as phot_j_snr, 
 CASE WHEN AVG(aux.phot_h_mag_error) IS NULL THEN AVG(aux.phot_h_mag) ELSE SUM(aux.phot_h_mag*aux.phot_h_mag_error)/SUM(aux.phot_h_mag_error) END as phot_h_mag, MAX(aux.phot_h_cmsig) as phot_h_cmsig, MAX(aux.phot_h_mag_error) as phot_h_mag_error, MIN(aux.phot_h_snr) as phot_h_snr,  
