@@ -16,7 +16,7 @@ MIN(aux.pair_id) as pair_id,MAX(aux.ang_dist) as ang_dist FROM
 as aux2 GROUP BY FLOOR(aux2.ra*3600.0/4.0),FLOOR(aux2.dec*3600.0/4.0)
 UNION
 SELECT t.source_id,t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
-(SELECT t2.source_id FROM tmass_sources AS t2 INNER JOIN tmass_sources as t3 ON q3c_join(t3.ra,t3.dec,t2.ra,t2.dec,2./3600.) AND (COALESCE(ABS(t3.phot_j_mag-t2.phot_j_mag)<2.,True) AND COALESCE(ABS(t3.phot_h_mag-t2.phot_h_mag)<2.,True) AND COALESCE(ABS(t3.phot_ks_mag-t2.phot_ks_mag)<2.,True)) WHERE t2.source_id!=t3.source_id) 
+(SELECT t2.source_id FROM tmass_sources AS t2 INNER JOIN tmass_sources as t3 ON q3c_join(t3.ra,t3.dec,t2.ra,t2.dec,2./3600.) AND (COALESCE(ABS(t3.phot_j_mag-t2.phot_j_mag)<2.,True) AND COALESCE(ABS(t3.phot_h_mag-t2.phot_h_mag)<2.,True) AND COALESCE(ABS(t3.phot_ks_mag-t2.phot_ks_mag)<2.,True)) WHERE t2.source_id!=t3.source_id); 
 
 
 DROP TABLE IF EXISTS vvv_sources_clean CASCADE;
@@ -47,7 +47,7 @@ CASE WHEN v1.source_id<v2.source_id THEN CONCAT(CAST(v1.source_id AS varchar),'-
 as aux2 GROUP BY FLOOR(aux2.ra*3600.0/2.0),FLOOR(aux2.dec*3600.0/2.0)
 UNION
 SELECT v.source_id,v.ra,v.dec,v.phot_j_mag,v.phot_j_mag_error,v.phot_h_mag,v.phot_h_mag_error,v.phot_ks_mag,v.phot_ks_mag_error, NULL as pair_id, NULL as ang_dist FROM vvv_sources as v WHERE v.source_id NOT IN 
-(SELECT v2.source_id FROM vvv_sources AS v2 INNER JOIN vvv_sources as v3 ON q3c_join(v3.ra,v3.dec,v2.ra,v2.dec,0.6/3600.) AND (COALESCE(ABS((v3.phot_j_mag-v2.phot_j_mag)/SQRT(v3.phot_j_mag_error*v3.phot_j_mag_error+v2.phot_j_mag_error*v2.phot_j_mag_error))<50.,True) AND COALESCE(ABS((v3.phot_h_mag-v2.phot_h_mag)/SQRT(v3.phot_h_mag_error*v3.phot_h_mag_error+v2.phot_h_mag_error*v2.phot_h_mag_error))<50.,True) AND COALESCE(ABS((v3.phot_ks_mag-v2.phot_ks_mag)/SQRT(v3.phot_ks_mag_error*v3.phot_ks_mag_error+v2.phot_ks_mag_error*v2.phot_ks_mag_error))<50.,True)) WHERE v2.source_id!=v3.source_id)
+(SELECT v2.source_id FROM vvv_sources AS v2 INNER JOIN vvv_sources as v3 ON q3c_join(v3.ra,v3.dec,v2.ra,v2.dec,0.6/3600.) AND (COALESCE(ABS((v3.phot_j_mag-v2.phot_j_mag)/SQRT(v3.phot_j_mag_error*v3.phot_j_mag_error+v2.phot_j_mag_error*v2.phot_j_mag_error))<50.,True) AND COALESCE(ABS((v3.phot_h_mag-v2.phot_h_mag)/SQRT(v3.phot_h_mag_error*v3.phot_h_mag_error+v2.phot_h_mag_error*v2.phot_h_mag_error))<50.,True) AND COALESCE(ABS((v3.phot_ks_mag-v2.phot_ks_mag)/SQRT(v3.phot_ks_mag_error*v3.phot_ks_mag_error+v2.phot_ks_mag_error*v2.phot_ks_mag_error))<50.,True)) WHERE v2.source_id!=v3.source_id);
 
 
 
@@ -66,6 +66,6 @@ CASE WHEN AVG(aux.phot_ks_mag_error) IS NULL THEN AVG(aux.phot_ks_mag) ELSE SUM(
 STRING_AGG(aux.plate_name,'-') as plate_name,
 MIN(aux.pair_id) as pair_id, MAX(aux.ang_dist) as ang_dist
 FROM (SELECT s1.*,q3c_dist(s1.ra,s1.dec,s2.ra,s2.dec)*3600. as ang_dist,
-CASE WHEN s1.source_id<s2.source_id THEN CONCAT(CAST(s1.source_id AS varchar),'-',CAST(s2.source_id AS varchar)) ELSE CONCAT(CAST(s2.source_id AS varchar),'-',CAST(s1.source_id AS varchar)) END as pair_id FROM sirius_sources as s1 INNER JOIN sirius_sources as s2 ON q3c_join(s1.ra,s1.dec,s2.ra,s2.dec,1./3600) AND jhk_match(s1.phot_j_mag,s2.phot_j_mag,s1.phot_h_mag,s2.phot_h_mag,s1.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s1.source_id!=s2.source_id ) AS aux GROUP BY aux.pair_id) as aux2 GROUP BY FLOOR(aux2.ra*3600.0/1.0),FLOOR(aux2.dec*3600.0/1.0)
+CASE WHEN s1.source_id<s2.source_id THEN CONCAT(CAST(s1.source_id AS varchar),'-',CAST(s2.source_id AS varchar)) ELSE CONCAT(CAST(s2.source_id AS varchar),'-',CAST(s1.source_id AS varchar)) END as pair_id FROM sirius_sources as s1 INNER JOIN sirius_sources as s2 ON q3c_join(s1.ra,s1.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s1.phot_j_mag,s2.phot_j_mag,s1.phot_h_mag,s2.phot_h_mag,s1.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s1.source_id!=s2.source_id ) AS aux GROUP BY aux.pair_id) as aux2 GROUP BY FLOOR(aux2.ra*3600.0/1.0),FLOOR(aux2.dec*3600.0/1.0)
 UNION 
-SELECT s.source_id,s.ra,s.dec,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,1./3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id)
+SELECT s.source_id,s.ra,s.dec,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id);
