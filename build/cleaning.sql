@@ -46,7 +46,9 @@ q3c_dist(v1.ra,v1.dec,v2.ra,v2.dec)*3600. as ang_dist,
 CASE WHEN v1.source_id<v2.source_id THEN CONCAT(CAST(v1.source_id AS varchar),'-',CAST(v2.source_id AS varchar)) ELSE CONCAT(CAST(v2.source_id AS varchar),'-',CAST(v1.source_id AS varchar)) END as pair_id FROM vvv_sources AS v1 INNER JOIN vvv_sources AS v2 ON q3c_join(v1.ra,v1.dec,v2.ra,v2.dec,0.6/3600.) AND (COALESCE(ABS((v1.phot_j_mag-v2.phot_j_mag)/SQRT(v1.phot_j_mag_error*v1.phot_j_mag_error+v2.phot_j_mag_error*v2.phot_j_mag_error))<50.,True) AND COALESCE(ABS((v1.phot_h_mag-v2.phot_h_mag)/SQRT(v1.phot_h_mag_error*v1.phot_h_mag_error+v2.phot_h_mag_error*v2.phot_h_mag_error))<50.,True) AND COALESCE(ABS((v1.phot_ks_mag-v2.phot_ks_mag)/SQRT(v1.phot_ks_mag_error*v1.phot_ks_mag_error+v2.phot_ks_mag_error*v2.phot_ks_mag_error))<50.,True)) WHERE v1.source_id!=v2.source_id) AS aux GROUP BY aux.pair_id) 
 as aux2 GROUP BY FLOOR(aux2.ra*3600.0/2.0),FLOOR(aux2.dec*3600.0/2.0)
 UNION
-SELECT v.source_id,v.ra,v.dec,v.phot_j_mag,v.phot_j_mag_error,v.phot_h_mag,v.phot_h_mag_error,v.phot_ks_mag,v.phot_ks_mag_error, NULL as pair_id, NULL as ang_dist FROM vvv_sources as v WHERE v.source_id NOT IN 
+SELECT v.source_id,v.ra,v.dec,v.phot_z_mag,v.phot_z_mag_error,v.phot_z_flag,v.phot_y_mag,v.phot_y_mag_error,v.phot_y_flag,
+v.phot_j_mag,v.phot_j_mag_error,v.phot_j_flag,v.phot_h_mag,v.phot_h_mag_error,v.phot_h_flag,v.phot_ks_mag,v.phot_ks_mag_error,v.phot_ks_flag, 
+NULL as pair_id, NULL as ang_dist FROM vvv_sources as v WHERE v.source_id NOT IN 
 (SELECT v2.source_id FROM vvv_sources AS v2 INNER JOIN vvv_sources as v3 ON q3c_join(v3.ra,v3.dec,v2.ra,v2.dec,0.6/3600.) AND (COALESCE(ABS((v3.phot_j_mag-v2.phot_j_mag)/SQRT(v3.phot_j_mag_error*v3.phot_j_mag_error+v2.phot_j_mag_error*v2.phot_j_mag_error))<50.,True) AND COALESCE(ABS((v3.phot_h_mag-v2.phot_h_mag)/SQRT(v3.phot_h_mag_error*v3.phot_h_mag_error+v2.phot_h_mag_error*v2.phot_h_mag_error))<50.,True) AND COALESCE(ABS((v3.phot_ks_mag-v2.phot_ks_mag)/SQRT(v3.phot_ks_mag_error*v3.phot_ks_mag_error+v2.phot_ks_mag_error*v2.phot_ks_mag_error))<50.,True)) WHERE v2.source_id!=v3.source_id);
 
 
