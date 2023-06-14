@@ -139,3 +139,18 @@ RETURNS FLOAT AS $$
   END
 $$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION compute_hw(
+  FLOAT, -- J mag
+  FLOAT) -- H mag
+RETURNS FLOAT AS $$
+  SELECT 0.7829*$1 + 0.2171*$2- 0.0323*($1-$2)^2
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION compute_hw_error(
+  FLOAT, -- J mag
+  FLOAT, -- J mag error
+  FLOAT, -- H mag
+  FLOAT) -- H mag error
+RETURNS FLOAT AS $$
+  SELECT sqrt(0.035^2 + (0.7829*$2)^2 + (0.2171*$4)^2 + (0.0323*2*($1-$3)*$2)^2 + (0.0323*2*($1-$3)*$4)^2)
+$$ LANGUAGE SQL;
