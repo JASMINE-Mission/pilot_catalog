@@ -65,7 +65,7 @@ weighted_avg(ts.phot_h_mag,ts.phot_h_mag_error,vs.phot_h_mag,vs.phot_h_mag_error
 select_max(ts.phot_h_mag_error,vs.phot_h_mag_error) as phot_h_mag_error,
 weighted_avg(ts.phot_ks_mag,ts.phot_ks_mag_error,vs.phot_ks_mag,vs.phot_ks_mag_error) as phot_ks_mag, 
 select_max(ts.phot_ks_mag_error,vs.phot_ks_mag_error) as phot_ks_mag_error
-FROM vvv_sirius_xmatch as vs INNER JOIN tmass_sirius_xmatch as ts ON ts.sirius_source_id=vs.sirius_source_id
+FROM vvv_sirius_xmatch as vs INNER JOIN tmass_sirius_xmatch as ts ON ts.sirius_source_id=vs.sirius_source_id;
 
 CREATE INDEX IF NOT EXISTS tmass_vvv_sirius_xmatch_tmass_sourceid
 ON tmass_vvv_sirius_xmatch (tmass_source_id);
