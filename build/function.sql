@@ -106,3 +106,36 @@ RETURNS BOOLEAN AS $$
   SELECT
     (($1 BETWEEN -1.4 AND 0.7) AND ($2 BETWEEN -0.6 AND 0.6))
 $$ LANGUAGE SQL;
+
+
+CREATE OR REPLACE FUNCTION weighted_avg(
+  FLOAT, -- magnitude in the first catalog
+  FLOAT, -- magnitude uncertainty in the first catalog
+  FLOAT, -- magnitude in the second catalog
+  FLOAT) -- magnitude uncertainty in the second catalog
+RETURNS FLOAT AS $$
+  SELECT CASE 
+    WHEN ($2 IS NULL) OR ($4 IS NULL) THEN CASE
+      WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
+      WHEN COALESCE($2,1000) > COALESCE($4,1000) THEN $3
+      ELSE CASE 
+        WHEN ($1 IS NULL) AND ($3 IS NULL) THEN NULL
+        ELSE (COALESCE($1,$3)+COALESCE($3,$1))/2 
+        END
+      END
+    ELSE ($1/$2+$3/$4)/(1/$2+1/$4)
+    END
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION select_max(
+  FLOAT, -- value in the first catalog
+  FLOAT) -- value in the second catalog
+RETURNS FLOAT AS $$
+  SELECT CASE
+    WHEN COALESCE($1,-1000) < COALESCE($2,-1000) THEN $2
+    WHEN COALESCE($1,-1000) > COALESCE($2,-1000) THEN $1
+    ELSE CASE WHEN ($1 IS NULL) AND ($2 IS NULL) THEN NULL 
+      ELSE COALESCE($1,$2) END
+  END
+$$ LANGUAGE SQL;
+
