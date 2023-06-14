@@ -56,7 +56,7 @@ CREATE INDEX IF NOT EXISTS vvv_sirius_xmatch_sirius_sourceid
 ON vvv_sirius_xmatch (sirius_source_id);
 
 
-DROP TABLE IF EXISTS vvv_sirius_xmatch CASCADE;
+DROP TABLE IF EXISTS tmass_vvv_sirius_xmatch CASCADE;
 CREATE TABLE tmass_vvv_sirius_xmatch AS
 SELECT ts.tmass_source_id,ts.sirius_source_id,vs.vvv_source_id,(ts.ra+vs.ra)/2 as ra, (ts.dec+vs.dec)/2 as dec,
 weighted_avg(ts.phot_j_mag,ts.phot_j_mag_error,vs.phot_j_mag,vs.phot_j_mag_error) as phot_j_mag, 
