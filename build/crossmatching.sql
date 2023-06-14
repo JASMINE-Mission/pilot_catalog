@@ -61,7 +61,7 @@ CREATE TABLE tmass_vvv_sirius_xmatch AS
 SELECT ts.tmass_source_id,ts.sirius_source_id,vs.vvv_source_id,(ts.ra+vs.ra)/2 as ra, (ts.dec+vs.dec)/2 as dec,
 weighted_avg(ts.phot_j_mag,ts.phot_j_mag_error,vs.phot_j_mag,vs.phot_j_mag_error) as phot_j_mag, 
 select_max(ts.phot_j_mag_error,vs.phot_j_mag_error) as phot_j_mag_error,
-weighted_avg(ts.phot_h_mag,ts.phot_h_mag_error,vs.phot_h_mag,s.phot_h_mag_error) as phot_h_mag,
+weighted_avg(ts.phot_h_mag,ts.phot_h_mag_error,vs.phot_h_mag,vs.phot_h_mag_error) as phot_h_mag,
 select_max(ts.phot_h_mag_error,vs.phot_h_mag_error) as phot_h_mag_error,
 weighted_avg(ts.phot_ks_mag,ts.phot_ks_mag_error,vs.phot_ks_mag,vs.phot_ks_mag_error) as phot_ks_mag, 
 select_max(ts.phot_ks_mag_error,vs.phot_ks_mag_error) as phot_ks_mag_error
