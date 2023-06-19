@@ -45,7 +45,7 @@ CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.rd_flg,'-',t2.rd_flg) ELSE t1.
 CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.pair_id,'-',t2.pair_id) ELSE t1.pair_id END as pair_id,
 CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.ang_dist,t2.ang_dist) ELSE t1.ang_dist END as ang_dist, 
 CASE WHEN t2.source_id IS NOT NULL THEN t1.source_id*t2.source_id ELSE t1.source_id END as aux_ind
-FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) WHERE t1.source_id!=t2.source_id;
+FROM tmass_clean_step1 as t1 INNER JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) WHERE t1.source_id!=t2.source_id;
 
 CREATE INDEX IF NOT EXISTS tmass_clean_step2_sourceid
   ON tmass_clean_step2 (source_id);
