@@ -16,6 +16,10 @@ as aux2 GROUP BY aux2.source_id;
 
 CREATE INDEX IF NOT EXISTS tmass_clean_sourceid
   ON tmass_clean (source_id);
+CREATE INDEX IF NOT EXISTS tmass_clean_radec
+  ON tmass_clean (q3c_ang2ipix(ra,dec));
+CLUSTER tmass_clean_radec ON tmass_clean;
+ANALYZE tmass_clean;
 
 
 DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
