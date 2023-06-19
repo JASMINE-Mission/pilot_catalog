@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS tmass_clean CASCADE;
 CREATE TABLE tmass_clean AS
 SELECT MIN(aux2.source_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,MIN(aux2.designation) AS designation, 
 CASE WHEN AVG(aux2.phot_j_mag_error) IS NULL THEN AVG(aux2.phot_j_mag) ELSE SUM(aux2.phot_j_mag*aux2.phot_j_mag_error)/SUM(aux2.phot_j_mag_error) END as phot_j_mag, MAX(aux2.phot_j_cmsig) as phot_j_cmsig, MAX(aux2.phot_j_mag_error) as phot_j_mag_error, MIN(aux2.phot_j_snr) as phot_j_snr, 
