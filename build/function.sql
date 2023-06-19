@@ -31,15 +31,6 @@ RETURNS FLOAT AS $$
 $$ LANGUAGE SQL;
 
 
-CREATE OR REPLACE FUNCTION compute_average(
-  FLOAT, -- magnitude in the first catalog
-  FLOAT, -- magnitude uncertainty in the first catalog
-  FLOAT, -- magnitude in the second catalog
-  FLOAT) -- magnitude uncertainty in the second catalog
-RETURNS FLOAT AS $$
-  SELECT (COALESCE($1*$2,0)+COALESCE($3*$4,0))/(COALESCE($2,1)*COALESCE($4,1))
-$$ LANGUAGE SQL;
-
 CREATE OR REPLACE FUNCTION select_better(
   FLOAT, -- magnitude in the first catalog
   FLOAT, -- magnitude uncertainty in the first catalog
