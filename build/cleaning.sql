@@ -44,8 +44,14 @@ CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.quality_flag,'-',t2.quality_fl
 CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.rd_flg,'-',t2.rd_flg) ELSE t1.rd_flg END as rd_flg, 
 CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.pair_id,'-',t2.pair_id) ELSE t1.pair_id END as pair_id,
 CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.ang_dist,t2.ang_dist) ELSE t1.ang_dist END as ang_dist, 
-CASE WHEN t2.source_id IS NOT NULL THEN LEAST(CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',1) AS BIGINT),
-CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',2) AS BIGINT),CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',3) AS BIGINT),CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',4) AS BIGINT),CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',5) AS BIGINT),CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',6) AS BIGINT),CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7) AS BIGINT),CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8) AS BIGINT)) ELSE t1.source_id END as aux_ind
+CASE WHEN t2.source_id IS NOT NULL THEN LEAST(CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',1))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',1) AS BIGINT) ELSE NULL END,
+CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',2))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',2) AS BIGINT) ELSE NULL END,
+CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',3))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',3) AS BIGINT) ELSE NULL END,
+CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',4))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',4) AS BIGINT) ELSE NULL END,
+CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',5))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',5) AS BIGINT) ELSE NULL END,
+CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',6))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',6) AS BIGINT) ELSE NULL END,
+CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7) AS BIGINT) ELSE NULL END,
+CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8) AS BIGINT) ELSE NULL END) ELSE t1.source_id END as aux_ind
 FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) AND t1.source_id!=t2.source_id;
 --) AS aux2 GROUP BY aux2.aux_ind;
 
