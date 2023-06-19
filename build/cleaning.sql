@@ -51,7 +51,7 @@ CREATE INDEX IF NOT EXISTS tmass_clean_step2_sourceid
   ON tmass_clean_step2 (source_id);
 CREATE INDEX IF NOT EXISTS tmass_clean_step2_radec
   ON tmass_clean_step2 (q3c_ang2ipix(ra,dec));
-CLUSTER tmass_clean_step2_aux_radec ON tmass_clean_step2;
+CLUSTER tmass_clean_step2_radec ON tmass_clean_step2;
 ANALYZE tmass_clean_step2;
 
 
@@ -77,7 +77,8 @@ CREATE INDEX IF NOT EXISTS tmass_sources_clean_ra
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_dec
   ON tmass_sources_clean (dec);
 
-DROP TABLE IF EXISTS tmass_clean CASCADE;
+--DROP TABLE IF EXISTS tmass_clean_step1 CASCADE;
+--DROP TABLE IF EXISTS tmass_clean_step2 CASCADE;
 
 /*
 DROP TABLE IF EXISTS vvv_sources_clean CASCADE;
