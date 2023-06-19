@@ -22,10 +22,8 @@ CREATE INDEX IF NOT EXISTS tmass_clean_radec
 CLUSTER tmass_clean_radec ON tmass_clean;
 ANALYZE tmass_clean;
 
-
-DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
-CREATE TABLE tmass_sources_clean AS
-SELECT t1.source_id,
+DROP TABLE IF EXISTS tmass_clean_xmatch_aux CASCADE;
+CREATE TABLE tmass_clean_xmatch_aux AS
 CASE WHEN t2.source_id IS NOT NULL THEN (t1.ra+t2.ra)/2 ELSE t1.ra END as ra,
 CASE WHEN t2.source_id IS NOT NULL THEN (t1.dec+t2.dec)/2 ELSE t1.dec END as dec,
 t1.designation, 
@@ -44,10 +42,23 @@ CASE WHEN t2.source_id IS NOT NULL THEN LEAST(t1.phot_ks_snr,t2.phot_ks_snr) ELS
 CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.quality_flag,'-',t2.quality_flag) ELSE t1.quality_flag END as quality_flag, 
 CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.rd_flg,'-',t2.rd_flg) ELSE t1.rd_flg END as rd_flg, 
 CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.pair_id,'-',t2.pair_id) ELSE t1.pair_id END as pair_id,
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.ang_dist,t2.ang_dist) ELSE t1.ang_dist END as ang_dist 
-FROM tmass_clean as t1 LEFT JOIN tmass_clean as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) WHERE t1.source_id!=t2.source_id
+CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.ang_dist,t2.ang_dist) ELSE t1.ang_dist END as ang_dist, 
+CASE WHEN t2.source_id IS NOT NULL THEN t1.source_id*t2.source_id ELSE t1.source_id END as aux_ind
+FROM tmass_clean as t1 LEFT JOIN tmass_clean as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) WHERE t1.source_id!=t2.source_id;
+
+CREATE INDEX IF NOT EXISTS tmass_clean_xmatch_aux_sourceid
+  ON tmass_clean_xmatch_aux (source_id);
+CREATE INDEX IF NOT EXISTS tmass_clean_xmatch_aux_radec
+  ON tmass_clean_xmatch_aux (q3c_ang2ipix(ra,dec));
+CLUSTER tmass_clean_xmatch_aux_radec ON tmass_clean_xmatch_aux;
+ANALYZE tmass_clean_xmatch_aux;
+
+
+DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
+CREATE TABLE tmass_sources_clean AS
+SELECT * FROM tmass_clean_xmatch_aux
 UNION
-SELECT t.source_id,t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
+SELECT t.source_id,t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist, NULL as aux_ind FROM tmass_sources as t WHERE t.source_id NOT IN 
 (SELECT t2.source_id FROM tmass_sources AS t2 INNER JOIN tmass_sources as t3 ON q3c_join(t3.ra,t3.dec,t2.ra,t2.dec,2./3600.) AND jhk_match(t3.phot_j_mag,t2.phot_j_mag,t3.phot_h_mag,t2.phot_h_mag,t3.phot_ks_mag,t2.phot_ks_mag,2.0::FLOAT) WHERE t2.source_id!=t3.source_id); 
 
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_sourceid
