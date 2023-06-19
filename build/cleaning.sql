@@ -57,7 +57,7 @@ CREATE INDEX IF NOT EXISTS tmass_sources_clean_ra
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_dec
   ON tmass_sources_clean (dec);
 
-"""
+/*
 DROP TABLE IF EXISTS vvv_sources_clean CASCADE;
 CREATE TABLE vvv_sources_clean AS
 SELECT MIN(aux2.source_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,
@@ -144,4 +144,4 @@ CREATE INDEX IF NOT EXISTS sirius_sources_clean_ra
   ON sirius_sources_clean (ra);
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_dec
   ON sirius_sources_clean (dec);
-  """"
+*/
