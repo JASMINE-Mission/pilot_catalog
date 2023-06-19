@@ -12,7 +12,10 @@ CASE WHEN AVG(aux.phot_ks_mag_error) IS NULL THEN AVG(aux.phot_ks_mag) ELSE SUM(
 STRING_AGG(aux.quality_flag,'-') as quality_flag, STRING_AGG(aux.rd_flg,'-') as rd_flg, 
 MIN(aux.pair_id) as pair_id,MAX(aux.ang_dist) as ang_dist FROM 
 (SELECT t1.*,CASE WHEN t1.source_id<t2.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(t2.source_id AS varchar)) ELSE CONCAT(CAST(t2.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id,q3c_dist(t1.ra,t1.dec,t2.ra,t2.dec) as ang_dist FROM tmass_sources AS t1 INNER JOIN tmass_sources AS t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) AND jhk_match(t1.phot_j_mag,t2.phot_j_mag,t1.phot_h_mag,t2.phot_h_mag,t1.phot_ks_mag,t2.phot_ks_mag,2.0::FLOAT) WHERE t1.source_id!=t2.source_id) AS aux GROUP BY aux.pair_id) 
-as aux2 GROUP BY aux2.source_id
+as aux2 GROUP BY aux2.source_id;
+
+CREATE INDEX IF NOT EXISTS tmass_clean_sourceid
+  ON tmass_clean (source_id);
 
 
 DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
