@@ -80,8 +80,8 @@ CREATE TABLE tmass_sources_clean (
   phot_ks_cmsig      FLOAT,
   phot_ks_mag_error  FLOAT,
   phot_ks_snr        FLOAT,
-  quality_flag       VARCHAR(3) NOT NULL,
-  rd_flg             VARCHAR(3) NOT NULL,
+  quality_flag       VARCHAR(200) NOT NULL,
+  rd_flg             VARCHAR(200) NOT NULL,
   pair_id            VARCHAR(500),
   ang_dist           FLOAT
 );
