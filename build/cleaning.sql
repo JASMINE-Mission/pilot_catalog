@@ -62,9 +62,31 @@ CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7))>1 THEN CAS
 CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8) AS BIGINT) ELSE NULL END) ELSE t1.source_id END as aux_ind
 FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) AND t1.source_id!=t2.source_id) AS aux2 GROUP BY aux2.aux_ind;
 
-
 DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
-CREATE TABLE tmass_sources_clean AS
+CREATE TABLE tmass_sources_clean (
+  source_id          BIGSERIAL PRIMARY KEY,
+  ra                 FLOAT NOT NULL,
+  dec                FLOAT NOT NULL,
+  designation        VARCHAR(32) NOT NULL,
+  phot_j_mag         FLOAT,
+  phot_j_cmsig       FLOAT,
+  phot_j_mag_error   FLOAT,
+  phot_j_snr         FLOAT,
+  phot_h_mag         FLOAT,
+  phot_h_cmsig       FLOAT,
+  phot_h_mag_error   FLOAT,
+  phot_h_snr         FLOAT,
+  phot_ks_mag        FLOAT,
+  phot_ks_cmsig      FLOAT,
+  phot_ks_mag_error  FLOAT,
+  phot_ks_snr        FLOAT,
+  quality_flag       VARCHAR(3) NOT NULL,
+  rd_flg             VARCHAR(3) NOT NULL,
+  pair_id            VARCHAR(500),
+  ang_dist           FLOAT
+);
+
+INSERT INTO tmass_sources_clean
 SELECT * FROM tmass_clean_step2
 UNION
 SELECT t.source_id,t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
@@ -171,7 +193,30 @@ FROM vvv_clean_step1 as v1 LEFT JOIN vvv_clean_step1 as v2 ON q3c_join(v1.ra,v1.
 
 
 DROP TABLE IF EXISTS vvv_sources_clean CASCADE;
-CREATE TABLE vvv_sources_clean AS
+CREATE TABLE vvv_sources_clean (
+  source_id          BIGSERIAL PRIMARY KEY,
+  ra                 FLOAT NOT NULL,
+  dec                FLOAT NOT NULL,
+  phot_z_mag         FLOAT,
+  phot_z_mag_error   FLOAT,
+  phot_z_flag        INTEGER,
+  phot_y_mag         FLOAT,
+  phot_y_mag_error   FLOAT,
+  phot_y_flag        INTEGER,
+  phot_j_mag         FLOAT,
+  phot_j_mag_error   FLOAT,
+  phot_j_flag        INTEGER,
+  phot_h_mag         FLOAT,
+  phot_h_mag_error   FLOAT,
+  phot_h_flag        FLOAT,
+  phot_ks_mag        FLOAT,
+  phot_ks_mag_error  FLOAT,
+  phot_ks_flag       FLOAT,
+  pair_id            VARCHAR(500),
+  ang_dist           FLOAT
+);
+
+INSERT INTO vvv_sources_clean
 SELECT * FROM vvv_clean_step2
 UNION
 SELECT v.source_id,v.ra,v.dec,
@@ -276,7 +321,28 @@ FROM sirius_clean_step1 as s1 LEFT JOIN sirius_clean_step1 as s2 ON q3c_join(s1.
 
 
 DROP TABLE IF EXISTS sirius_sources_clean CASCADE;
-CREATE TABLE sirius_sources_clean AS
+CREATE TABLE sirius_sources_clean (
+  source_id          BIGSERIAL PRIMARY KEY,
+  ra                 FLOAT NOT NULL,
+  dec                FLOAT NOT NULL,
+  position_j_x       FLOAT,
+  position_j_y       FLOAT,
+  phot_j_mag         FLOAT,
+  phot_j_mag_error   FLOAT,
+  position_h_x       FLOAT,
+  position_h_y       FLOAT,
+  phot_h_mag         FLOAT,
+  phot_h_mag_error   FLOAT,
+  position_ks_x      FLOAT,
+  position_ks_y      FLOAT,
+  phot_ks_mag        FLOAT,
+  phot_ks_mag_error  FLOAT,
+  plate_name         VARCHAR(400),
+  pair_id            VARCHAR(500),
+  ang_dist           FLOAT
+);
+
+INSERT INTO sirius_sources_clean
 SELECT * FROM sirius_clean_step2
 UNION 
 SELECT s.source_id,s.ra,s.dec,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id);
