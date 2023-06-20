@@ -90,7 +90,7 @@ ANALYZE tmass_sources_clean;
 DROP TABLE IF EXISTS tmass_clean_step1 CASCADE;
 DROP TABLE IF EXISTS tmass_clean_step2 CASCADE;
 
-
+--source_id,ra,dec,designation,phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,quality_flag,rd_flg,pair_id,ang_dist
 
 
 --VVV
@@ -206,7 +206,7 @@ DROP TABLE IF EXISTS vvv_clean_step1 CASCADE;
 DROP TABLE IF EXISTS vvv_clean_step2 CASCADE;
 
 
-
+-- source_id,ra,dec,phot_z_mag,phot_z_mag_error,phot_z_flag,phot_y_mag,phot_y_mag_error,phot_y_flag,phot_j_mag,phot_j_mag_error,phot_j_flag,phot_h_mag,phot_h_mag_error,phot_h_flag,phot_ks_mag,phot_ks_mag_error,phot_ks_flag,pair_id,ang_dist
 
 
 
@@ -300,3 +300,6 @@ ANALYZE sirius_sources_clean;
 
 DROP TABLE IF EXISTS sirius_clean_step1 CASCADE;
 DROP TABLE IF EXISTS sirius_clean_step2 CASCADE;
+
+
+--source_id,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,phot_ks_mag_error,plate_name,pair_id,ang_dist
