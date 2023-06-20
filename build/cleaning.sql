@@ -1,4 +1,3 @@
-/*
 -- 2MASS
 
 DROP TABLE IF EXISTS tmass_clean_step1 CASCADE;
@@ -62,14 +61,6 @@ CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',6))>1 THEN CAS
 CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7) AS BIGINT) ELSE NULL END,
 CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8) AS BIGINT) ELSE NULL END) ELSE t1.source_id END as aux_ind
 FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) AND t1.source_id!=t2.source_id) AS aux2 GROUP BY aux2.aux_ind;
-
-
-CREATE INDEX IF NOT EXISTS tmass_clean_step2_sourceid
-  ON tmass_clean_step2 (source_id);
-CREATE INDEX IF NOT EXISTS tmass_clean_step2_radec
-  ON tmass_clean_step2 (q3c_ang2ipix(ra,dec));
-CLUSTER tmass_clean_step2_radec ON tmass_clean_step2;
-ANALYZE tmass_clean_step2;
 
 
 DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
@@ -214,7 +205,7 @@ ANALYZE vvv_sources_clean;
 DROP TABLE IF EXISTS vvv_clean_step1 CASCADE;
 DROP TABLE IF EXISTS vvv_clean_step2 CASCADE;
 
-*/
+
 
 
 
@@ -306,3 +297,6 @@ CREATE INDEX IF NOT EXISTS sirius_sources_clean_dec
   ON sirius_sources_clean (dec);
 CLUSTER sirius_sources_clean_radec ON sirius_sources_clean;
 ANALYZE sirius_sources_clean;
+
+DROP TABLE IF EXISTS sirius_clean_step1 CASCADE;
+DROP TABLE IF EXISTS sirius_clean_step2 CASCADE;
