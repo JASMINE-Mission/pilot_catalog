@@ -281,7 +281,7 @@ CASE WHEN LENGTH(SPLIT_PART(CONCAT(s1.pair_id,'-',s2.pair_id),'-',5))>1 THEN CAS
 CASE WHEN LENGTH(SPLIT_PART(CONCAT(s1.pair_id,'-',s2.pair_id),'-',6))>1 THEN CAST(SPLIT_PART(CONCAT(s1.pair_id,'-',s2.pair_id),'-',6) AS BIGINT) ELSE NULL END,
 CASE WHEN LENGTH(SPLIT_PART(CONCAT(s1.pair_id,'-',s2.pair_id),'-',7))>1 THEN CAST(SPLIT_PART(CONCAT(s1.pair_id,'-',s2.pair_id),'-',7) AS BIGINT) ELSE NULL END,
 CASE WHEN LENGTH(SPLIT_PART(CONCAT(s1.pair_id,'-',s2.pair_id),'-',8))>1 THEN CAST(SPLIT_PART(CONCAT(s1.pair_id,'-',s2.pair_id),'-',8) AS BIGINT) ELSE NULL END) ELSE s1.source_id END as aux_ind
-FROM sirius_clean_step1 as s1 LEFT JOIN sirius_clean_step1 as s2 ON q3c_join(s1.ra,s1.dec,s2.ra,s2.dec,0.6/3600.) AND s1.source_id!=s2.source_id) as aux2 GROUP BY aux2.aux_id
+FROM sirius_clean_step1 as s1 LEFT JOIN sirius_clean_step1 as s2 ON q3c_join(s1.ra,s1.dec,s2.ra,s2.dec,0.6/3600.) AND s1.source_id!=s2.source_id) as aux2 GROUP BY aux2.aux_id;
 
 
 DROP TABLE IF EXISTS sirius_sources_clean CASCADE;
