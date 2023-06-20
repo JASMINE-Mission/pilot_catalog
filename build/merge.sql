@@ -89,7 +89,7 @@ SELECT  --sirius unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM sirius_sources_clean as s WHERE  source_id NOT IN (SELECT sirius_source_id FROM vvv_sirius_xmatch) AND  source_id NOT IN (SELECT sirius_source_id FROM tmass_vvv_xmatch);
+  FROM sirius_sources_clean as s WHERE  source_id NOT IN (SELECT sirius_source_id FROM vvv_sirius_xmatch) AND  source_id NOT IN (SELECT sirius_source_id FROM tmass_sirius_xmatch);
 
 
 
