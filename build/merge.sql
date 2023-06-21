@@ -70,7 +70,9 @@ SELECT  --vvv unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM vvv_sources_clean as v WHERE  v.source_id NOT IN (SELECT vvv_source_id FROM vvv_sirius_xmatch) AND  v.source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_xmatch)
+  FROM vvv_sources_clean as v WHERE  v.source_id NOT IN (SELECT vvv_source_id FROM vvv_sirius_xmatch) AND  v.source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_xmatch);
+
+/*
 UNION
 SELECT  --sirius unique sources  
   nextval('merged_sources_clean_source_id_seq') AS source_id,
@@ -91,7 +93,7 @@ SELECT  --sirius unique sources
   phot_ks_mag, 
   phot_ks_mag_error 
   FROM sirius_sources_clean as s WHERE  s.source_id NOT IN (SELECT sirius_source_id FROM vvv_sirius_xmatch) AND  s.source_id NOT IN (SELECT sirius_source_id FROM tmass_sirius_xmatch);
-
+*/
 
 
 CREATE INDEX IF NOT EXISTS merged_sources_clean_radec
