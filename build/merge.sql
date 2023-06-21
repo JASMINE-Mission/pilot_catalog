@@ -19,6 +19,7 @@ CREATE TABLE merged_sources_clean (
   phot_ks_mag_error  FLOAT
 );
 
+
 ALTER TABLE merged_sources_clean ADD CONSTRAINT
   FK_merged_tmass_id FOREIGN KEY (tmass_source_id)
   REFERENCES tmass_sources_clean (source_id) ON DELETE CASCADE;
@@ -33,7 +34,7 @@ ALTER TABLE merged_sources_clean ADD CONSTRAINT
 INSERT INTO merged_sources_clean
 SELECT  --tmass unique sources
   nextval('merged_sources_clean_source_id_seq') AS source_id,
-  source_id AS tmass_source_id,
+  t.source_id AS tmass_source_id,
   NULL AS sirius_source_id,
   NULL AS vvv_source_id, 
   compute_glon( ra, dec) as glon,
@@ -49,13 +50,13 @@ SELECT  --tmass unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM tmass_sources_clean as t WHERE  source_id NOT IN (SELECT tmass_source_id FROM tmass_sirius_xmatch) AND  source_id NOT IN (SELECT tmass_source_id FROM tmass_vvv_xmatch)
+  FROM tmass_sources_clean as t WHERE  t.source_id NOT IN (SELECT tmass_source_id FROM tmass_sirius_xmatch) AND  t.source_id NOT IN (SELECT tmass_source_id FROM tmass_vvv_xmatch)
 UNION
 SELECT  --vvv unique sources  
   nextval('merged_sources_clean_source_id_seq') AS source_id,
   NULL AS tmass_source_id,
   NULL AS sirius_source_id,
-  source_id AS vvv_source_id, 
+  v.source_id AS vvv_source_id, 
   compute_glon( ra, dec) as glon,
   compute_glat( ra, dec) as glat,  
   ra,  
@@ -69,12 +70,12 @@ SELECT  --vvv unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM vvv_sources_clean as v WHERE  source_id NOT IN (SELECT vvv_source_id FROM vvv_sirius_xmatch) AND  source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_xmatch)
+  FROM vvv_sources_clean as v WHERE  v.source_id NOT IN (SELECT vvv_source_id FROM vvv_sirius_xmatch) AND  v.source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_xmatch)
 UNION
 SELECT  --sirius unique sources  
   nextval('merged_sources_clean_source_id_seq') AS source_id,
   NULL AS tmass_source_id,
-  source_id AS sirius_source_id,
+  s.source_id AS sirius_source_id,
   NULL AS vvv_source_id, 
   compute_glon( ra, dec) as glon,
   compute_glat( ra, dec) as glat,  
@@ -89,7 +90,7 @@ SELECT  --sirius unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM sirius_sources_clean as s WHERE  source_id NOT IN (SELECT sirius_source_id FROM vvv_sirius_xmatch) AND  source_id NOT IN (SELECT sirius_source_id FROM tmass_sirius_xmatch);
+  FROM sirius_sources_clean as s WHERE  s.source_id NOT IN (SELECT sirius_source_id FROM vvv_sirius_xmatch) AND  s.source_id NOT IN (SELECT sirius_source_id FROM tmass_sirius_xmatch);
 
 
 
