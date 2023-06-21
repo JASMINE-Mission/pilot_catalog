@@ -35,8 +35,8 @@ INSERT INTO merged_sources_clean
 SELECT  --tmass unique sources
   nextval('merged_sources_clean_source_id_seq') AS source_id,
   t.source_id AS tmass_source_id,
-  NULL AS sirius_source_id,
-  NULL AS vvv_source_id, 
+  CAST(NULL AS BIGINT) AS sirius_source_id,
+  CAST(NULL AS BIGINT) AS vvv_source_id, 
   compute_glon( ra, dec) as glon,
   compute_glat( ra, dec) as glat,  
   ra,  
@@ -54,8 +54,8 @@ SELECT  --tmass unique sources
 UNION
 SELECT  --vvv unique sources  
   nextval('merged_sources_clean_source_id_seq') AS source_id,
-  NULL AS tmass_source_id,
-  NULL AS sirius_source_id,
+  CAST(NULL AS BIGINT) AS tmass_source_id,
+  CAST(NULL AS BIGINT) AS sirius_source_id,
   v.source_id AS vvv_source_id, 
   compute_glon( ra, dec) as glon,
   compute_glat( ra, dec) as glat,  
