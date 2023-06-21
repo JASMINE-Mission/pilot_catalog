@@ -8,7 +8,7 @@ CREATE TABLE merged_sources_clean (
   glat               FLOAT,
   ra                 FLOAT,
   dec                FLOAT,
-  source             VARCHAR(1),
+  source             VARCHAR(3),
   phot_hw_mag        FLOAT,
   phot_hw_mag_error  FLOAT,
   phot_j_mag         FLOAT,

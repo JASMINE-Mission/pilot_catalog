@@ -64,7 +64,7 @@ FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra
 
 DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
 CREATE TABLE tmass_sources_clean (
-  source_id          BIGSERIAL PRIMARY KEY,
+  source_id          BIGINT PRIMARY KEY,
   ra                 FLOAT NOT NULL,
   dec                FLOAT NOT NULL,
   designation        VARCHAR(32) NOT NULL,
@@ -194,7 +194,7 @@ FROM vvv_clean_step1 as v1 LEFT JOIN vvv_clean_step1 as v2 ON q3c_join(v1.ra,v1.
 
 DROP TABLE IF EXISTS vvv_sources_clean CASCADE;
 CREATE TABLE vvv_sources_clean (
-  source_id          BIGSERIAL PRIMARY KEY,
+  source_id          BIGINT PRIMARY KEY,
   ra                 FLOAT NOT NULL,
   dec                FLOAT NOT NULL,
   phot_z_mag         FLOAT,
@@ -322,7 +322,7 @@ FROM sirius_clean_step1 as s1 LEFT JOIN sirius_clean_step1 as s2 ON q3c_join(s1.
 
 DROP TABLE IF EXISTS sirius_sources_clean CASCADE;
 CREATE TABLE sirius_sources_clean (
-  source_id          BIGSERIAL PRIMARY KEY,
+  source_id          BIGINT PRIMARY KEY,
   ra                 FLOAT NOT NULL,
   dec                FLOAT NOT NULL,
   position_j_x       FLOAT,
