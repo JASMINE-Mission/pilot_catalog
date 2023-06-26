@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS tmass_vvv_xmatch CASCADE;
 CREATE TABLE tmass_vvv_xmatch AS
-SELECT t.source_id as tmass_source_id,v.source_id as vvv_source_id, (t.ra+v.ra)/2 as ra, (t.dec+v.dec)/2 as dec,
+SELECT t.source_id as tmass_source_id,v.source_id as vvv_source_id, v.ra as ra, v.dec as dec, CAST('V' AS VARCHAR(1)) AS position_source,
 weighted_avg(t.phot_j_mag,t.phot_j_mag_error,v.phot_j_mag,v.phot_j_mag_error) as phot_j_mag, 
 select_max(t.phot_j_mag_error,v.phot_j_mag_error) as phot_j_mag_error,
 weighted_avg(t.phot_h_mag,t.phot_h_mag_error,v.phot_h_mag,v.phot_h_mag_error) as phot_h_mag, 
@@ -20,7 +20,7 @@ ON tmass_vvv_xmatch (vvv_source_id);
 
 DROP TABLE IF EXISTS tmass_sirius_xmatch CASCADE;
 CREATE TABLE tmass_sirius_xmatch AS
-SELECT t.source_id as tmass_source_id,s.source_id as sirius_source_id, (t.ra+s.ra)/2 as ra, (t.dec+s.dec)/2 as dec,
+SELECT t.source_id as tmass_source_id,s.source_id as sirius_source_id, s.ra as ra, s.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
 weighted_avg(t.phot_j_mag,t.phot_j_mag_error,s.phot_j_mag,s.phot_j_mag_error) as phot_j_mag, 
 select_max(t.phot_j_mag_error,s.phot_j_mag_error) as phot_j_mag_error,
 weighted_avg(t.phot_h_mag,t.phot_h_mag_error,s.phot_h_mag,s.phot_h_mag_error) as phot_h_mag,
@@ -39,7 +39,7 @@ ON tmass_sirius_xmatch (sirius_source_id);
 
 DROP TABLE IF EXISTS vvv_sirius_xmatch CASCADE;
 CREATE TABLE vvv_sirius_xmatch AS
-SELECT v.source_id as vvv_source_id,s.source_id as sirius_source_id, (v.ra+s.ra)/2 as ra, (v.dec+s.dec)/2 as dec,
+SELECT v.source_id as vvv_source_id,s.source_id as sirius_source_id, s.ra as ra, s.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
 weighted_avg(v.phot_j_mag,v.phot_j_mag_error,s.phot_j_mag,s.phot_j_mag_error) as phot_j_mag, 
 select_max(v.phot_j_mag_error,s.phot_j_mag_error) as phot_j_mag_error,
 weighted_avg(v.phot_h_mag,v.phot_h_mag_error,s.phot_h_mag,s.phot_h_mag_error) as phot_h_mag,
@@ -58,7 +58,7 @@ ON vvv_sirius_xmatch (sirius_source_id);
 
 DROP TABLE IF EXISTS tmass_vvv_sirius_xmatch CASCADE;
 CREATE TABLE tmass_vvv_sirius_xmatch AS
-SELECT ts.tmass_source_id,ts.sirius_source_id,vs.vvv_source_id,(ts.ra+vs.ra)/2 as ra, (ts.dec+vs.dec)/2 as dec,
+SELECT ts.tmass_source_id,ts.sirius_source_id,vs.vvv_source_id,ts.ra as ra, ts.dec as dec, CAST("S" AS VARCHAR(1)) AS position_source,
 weighted_avg(ts.phot_j_mag,ts.phot_j_mag_error,vs.phot_j_mag,vs.phot_j_mag_error) as phot_j_mag, 
 select_max(ts.phot_j_mag_error,vs.phot_j_mag_error) as phot_j_mag_error,
 weighted_avg(ts.phot_h_mag,ts.phot_h_mag_error,vs.phot_h_mag,vs.phot_h_mag_error) as phot_h_mag,
