@@ -77,9 +77,9 @@ if __name__ == '__main__':
 
     df = pd.read_csv(args.src)
 
-    df['j_h'] = pd.to_numeric(df.j_h,errors='coerce')
-    df['h_k'] = pd.to_numeric(df.h_ks,errors='coerce')
-    df['j_k'] = pd.to_numeric(df.j_ks,errors='coerce')
+    df['color_j_h'] = pd.to_numeric(df.j_h,errors='coerce')
+    df['color_h_ks'] = pd.to_numeric(df.h_ks,errors='coerce')
+    df['color_j_ks'] = pd.to_numeric(df.j_ks,errors='coerce')
 
     df['rd_flg'] = df.rd_flg.apply(lambda x: f'{x:03d}')
 
