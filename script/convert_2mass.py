@@ -63,4 +63,4 @@ if __name__ == '__main__':
 
     if os.path.exists(args.csv):
         print(f'Warning: file "{args.csv}" already exists.')
-    df.to_csv(args.csv, index=False)
+    df[columns].to_csv(args.csv, index=False)
