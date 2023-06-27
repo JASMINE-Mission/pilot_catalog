@@ -356,12 +356,12 @@ CREATE TABLE sirius_sources_clean (
   phot_ks_mag        FLOAT,
   phot_ks_mag_error  FLOAT,
   plate_name         VARCHAR(400),
-  pair_id            VARCHAR(500),
+  pair_id            VARCHAR(8) ARRAY[10],
   ang_dist           FLOAT
 );
 
 INSERT INTO sirius_sources_clean
-SELECT source_id,compute_glon(ra,dec) as glon, compute_glat(ra,dec) as glat,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,phot_ks_mag_error,plate_name,pair_id,ang_dist FROM sirius_clean_step2
+SELECT source_id,compute_glon(ra,dec) as glon, compute_glat(ra,dec) as glat,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,phot_ks_mag_error,plate_name,ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(pair_id,'-')) as a) as pair_id,ang_dist FROM sirius_clean_step2
 UNION 
 SELECT s.source_id,compute_glon(s.ra,s.dec) as glon, compute_glat(s.ra,s.dec) as glat,s.ra,s.dec,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id);
 
