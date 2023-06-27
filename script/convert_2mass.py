@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     if os.path.exists(args.csv):
         if args.overwrite is False:
-            raise OSError(f'Error: file "{args.csv}" already exists.')
+            raise OSError(f'Error: file {args.csv} already exists.')
 
     df = pd.read_csv(args.src)
 
