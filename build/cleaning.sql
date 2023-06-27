@@ -229,7 +229,7 @@ CREATE TABLE vvv_sources_clean (
 INSERT INTO vvv_sources_clean
 SELECT source_id,compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,phot_z_mag,phot_z_mag_error,phot_z_flag,phot_y_mag,phot_y_mag_error,phot_y_flag,phot_j_mag,phot_j_mag_error,phot_j_flag,phot_h_mag,phot_h_mag_error,phot_h_flag,phot_ks_mag,phot_ks_mag_error,phot_ks_flag,pair_id,ang_dist FROM vvv_clean_step2
 UNION
-SELECT v.source_id,compute_glon( g.ra, g.dec) as glon, compute_glat( g.ra, g.dec) as glat,v.ra,v.dec,
+SELECT v.source_id,compute_glon( v.ra, v.dec) as glon, compute_glat( v.ra, v.dec) as glat,v.ra,v.dec,
 v.phot_z_mag,CASE WHEN v.phot_z_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_z_mag_error,0.001) END as phot_z_mag_error,v.phot_z_flag,
 v.phot_y_mag,CASE WHEN v.phot_y_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_y_mag_error,0.001) END as phot_y_mag_error,v.phot_y_flag,
 v.phot_j_mag,CASE WHEN v.phot_j_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_j_mag_error,0.001) END as phot_j_mag_error,v.phot_j_flag,
