@@ -222,7 +222,7 @@ CREATE TABLE vvv_sources_clean (
   phot_ks_mag        FLOAT,
   phot_ks_mag_error  FLOAT,
   phot_ks_flag       FLOAT,
-  pair_id            VARCHAR(500),
+  pair_id            VARCHAR(1000),
   ang_dist           FLOAT
 );
 
