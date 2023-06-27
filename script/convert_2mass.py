@@ -5,7 +5,7 @@ from astropy.coordinates import SkyCoord, Longitude
 import pandas as pd
 import sys,os
 
-columns = (
+columns = [
     'ra',
     'dec',
     'designation',
@@ -29,7 +29,7 @@ columns = (
     'j_h',
     'h_k',
     'j_k',
-)
+]
 
 
 if __name__ == '__main__':
