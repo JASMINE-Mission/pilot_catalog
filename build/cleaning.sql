@@ -262,7 +262,7 @@ CREATE INDEX IF NOT EXISTS vvv_sources_clean_dec
 CLUSTER vvv_sources_clean_radec ON vvv_sources_clean;
 ANALYZE vvv_sources_clean;
 
-
+/*
 DROP TABLE IF EXISTS vvv_clean_step1 CASCADE;
 DROP TABLE IF EXISTS vvv_clean_step2 CASCADE;
 
@@ -393,3 +393,4 @@ DROP TABLE IF EXISTS sirius_clean_step2 CASCADE;
 
 
 --source_id,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,phot_ks_mag_error,plate_name,pair_id,ang_dist
+*/
