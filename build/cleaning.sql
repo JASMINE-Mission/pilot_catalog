@@ -84,12 +84,12 @@ CREATE TABLE tmass_sources_clean (
   phot_ks_snr        FLOAT,
   quality_flag       VARCHAR(200) NOT NULL,
   rd_flg             VARCHAR(200) NOT NULL,
-  pair_id            VARCHAR(500),
+  pair_id            VARCHAR(7) ARRAY[10],
   ang_dist           FLOAT
 );
 
 INSERT INTO tmass_sources_clean
-SELECT source_id, compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,designation,phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,quality_flag,rd_flg,pair_id,ang_dist FROM tmass_clean_step2
+SELECT source_id, compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,designation,phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,quality_flag,rd_flg,ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(pair_id,'-')) as a) as pair_id,ang_dist FROM tmass_clean_step2
 UNION
 SELECT t.source_id,compute_glon( t.ra, t.dec) as glon, compute_glat( t.ra, t.dec) as glat, t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
 (SELECT t2.source_id FROM tmass_sources AS t2 INNER JOIN tmass_sources as t3 ON q3c_join(t3.ra,t3.dec,t2.ra,t2.dec,2./3600.) AND jhk_match(t3.phot_j_mag,t2.phot_j_mag,t3.phot_h_mag,t2.phot_h_mag,t3.phot_ks_mag,t2.phot_ks_mag,2.0::FLOAT) WHERE t2.source_id!=t3.source_id); 
@@ -222,12 +222,12 @@ CREATE TABLE vvv_sources_clean (
   phot_ks_mag        FLOAT,
   phot_ks_mag_error  FLOAT,
   phot_ks_flag       FLOAT,
-  pair_id            VARCHAR(1000),
+  pair_id            VARCHAR(12) ARRAY[10],
   ang_dist           FLOAT
 );
 
 INSERT INTO vvv_sources_clean
-SELECT source_id,compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,phot_z_mag,phot_z_mag_error,phot_z_flag,phot_y_mag,phot_y_mag_error,phot_y_flag,phot_j_mag,phot_j_mag_error,phot_j_flag,phot_h_mag,phot_h_mag_error,phot_h_flag,phot_ks_mag,phot_ks_mag_error,phot_ks_flag,pair_id,ang_dist FROM vvv_clean_step2
+SELECT source_id,compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,phot_z_mag,phot_z_mag_error,phot_z_flag,phot_y_mag,phot_y_mag_error,phot_y_flag,phot_j_mag,phot_j_mag_error,phot_j_flag,phot_h_mag,phot_h_mag_error,phot_h_flag,phot_ks_mag,phot_ks_mag_error,phot_ks_flag,ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(pair_id,'-')) as a) as pair_id,ang_dist FROM vvv_clean_step2
 UNION
 SELECT v.source_id,compute_glon( v.ra, v.dec) as glon, compute_glat( v.ra, v.dec) as glat,v.ra,v.dec,
 v.phot_z_mag,CASE WHEN v.phot_z_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_z_mag_error,0.001) END as phot_z_mag_error,v.phot_z_flag,
