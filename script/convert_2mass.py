@@ -5,7 +5,7 @@ from astropy.coordinates import SkyCoord, Longitude
 import pandas as pd
 import sys,os
 
-columns_old = (
+columns = (
     'ra',
     'dec',
     'designation',
@@ -31,32 +31,6 @@ columns_old = (
     'j_k',
 )
 
-columns_new = (
-    'ra',
-    'dec',
-    'designation',
-    'phot_j_mag',
-    'phot_j_cmsig',
-    'phot_j_mag_error',
-    'phot_j_snr',
-    'phot_h_mag',
-    'phot_h_cmsig',
-    'phot_h_mag_error',
-    'phot_h_snr',
-    'phot_ks_mag',
-    'phot_ks_cmsig',
-    'phot_ks_mag_error',
-    'phot_ks_snr',
-    'quality_flag',
-    'contaminated',
-    'glon',
-    'glat',
-    'rd_flg',
-    'j_h',
-    'h_ks',
-    'j_ks',
-)
-
 
 if __name__ == '__main__':
     parser = ap(description='Reformat 2MASS catalog')
@@ -77,9 +51,9 @@ if __name__ == '__main__':
 
     df = pd.read_csv(args.src)
 
-    df['color_j_h'] = pd.to_numeric(df.color_j_h,errors='coerce')
-    df['color_h_ks'] = pd.to_numeric(df.color_h_ks,errors='coerce')
-    df['color_j_ks'] = pd.to_numeric(df.color_j_ks,errors='coerce')
+    df['j_h'] = pd.to_numeric(df.j_h,errors='coerce')
+    df['h_k'] = pd.to_numeric(df.h_k,errors='coerce')
+    df['j_k'] = pd.to_numeric(df.j_k,errors='coerce')
 
     df['rd_flg'] = df.rd_flg.apply(lambda x: f'{x:03d}')
 
