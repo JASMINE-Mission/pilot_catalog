@@ -89,7 +89,7 @@ CREATE TABLE tmass_sources_clean (
 );
 
 INSERT INTO tmass_sources_clean
-SELECT *, compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat FROM tmass_clean_step2
+SELECT source_id, compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,designation,phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,quality_flag,rd_flg,pair_id,ang_dist FROM tmass_clean_step2
 UNION
 SELECT t.source_id,compute_glon( t.ra, t.dec) as glon, compute_glat( t.ra, t.dec) as glat, t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
 (SELECT t2.source_id FROM tmass_sources AS t2 INNER JOIN tmass_sources as t3 ON q3c_join(t3.ra,t3.dec,t2.ra,t2.dec,2./3600.) AND jhk_match(t3.phot_j_mag,t2.phot_j_mag,t3.phot_h_mag,t2.phot_h_mag,t3.phot_ks_mag,t2.phot_ks_mag,2.0::FLOAT) WHERE t2.source_id!=t3.source_id); 
@@ -227,9 +227,9 @@ CREATE TABLE vvv_sources_clean (
 );
 
 INSERT INTO vvv_sources_clean
-SELECT *,compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat FROM vvv_clean_step2
+SELECT source_id,compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,phot_z_mag,phot_z_mag_error,phot_z_flag,phot_y_mag,phot_y_mag_error,phot_y_flag,phot_j_mag,phot_j_mag_error,phot_j_flag,phot_h_mag,phot_h_mag_error,phot_h_flag,phot_ks_mag,phot_ks_mag_error,phot_ks_flag,pair_id,ang_dist FROM vvv_clean_step2
 UNION
-SELECT v.source_id,v.ra,v.dec,compute_glon( g.ra, g.dec) as glon, compute_glat( g.ra, g.dec) as glat,
+SELECT v.source_id,compute_glon( g.ra, g.dec) as glon, compute_glat( g.ra, g.dec) as glat,v.ra,v.dec,
 v.phot_z_mag,CASE WHEN v.phot_z_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_z_mag_error,0.001) END as phot_z_mag_error,v.phot_z_flag,
 v.phot_y_mag,CASE WHEN v.phot_y_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_y_mag_error,0.001) END as phot_y_mag_error,v.phot_y_flag,
 v.phot_j_mag,CASE WHEN v.phot_j_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_j_mag_error,0.001) END as phot_j_mag_error,v.phot_j_flag,
@@ -361,9 +361,9 @@ CREATE TABLE sirius_sources_clean (
 );
 
 INSERT INTO sirius_sources_clean
-SELECT *,compute_glon(ra,dec) as glon, compute_glat(ra,dec) as glat FROM sirius_clean_step2
+SELECT source_id,compute_glon(ra,dec) as glon, compute_glat(ra,dec) as glat,ra,dec,position_j_x,position_j_y,phot_j_mag,phot_j_mag_error,position_h_x,position_h_y,phot_h_mag,phot_h_mag_error,position_ks_x,position_ks_y,phot_ks_mag,phot_ks_mag_error,plate_name,pair_id,ang_dist FROM sirius_clean_step2
 UNION 
-SELECT s.source_id,s.ra,s.dec,compute_glon(s.ra,s.dec) as glon, compute_glat(s.ra,s.dec) as glat,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id);
+SELECT s.source_id,compute_glon(s.ra,s.dec) as glon, compute_glat(s.ra,s.dec) as glat,s.ra,s.dec,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id);
 
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_sourceid
   ON sirius_sources_clean (source_id);
