@@ -65,6 +65,8 @@ FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra
 DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
 CREATE TABLE tmass_sources_clean (
   source_id          BIGINT PRIMARY KEY,
+  glon               FLOAT NOT NULL,
+  glat               FLOAT NOT NULL,
   ra                 FLOAT NOT NULL,
   dec                FLOAT NOT NULL,
   designation        VARCHAR(32) NOT NULL,
@@ -87,13 +89,15 @@ CREATE TABLE tmass_sources_clean (
 );
 
 INSERT INTO tmass_sources_clean
-SELECT * FROM tmass_clean_step2
+SELECT *, compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat FROM tmass_clean_step2
 UNION
-SELECT t.source_id,t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
+SELECT t.source_id,compute_glon( t.ra, t.dec) as glon, compute_glat( t.ra, t.dec) as glat, t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
 (SELECT t2.source_id FROM tmass_sources AS t2 INNER JOIN tmass_sources as t3 ON q3c_join(t3.ra,t3.dec,t2.ra,t2.dec,2./3600.) AND jhk_match(t3.phot_j_mag,t2.phot_j_mag,t3.phot_h_mag,t2.phot_h_mag,t3.phot_ks_mag,t2.phot_ks_mag,2.0::FLOAT) WHERE t2.source_id!=t3.source_id); 
 
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_sourceid
   ON tmass_sources_clean (source_id);
+CREATE INDEX IF NOT EXISTS tmass_sources_clean_glonglat
+  ON tmass_sources_clean (q3c_ang2ipix(glon,glat));
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_radec
   ON tmass_sources_clean (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_jmag
@@ -102,6 +106,10 @@ CREATE INDEX IF NOT EXISTS tmass_sources_clean_hmag
   ON tmass_sources_clean (phot_h_mag);
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_ksmag
   ON tmass_sources_clean (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS tmass_sources_clean_glon
+  ON tmass_sources_clean (glon);
+CREATE INDEX IF NOT EXISTS tmass_sources_clean_glat
+  ON tmass_sources_clean (glat);
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_ra
   ON tmass_sources_clean (ra);
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_dec
@@ -195,6 +203,8 @@ FROM vvv_clean_step1 as v1 LEFT JOIN vvv_clean_step1 as v2 ON q3c_join(v1.ra,v1.
 DROP TABLE IF EXISTS vvv_sources_clean CASCADE;
 CREATE TABLE vvv_sources_clean (
   source_id          BIGINT PRIMARY KEY,
+  glon               FLOAT NOT NULL,
+  glat               FLOAT NOT NULL,
   ra                 FLOAT NOT NULL,
   dec                FLOAT NOT NULL,
   phot_z_mag         FLOAT,
@@ -217,9 +227,9 @@ CREATE TABLE vvv_sources_clean (
 );
 
 INSERT INTO vvv_sources_clean
-SELECT * FROM vvv_clean_step2
+SELECT *,compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat FROM vvv_clean_step2
 UNION
-SELECT v.source_id,v.ra,v.dec,
+SELECT v.source_id,v.ra,v.dec,compute_glon( g.ra, g.dec) as glon, compute_glat( g.ra, g.dec) as glat,
 v.phot_z_mag,CASE WHEN v.phot_z_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_z_mag_error,0.001) END as phot_z_mag_error,v.phot_z_flag,
 v.phot_y_mag,CASE WHEN v.phot_y_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_y_mag_error,0.001) END as phot_y_mag_error,v.phot_y_flag,
 v.phot_j_mag,CASE WHEN v.phot_j_mag_error IS NULL THEN NULL ELSE GREATEST(v.phot_j_mag_error,0.001) END as phot_j_mag_error,v.phot_j_flag,
@@ -231,6 +241,8 @@ NULL as pair_id, NULL as ang_dist FROM vvv_sources as v WHERE v.source_id NOT IN
 
 CREATE INDEX IF NOT EXISTS vvv_sources_clean_sourceid
   ON vvv_sources_clean (source_id);
+CREATE INDEX IF NOT EXISTS vvv_sources_clean_glonglat
+  ON vvv_sources_clean (q3c_ang2ipix(glon,glat));
 CREATE INDEX IF NOT EXISTS vvv_sources_clean_radec
   ON vvv_sources_clean (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS vvv_sources_clean_jmag
@@ -239,6 +251,10 @@ CREATE INDEX IF NOT EXISTS vvv_sources_clean_hmag
   ON vvv_sources_clean (phot_h_mag);
 CREATE INDEX IF NOT EXISTS vvv_sources_clean_ksmag
   ON vvv_sources_clean (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS vvv_sources_clean_glon
+  ON vvv_sources_clean (glon);
+CREATE INDEX IF NOT EXISTS vvv_sources_clean_glat
+  ON vvv_sources_clean (glat);
 CREATE INDEX IF NOT EXISTS vvv_sources_clean_ra
   ON vvv_sources_clean (ra);
 CREATE INDEX IF NOT EXISTS vvv_sources_clean_dec
@@ -323,6 +339,8 @@ FROM sirius_clean_step1 as s1 LEFT JOIN sirius_clean_step1 as s2 ON q3c_join(s1.
 DROP TABLE IF EXISTS sirius_sources_clean CASCADE;
 CREATE TABLE sirius_sources_clean (
   source_id          BIGINT PRIMARY KEY,
+  glon               FLOAT NOT NULL,
+  glat               FLOAT NOT NULL,
   ra                 FLOAT NOT NULL,
   dec                FLOAT NOT NULL,
   position_j_x       FLOAT,
@@ -343,12 +361,14 @@ CREATE TABLE sirius_sources_clean (
 );
 
 INSERT INTO sirius_sources_clean
-SELECT * FROM sirius_clean_step2
+SELECT *,compute_glon(ra,dec) as glon, compute_glat(ra,dec) as glat FROM sirius_clean_step2
 UNION 
-SELECT s.source_id,s.ra,s.dec,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id);
+SELECT s.source_id,s.ra,s.dec,compute_glon(s.ra,s.dec) as glon, compute_glat(s.ra,s.dec) as glat,s.position_j_x,s.position_j_y,s.phot_j_mag,s.phot_j_mag_error,s.position_h_x,s.position_h_y,s.phot_h_mag,s.phot_h_mag_error,s.position_ks_x,s.position_ks_y,s.phot_ks_mag,s.phot_ks_mag_error,s.plate_name, NULL as pair_id, NULL as ang_dist FROM sirius_sources as s WHERE s.source_id NOT IN (SELECT s2.source_id FROM sirius_sources as s3 INNER JOIN sirius_sources as s2 ON q3c_join(s3.ra,s3.dec,s2.ra,s2.dec,0.6/3600) AND jhk_match(s3.phot_j_mag,s2.phot_j_mag,s3.phot_h_mag,s2.phot_h_mag,s3.phot_ks_mag,s2.phot_ks_mag,1.0::FLOAT) WHERE s3.source_id!=s2.source_id);
 
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_sourceid
   ON sirius_sources_clean (source_id);
+CREATE INDEX IF NOT EXISTS sirius_sources_clean_glonglat
+  ON sirius_sources_clean (q3c_ang2ipix(glon,glat));
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_radec
   ON sirius_sources_clean (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_jmag
@@ -357,6 +377,10 @@ CREATE INDEX IF NOT EXISTS sirius_sources_clean_hmag
   ON sirius_sources_clean (phot_h_mag);
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_ksmag
   ON sirius_sources_clean (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS sirius_sources_clean_glon
+  ON sirius_sources_clean (glon);
+CREATE INDEX IF NOT EXISTS sirius_sources_clean_glat
+  ON sirius_sources_clean (glat);
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_ra
   ON sirius_sources_clean (ra);
 CREATE INDEX IF NOT EXISTS sirius_sources_clean_dec
