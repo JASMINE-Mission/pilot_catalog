@@ -32,7 +32,7 @@ CASE WHEN AVG(aux2.phot_h_mag_error) IS NULL THEN AVG(aux2.phot_h_mag) ELSE SUM(
 CASE WHEN AVG(aux2.phot_ks_mag_error) IS NULL THEN AVG(aux2.phot_ks_mag) ELSE SUM(aux2.phot_ks_mag/aux2.phot_ks_mag_error)/SUM(1/aux2.phot_ks_mag_error) END as phot_ks_mag, MAX(aux2.phot_ks_cmsig) as phot_ks_cmsig, MAX(aux2.phot_ks_mag_error) as phot_ks_mag_error, MIN(aux2.phot_ks_snr) as phot_ks_snr, 
 STRING_AGG(aux2.quality_flag,'-') as quality_flag, STRING_AGG(aux2.rd_flg,'-') as rd_flg, 
 MIN(aux2.pair_id) as pair_id,MAX(aux2.ang_dist) as ang_dist FROM
-(SELECT t1.*,CASE WHEN t2.source_id IS NULL THEN array_to_string(ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(t1.pair_id_aux)) as a),'-') ELSE
+(SELECT t1.*,CASE WHEN t2.source_id IS NULL THEN array_to_string(ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(t1.pair_id_aux,'-')) as a),'-') ELSE
   array_to_string(ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(CONCAT(t1.pair_id_aux,'-',t2.pair_id_aux),'-')) as a),'-') END as pair_id
 FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) AND t1.source_id!=t2.source_id) as aux2 GROUP BY aux2.pair_id;
 
