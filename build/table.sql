@@ -106,5 +106,6 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
   ag_upper           FLOAT,
   a0                 FLOAT,
   a0_lower           FLOAT,
-  a0_upper           FLOAT
+  a0_upper           FLOAT,
+  tmass_designation  VARCHAR(32)
 );
