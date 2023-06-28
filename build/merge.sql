@@ -181,7 +181,12 @@ SELECT  --2MASSxVVVxSIRIUS
   FROM tmass_vvv_sirius_xmatch as tvs;
 
 
-
+CREATE INDEX IF NOT EXISTS merged_sources_tmass_source_id
+  ON merged_sources (tmass_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_vvv_source_id
+  ON merged_sources (vvv_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_sirius_source_id
+  ON merged_sources (sirius_source_id);
 CREATE INDEX IF NOT EXISTS merged_sources_radec
   ON merged_sources (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS merged_sources_glonglat
