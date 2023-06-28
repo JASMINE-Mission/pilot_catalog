@@ -67,7 +67,7 @@ CREATE TABLE tmass_sources_clean (
 );
 
 INSERT INTO tmass_sources_clean
-SELECT source_id, compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,designation,phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,quality_flag,rd_flg,ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(pair_id,'-')) as a) as pair_id,ang_dist FROM tmass_clean_step2
+SELECT source_id, compute_glon( ra, dec) as glon, compute_glat( ra, dec) as glat,ra,dec,designation,phot_j_mag,phot_j_cmsig,phot_j_mag_error,phot_j_snr,phot_h_mag,phot_h_cmsig,phot_h_mag_error,phot_h_snr,phot_ks_mag,phot_ks_cmsig,phot_ks_mag_error,phot_ks_snr,quality_flag,rd_flg,ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(pair_id_aux,'-')) as a) as pair_id,ang_dist FROM tmass_clean_step2
 UNION
 SELECT t.source_id,compute_glon( t.ra, t.dec) as glon, compute_glat( t.ra, t.dec) as glat, t.ra,t.dec,t.designation,t.phot_j_mag,t.phot_j_cmsig,t.phot_j_mag_error,t.phot_j_snr,t.phot_h_mag,t.phot_h_cmsig,t.phot_h_mag_error,t.phot_h_snr,t.phot_ks_mag,t.phot_ks_cmsig,t.phot_ks_mag_error,t.phot_ks_snr,t.quality_flag,t.rd_flg, NULL as pair_id, NULL as ang_dist FROM tmass_sources as t WHERE t.source_id NOT IN 
 (SELECT t2.source_id FROM tmass_sources AS t2 INNER JOIN tmass_sources as t3 ON q3c_join(t3.ra,t3.dec,t2.ra,t2.dec,2./3600.) AND jhk_match(t3.phot_j_mag,t2.phot_j_mag,t3.phot_h_mag,t2.phot_h_mag,t3.phot_ks_mag,t2.phot_ks_mag,2.0::FLOAT) WHERE t2.source_id!=t3.source_id); 
