@@ -25,7 +25,23 @@ FROM
 JOIN
   merged_sources AS m
 ON
-  q3c_join(g.glon,g.glat,m.glon,m.glat,1.0/3600.0);
+  q3c_join(g.glon,g.glat,m.glon,m.glat,1.0/3600.0)
+WHERE g.tmass_designation IS NULL;
+UNION
+SELECT
+  m.source_id AS merged_source_id,
+  g.source_id AS gdr3_source_id,
+  3600.0*q3c_dist(m.ra,m.dec,g.ra,g.dec) AS distance
+FROM 
+  (SELECT ra,dec,source_id,tmass_designation FROM gdr3_sources WHERE tmass_designation IS NOT NULL) AS g
+JOIN
+  tmass_sources_clean AS t
+ON
+  g.tmass_designation = t.designation
+JOIN
+  (SELECT ra,dec,source_id,tmass_source_id FROM merged_sources WHERE tmass_source_id IS NOT NULL) as m
+ON
+  m.tmass_source_id = t.source_id;
 
 CREATE INDEX IF NOT EXISTS link_gdr3_merged_source_id
   ON link_gdr3 (merged_source_id);
