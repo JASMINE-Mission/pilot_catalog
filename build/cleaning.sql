@@ -1,6 +1,6 @@
 -- 2MASS
 
-DROP TABLE IF EXISTS tmass_clean_step1 CASCADE;
+DROP TABLE IF EXISTS tmass_clean_step1 CASCADE; -- This table is the first step in the merging. It creates pairs of neighbours and merges them (and then makes a first attempt at merging groups of >2 duplicates by merging based on source_id)
 CREATE TABLE tmass_clean_step1 AS
 SELECT MIN(aux2.source_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,MIN(aux2.designation) AS designation, 
 CASE WHEN AVG(aux2.phot_j_mag_error) IS NULL THEN AVG(aux2.phot_j_mag) ELSE SUM(aux2.phot_j_mag/aux2.phot_j_mag_error)/SUM(1/aux2.phot_j_mag_error) END as phot_j_mag, MAX(aux2.phot_j_cmsig) as phot_j_cmsig, MAX(aux2.phot_j_mag_error) as phot_j_mag_error, MIN(aux2.phot_j_snr) as phot_j_snr, 
@@ -25,54 +25,20 @@ CLUSTER tmass_clean_step1_radec ON tmass_clean_step1;
 ANALYZE tmass_clean_step1;
 
 DROP TABLE IF EXISTS tmass_clean_step2 CASCADE;
-CREATE TABLE tmass_clean_step2 AS
-SELECT MIN(aux2.source_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,MIN(aux2.designation) AS designation, 
+CREATE TABLE tmass_clean_step2 AS -- This table is the second step in the merging. For each source, it looks at all the sources within a certain radius and collects all their sources_ids, from which the smallest one is picked to be used in the GROUP BY.)
+SELECT 
+MIN(aux2.merging_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,MIN(aux2.designation) AS designation, 
 CASE WHEN AVG(aux2.phot_j_mag_error) IS NULL THEN AVG(aux2.phot_j_mag) ELSE SUM(aux2.phot_j_mag/aux2.phot_j_mag_error)/SUM(1/aux2.phot_j_mag_error) END as phot_j_mag, MAX(aux2.phot_j_cmsig) as phot_j_cmsig, MAX(aux2.phot_j_mag_error) as phot_j_mag_error, MIN(aux2.phot_j_snr) as phot_j_snr, 
 CASE WHEN AVG(aux2.phot_h_mag_error) IS NULL THEN AVG(aux2.phot_h_mag) ELSE SUM(aux2.phot_h_mag/aux2.phot_h_mag_error)/SUM(1/aux2.phot_h_mag_error) END as phot_h_mag, MAX(aux2.phot_h_cmsig) as phot_h_cmsig, MAX(aux2.phot_h_mag_error) as phot_h_mag_error, MIN(aux2.phot_h_snr) as phot_h_snr,  
 CASE WHEN AVG(aux2.phot_ks_mag_error) IS NULL THEN AVG(aux2.phot_ks_mag) ELSE SUM(aux2.phot_ks_mag/aux2.phot_ks_mag_error)/SUM(1/aux2.phot_ks_mag_error) END as phot_ks_mag, MAX(aux2.phot_ks_cmsig) as phot_ks_cmsig, MAX(aux2.phot_ks_mag_error) as phot_ks_mag_error, MIN(aux2.phot_ks_snr) as phot_ks_snr, 
 STRING_AGG(aux2.quality_flag,'-') as quality_flag, STRING_AGG(aux2.rd_flg,'-') as rd_flg, 
-MIN(aux2.pair_id) as pair_id,MAX(aux2.ang_dist) as ang_dist FROM
-(SELECT t1.*,CASE WHEN t2.source_id IS NULL THEN array_to_string(ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(t1.pair_id_aux,'-')) as a),'-') ELSE
-  array_to_string(ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(CONCAT(t1.pair_id_aux,'-',t2.pair_id_aux),'-')) as a),'-') END as pair_id
-FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) AND t1.source_id!=t2.source_id) as aux2 GROUP BY aux2.pair_id;
+STRING_AGG(aux2.pair_id_aux,'-') as pair_id_aux,MAX(aux2.ang_dist) as ang_dist FROM (
+SELECT t1.*,CASE WHEN aux.source_id IS NULL THEN t1.source_id ELSE CAST((SELECT UNNEST(ARRAY(SELECT DISTINCT a FROM UNNEST(string_to_array(CONCAT(t1.pair_id_aux,'-',aux.pair_id_aux),'-')) as a)) ORDER BY 1 asc LIMIT 1) AS BIGINT) END as merging_id ,aux.N FROM tmass_clean_step1 as t1 LEFT JOIN LATERAL (
+  SELECT MIN(aux3.source_id) AS source_id,STRING_AGG(aux3.pair_id_aux,'-') as pair_id_aux,COUNT(*) as N FROM (
+    SELECT t2.source_id,t2.pair_id_aux FROM tmass_clean_step1 as t2 WHERE q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600) AND t1.source_id!=t2.source_id) as aux3 GROUP BY (SELECT 1)
+ ) as aux ON true) as aux2 GROUP BY aux2.merging_id;
 
-/*
-SELECT MIN(aux2.source_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,MIN(aux2.designation) AS designation, 
-CASE WHEN AVG(aux2.phot_j_mag_error) IS NULL THEN AVG(aux2.phot_j_mag) ELSE SUM(aux2.phot_j_mag/aux2.phot_j_mag_error)/SUM(1/aux2.phot_j_mag_error) END as phot_j_mag, MAX(aux2.phot_j_cmsig) as phot_j_cmsig, MAX(aux2.phot_j_mag_error) as phot_j_mag_error, MIN(aux2.phot_j_snr) as phot_j_snr, 
-CASE WHEN AVG(aux2.phot_h_mag_error) IS NULL THEN AVG(aux2.phot_h_mag) ELSE SUM(aux2.phot_h_mag/aux2.phot_h_mag_error)/SUM(1/aux2.phot_h_mag_error) END as phot_h_mag, MAX(aux2.phot_h_cmsig) as phot_h_cmsig, MAX(aux2.phot_h_mag_error) as phot_h_mag_error, MIN(aux2.phot_h_snr) as phot_h_snr,  
-CASE WHEN AVG(aux2.phot_ks_mag_error) IS NULL THEN AVG(aux2.phot_ks_mag) ELSE SUM(aux2.phot_ks_mag/aux2.phot_ks_mag_error)/SUM(1/aux2.phot_ks_mag_error) END as phot_ks_mag, MAX(aux2.phot_ks_cmsig) as phot_ks_cmsig, MAX(aux2.phot_ks_mag_error) as phot_ks_mag_error, MIN(aux2.phot_ks_snr) as phot_ks_snr, 
-STRING_AGG(aux2.quality_flag,'-') as quality_flag, STRING_AGG(aux2.rd_flg,'-') as rd_flg, 
-STRING_AGG(aux2.pair_id,'-') as pair_id,MAX(aux2.ang_dist) as ang_dist FROM
-(SELECT t1.source_id,
-CASE WHEN t2.source_id IS NOT NULL THEN (t1.ra+t2.ra)/2 ELSE t1.ra END as ra,
-CASE WHEN t2.source_id IS NOT NULL THEN (t1.dec+t2.dec)/2 ELSE t1.dec END as dec,
-t1.designation, 
-CASE WHEN t2.source_id IS NOT NULL THEN weighted_avg(t1.phot_j_mag,t1.phot_j_mag_error,t2.phot_j_mag,t2.phot_j_mag_error) ELSE t1.phot_j_mag END as phot_j_mag, 
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.phot_j_cmsig,t2.phot_j_cmsig) ELSE t1.phot_j_cmsig END as phot_j_cmsig, 
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.phot_j_mag_error,t2.phot_j_mag_error) ELSE t1.phot_j_mag_error END as phot_j_mag_error, 
-CASE WHEN t2.source_id IS NOT NULL THEN LEAST(t1.phot_j_snr,t2.phot_j_snr) ELSE t1.phot_j_snr END as phot_j_snr, 
-CASE WHEN t2.source_id IS NOT NULL THEN weighted_avg(t1.phot_h_mag,t1.phot_h_mag_error,t2.phot_h_mag,t2.phot_h_mag_error) ELSE t1.phot_h_mag END as phot_h_mag, 
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.phot_h_cmsig,t2.phot_h_cmsig) ELSE t1.phot_h_cmsig END as phot_h_cmsig, 
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.phot_h_mag_error,t2.phot_h_mag_error) ELSE t1.phot_h_mag_error END as phot_h_mag_error, 
-CASE WHEN t2.source_id IS NOT NULL THEN LEAST(t1.phot_h_snr,t2.phot_h_snr) ELSE t1.phot_h_snr END as phot_h_snr, 
-CASE WHEN t2.source_id IS NOT NULL THEN weighted_avg(t1.phot_ks_mag,t1.phot_ks_mag_error,t2.phot_ks_mag,t2.phot_ks_mag_error) ELSE t1.phot_ks_mag END as phot_ks_mag, 
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.phot_ks_cmsig,t2.phot_ks_cmsig) ELSE t1.phot_ks_cmsig END as phot_ks_cmsig, 
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.phot_ks_mag_error,t2.phot_ks_mag_error) ELSE t1.phot_ks_mag_error END as phot_ks_mag_error, 
-CASE WHEN t2.source_id IS NOT NULL THEN LEAST(t1.phot_ks_snr,t2.phot_ks_snr) ELSE t1.phot_ks_snr END as phot_ks_snr,
-CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.quality_flag,'-',t2.quality_flag) ELSE t1.quality_flag END as quality_flag, 
-CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.rd_flg,'-',t2.rd_flg) ELSE t1.rd_flg END as rd_flg, 
-CASE WHEN t2.source_id IS NOT NULL THEN CONCAT(t1.pair_id,'-',t2.pair_id) ELSE t1.pair_id END as pair_id,
-CASE WHEN t2.source_id IS NOT NULL THEN GREATEST(t1.ang_dist,t2.ang_dist) ELSE t1.ang_dist END as ang_dist, 
-CASE WHEN t2.source_id IS NOT NULL THEN LEAST(CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',1))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',1) AS BIGINT) ELSE NULL END,
-CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',2))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',2) AS BIGINT) ELSE NULL END,
-CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',3))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',3) AS BIGINT) ELSE NULL END,
-CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',4))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',4) AS BIGINT) ELSE NULL END,
-CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',5))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',5) AS BIGINT) ELSE NULL END,
-CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',6))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',6) AS BIGINT) ELSE NULL END,
-CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',7) AS BIGINT) ELSE NULL END,
-CASE WHEN LENGTH(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8))>1 THEN CAST(SPLIT_PART(CONCAT(t1.pair_id,'-',t2.pair_id),'-',8) AS BIGINT) ELSE NULL END) ELSE t1.source_id END as aux_ind
-FROM tmass_clean_step1 as t1 LEFT JOIN tmass_clean_step1 as t2 ON q3c_join(t1.ra,t1.dec,t2.ra,t2.dec,2./3600.) AND t1.source_id!=t2.source_id) AS aux2 GROUP BY aux2.aux_ind;
-*/
+
 
 DROP TABLE IF EXISTS tmass_sources_clean CASCADE;
 CREATE TABLE tmass_sources_clean (
