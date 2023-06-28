@@ -74,6 +74,8 @@ SELECT t.source_id,compute_glon( t.ra, t.dec) as glon, compute_glat( t.ra, t.dec
 
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_sourceid
   ON tmass_sources_clean (source_id);
+CREATE INDEX IF NOT EXISTS tmass_sources_clean_designation
+  ON tmass_sources_clean (designation);  
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_glonglat
   ON tmass_sources_clean (q3c_ang2ipix(glon,glat));
 CREATE INDEX IF NOT EXISTS tmass_sources_clean_radec

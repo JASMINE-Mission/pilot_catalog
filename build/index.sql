@@ -63,7 +63,8 @@ CREATE INDEX IF NOT EXISTS vvv_sources_glat
 CLUSTER vvv_sources_glonglat ON vvv_sources;
 ANALYZE vvv_sources;
 
-
+CREATE INDEX IF NOT EXISTS gdr3_sources_tmass_designation
+ON gdr3_sources (tmass_designation);
 CREATE INDEX IF NOT EXISTS gdr3_sources_radec
   ON gdr3_sources (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS gdr3_sources_glonglat
