@@ -26,7 +26,7 @@ JOIN
   merged_sources AS m
 ON
   q3c_join(g.glon,g.glat,m.glon,m.glat,1.0/3600.0)
-WHERE g.tmass_designation IS NULL;
+WHERE g.tmass_designation IS NULL
 UNION
 SELECT
   m.source_id AS merged_source_id,
