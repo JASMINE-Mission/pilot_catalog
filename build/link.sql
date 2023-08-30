@@ -17,16 +17,16 @@ ALTER TABLE link_gdr3 ADD CONSTRAINT
 INSERT INTO link_gdr3
   (merged_source_id,gdr3_source_id,distance)
 SELECT
-  m.source_id AS merged_source_id,
+  aux.merged_source_id,
   g.source_id AS gdr3_source_id,
-  3600.0*q3c_dist(m.ra,m.dec,g.ra,g.dec) AS distance
+  distance
 FROM
-  gdr3_sources AS g
-JOIN
-  merged_sources AS m
-ON
-  q3c_join(g.glon,g.glat,m.glon,m.glat,1.0/3600.0)
-WHERE g.tmass_designation IS NULL
+  (SELECT ra,dec,source_id FROM gdr3_sources WHERE tmass_designation IS NULL) AS g
+LEFT JOIN LATERAL(
+  SELECT m.source_id as merged_source_id,q3c_dist(m.ra,m.dec,g.ra,g.dec) as distance,m.tmass_source_id FROM merged_sources AS m
+  WHERE q3c_join(g.glon,g.glat,m.glon,m.glat,1.0/3600.0)
+  ORDER BY distance ASC LIMIT 1
+) as aux
 UNION
 SELECT
   m.source_id AS merged_source_id,
