@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
   pmra_error         FLOAT,
   pmdec              FLOAT,
   pmdec_error        FLOAT,
+  pmra_pmdec_corr    FLOAT,
   radial_velocity    FLOAT,
   radial_velocity_error FLOAT,
   phot_g_mag         FLOAT,
