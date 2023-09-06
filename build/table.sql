@@ -129,6 +129,6 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
   fidelity_v2        FLOAT,
   phot_j_mag_pred    FLOAT,
   phot_h_mag_pred    FLOAT,
-  phot_ks_mag_pred   FLOAT,
+  phot_ks_mag_pred   FLOAT
 );
 
