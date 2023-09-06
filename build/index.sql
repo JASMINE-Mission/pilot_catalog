@@ -75,6 +75,12 @@ CREATE INDEX IF NOT EXISTS gdr3_sources_bpmag
   ON gdr3_sources (phot_bp_mag);
 CREATE INDEX IF NOT EXISTS gdr3_sources_rpmag
   ON gdr3_sources (phot_rp_mag);
+CREATE INDEX IF NOT EXISTS gdr3_sources_jmag
+  ON gdr3_sources (phot_j_mag_pred);
+CREATE INDEX IF NOT EXISTS gdr3_sources_hmag
+  ON gdr3_sources (phot_h_mag_pred);
+CREATE INDEX IF NOT EXISTS gdr3_sources_ksmag
+  ON gdr3_sources (phot_ks_mag_pred);
 CREATE INDEX IF NOT EXISTS gdr3_sources_ra
   ON gdr3_sources (ra);
 CREATE INDEX IF NOT EXISTS gdr3_sources_dec
