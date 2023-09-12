@@ -27,22 +27,26 @@ CREATE TABLE link_gdr3_sirius (
   distance         FLOAT(10) NOT NULL
 );
 
+WITH neighbours AS (SELECT
+  aux.source_id AS sirius_source_id,
+  g.source_id AS gdr3_source_id,
+  aux.distance AS distance,
+  ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
+FROM gdr3_sources AS g, LATERAL(
+  SELECT source_id,3600.0*q3c_dist(s0.ra,s0.dec,g.ra_sirius,g.dec_sirius) as distance,
+    CASE WHEN (s0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
+      (CASE WHEN (s0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
+        CASE WHEN (s0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE s0.phot_j_mag-g.phot_j_mag_pred END)
+          ELSE s0.phot_h_mag-g.phot_h_mag_pred END) 
+            ELSE s0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
+      FROM sirius_sources_clean AS s0 
+      WHERE q3c_join(s0.ra,s0.dec,g.ra_sirius,g.dec_sirius,2./3600.)) as aux WHERE aux.mag_diff < 1.0)
 INSERT INTO link_gdr3_sirius
   (sirius_source_id,gdr3_source_id,distance)
-SELECT
-  aux.sirius_source_id AS sirius_source_id,
-  g.source_id AS gdr3_source_id,
-  aux.distance AS distance
-FROM gdr3_sources AS g,
-  LATERAL(
-  SELECT s.source_id as sirius_source_id, 3600.0*q3c_dist(s.ra,s.dec,g.ra,g.dec) as distance 
-  FROM 
-      (SELECT * FROM sirius_sources_clean AS s0 
-      WHERE jhk_match(s0.phot_j_mag,g.phot_j_mag_pred,
-                      s0.phot_h_mag,g.phot_h_mag_pred,
-                      s0.phot_ks_mag,g.phot_ks_mag_pred,1.0::FLOAT)) as s
-  WHERE q3c_join(s.ra,s.dec,g.ra,g.dec,1.0/3600.0)
-  ORDER BY distance ASC LIMIT 1) as aux;
+SELECT sirius_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
+--GREATEST(1.0,(GREATEST(g.ra_error,g.dec_error)*5 + g.pm*14)/1000)
+
+
 
 
 -- Link Gaia DR3 <-> VVV
@@ -53,6 +57,24 @@ CREATE TABLE link_gdr3_vvv (
   gdr3_source_id   BIGINT NOT NULL,
   distance         FLOAT(10) NOT NULL
 );
+
+WITH neighbours AS (SELECT
+  aux.source_id AS vvv_source_id,
+  g.source_id AS gdr3_source_id,
+  aux.distance AS distance,
+  ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
+FROM gdr3_sources AS g, LATERAL(
+  SELECT source_id,3600.0*q3c_dist(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv) as distance,
+    CASE WHEN (v0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
+      (CASE WHEN (v0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
+        CASE WHEN (v0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE v0.phot_j_mag-g.phot_j_mag_pred END)
+          ELSE v0.phot_h_mag-g.phot_h_mag_pred END) 
+            ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
+      FROM vvv_sources_clean AS v0 
+      WHERE q3c_join(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv,2./3600.)) as aux WHERE aux.mag_diff < 1.0)
+INSERT INTO link_gdr3_vvv
+  (vvv_source_id,gdr3_source_id,distance)
+SELECT vvv_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
 
 -- Concatenate all
 
