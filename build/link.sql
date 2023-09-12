@@ -116,8 +116,8 @@ INSERT INTO link_gdr3
   (merged_source_id,gdr3_source_id,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
 SELECT
   m.source_id AS merged_source_id,
-  Case When lsirius.distance <= lvvv.distance And lsirius.distance <= ltmass.distance Then lsirius.gdr3_source_id
-        When lvvv.distance < lsirius.distance And lvvv.distance <= ltmass.distance Then  lvvv.gdr3_source_id
+  Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.gdr3_source_id
+        When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.gdr3_source_id
         Else ltmass.gdr3_source_id
   End As gdr3_source_id,
   ltmass.gdr3_source_id AS gdr3_tmass_source_id,
