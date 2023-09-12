@@ -95,9 +95,9 @@ ON link_gdr3_vvv (gdr3_source_id);
 DROP TABLE IF EXISTS link_gdr3_full CASCADE;
 CREATE TABLE link_gdr3_full (
   link_id                BIGSERIAL PRIMARY KEY,
-  order                  BIGINT,
   merged_source_id       BIGINT NOT NULL,
   gdr3_source_id         BIGINT NOT NULL,
+  order                  BIGINT,
   distance               FLOAT(10),
   gdr3_tmass_source_id   BIGINT,
   gdr3_vvv_source_id     BIGINT,
@@ -109,16 +109,16 @@ CREATE TABLE link_gdr3_full (
 
 
 INSERT INTO link_gdr3_full
-  (order,merged_source_id,gdr3_source_id,distance,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
+  (merged_source_id,gdr3_source_id,order,distance,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
 SELECT
-  ROW_NUMBER () OVER(PARTITION BY m.source_id ORDER BY Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.distance
-        When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
-        Else ltmass.distance ASC) as order,
   m.source_id AS merged_source_id,
   Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.gdr3_source_id
         When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.gdr3_source_id
         Else ltmass.gdr3_source_id
   End As gdr3_source_id,
+  ROW_NUMBER () OVER(PARTITION BY m.source_id ORDER BY Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.distance
+        When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
+        Else ltmass.distance ASC) as order,
   Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.distance
         When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
         Else ltmass.distance
