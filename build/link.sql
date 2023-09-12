@@ -113,7 +113,7 @@ ALTER TABLE link_gdr3 ADD CONSTRAINT
 
 
 INSERT INTO link_gdr3
-  (merged_source_id,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
+  (merged_source_id,gdr3_source_id,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
 SELECT
   m.source_id AS merged_source_id,
   Case When lsirius.distance <= lvvv.distance And lsirius.distance <= ltmass.distance Then lsirius.gdr3_source_id
