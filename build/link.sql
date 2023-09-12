@@ -106,7 +106,7 @@ SELECT
   Case When lsirius.distance <= lvvv.distance And lsirius.distance <= ltmass.distance Then lsirius.gdr3_source_id
         When lvvv.distance < lsirius.distance And lvvv.distance <= ltmass.distance Then  lvvv.gdr3_source_id
         Else ltmass.gdr3_source_id
-  End As gdr3_source_id
+  End As gdr3_source_id,
   ltmass.gdr3_source_id AS gdr3_tmass_source_id,
   lvvv.gdr3_source_id AS gdr3_vvv_source_id,
   lsirius.gdr3_source_id AS gdr3_sirius_source_id,
