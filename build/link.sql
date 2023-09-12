@@ -91,11 +91,14 @@ ON link_gdr3_vvv (gdr3_source_id);
 
 -- Concatenate all
 
-DROP TABLE IF EXISTS link_gdr3 CASCADE;
-CREATE TABLE link_gdr3 (
+--- FIRST: create a table of all possibilities
+DROP TABLE IF EXISTS link_gdr3_full CASCADE;
+CREATE TABLE link_gdr3_full (
   link_id                BIGSERIAL PRIMARY KEY,
+  order                  BIGINT,
   merged_source_id       BIGINT NOT NULL,
   gdr3_source_id         BIGINT NOT NULL,
+  distance               FLOAT(10),
   gdr3_tmass_source_id   BIGINT,
   gdr3_vvv_source_id     BIGINT,
   gdr3_sirius_source_id  BIGINT,
@@ -104,22 +107,22 @@ CREATE TABLE link_gdr3 (
   distance_sirius        FLOAT(10)
 );
 
-ALTER TABLE link_gdr3 ADD CONSTRAINT
-  FK_link_gdr3_0 FOREIGN KEY (merged_source_id)
-  REFERENCES merged_sources (source_id) ON DELETE CASCADE;
-ALTER TABLE link_gdr3 ADD CONSTRAINT
-  FK_link_gdr3_1 FOREIGN KEY (gdr3_source_id)
-  REFERENCES gdr3_sources (source_id) ON DELETE CASCADE;
 
-
-INSERT INTO link_gdr3
-  (merged_source_id,gdr3_source_id,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
+INSERT INTO link_gdr3_full
+  (order,merged_source_id,gdr3_source_id,distance,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
 SELECT
+  ROW_NUMBER () OVER(PARTITION BY m.source_id ORDER BY Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.distance
+        When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
+        Else ltmass.distance ASC) as order,
   m.source_id AS merged_source_id,
   Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.gdr3_source_id
         When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.gdr3_source_id
         Else ltmass.gdr3_source_id
   End As gdr3_source_id,
+  Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.distance
+        When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
+        Else ltmass.distance
+  End As distance,
   ltmass.gdr3_source_id AS gdr3_tmass_source_id,
   lvvv.gdr3_source_id AS gdr3_vvv_source_id,
   lsirius.gdr3_source_id AS gdr3_sirius_source_id,
@@ -131,6 +134,29 @@ FROM merged_sources AS m
   LEFT JOIN link_gdr3_vvv as lvvv on m.vvv_source_id = lvvv.vvv_source_id
   LEFT JOIN link_gdr3_sirius as lsirius on m.sirius_source_id = lsirius.sirius_source_id
 WHERE (ltmass.tmass_source_id IS NOT NULL) OR (lvvv.vvv_source_id IS NOT NULL) OR (lsirius.sirius_source_id IS NOT NULL);
+
+
+
+
+--- SECOND: select only 1 Gaia source for each Merged source: the closest one
+
+DROP TABLE IF EXISTS link_gdr3 CASCADE;
+CREATE TABLE link_gdr3 (
+  link_id                BIGSERIAL PRIMARY KEY,
+  merged_source_id       BIGINT NOT NULL,
+  gdr3_source_id         BIGINT NOT NULL
+);
+
+ALTER TABLE link_gdr3 ADD CONSTRAINT
+  FK_link_gdr3_0 FOREIGN KEY (merged_source_id)
+  REFERENCES merged_sources (source_id) ON DELETE CASCADE;
+ALTER TABLE link_gdr3 ADD CONSTRAINT
+  FK_link_gdr3_1 FOREIGN KEY (gdr3_source_id)
+  REFERENCES gdr3_sources (source_id) ON DELETE CASCADE;
+
+INSERT INTO link_gdr3 (merged_source_id,gdr3_source_id)
+SELECT merged_source_id,gdr3_source_id FROM link_gdr3_full WHERE order=1;
+
 
 CREATE INDEX IF NOT EXISTS link_gdr3_merged_source_id
   ON link_gdr3 (merged_source_id);
