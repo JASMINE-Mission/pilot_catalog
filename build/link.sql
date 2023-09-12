@@ -17,6 +17,11 @@ FROM gdr3_sources AS g
 JOIN tmass_sources_clean AS t
 ON g.tmass_designation = t.designation;
 
+CREATE INDEX IF NOT EXISTS link_gdr3_tmass_tmass_id
+ON link_gdr3_tmass (tmass_source_id);
+CREATE INDEX IF NOT EXISTS link_gdr3_tmass_gdr3_id
+ON link_gdr3_tmass (gdr3_source_id);
+
 
 -- Link Gaia DR3 <-> SIRIUS
 DROP TABLE IF EXISTS link_gdr3_sirius CASCADE;
@@ -46,7 +51,10 @@ INSERT INTO link_gdr3_sirius
 SELECT sirius_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
 --GREATEST(1.0,(GREATEST(g.ra_error,g.dec_error)*5 + g.pm*14)/1000)
 
-
+CREATE INDEX IF NOT EXISTS link_gdr3_sirius_sirius_id
+ON link_gdr3_sirius (sirius_source_id);
+CREATE INDEX IF NOT EXISTS link_gdr3_sirius_gdr3_id
+ON link_gdr3_sirius (gdr3_source_id);
 
 
 -- Link Gaia DR3 <-> VVV
@@ -75,6 +83,11 @@ FROM gdr3_sources AS g, LATERAL(
 INSERT INTO link_gdr3_vvv
   (vvv_source_id,gdr3_source_id,distance)
 SELECT vvv_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
+
+CREATE INDEX IF NOT EXISTS link_gdr3_vvv_vvv_id
+ON link_gdr3_vvv (vvv_source_id);
+CREATE INDEX IF NOT EXISTS link_gdr3_vvv_gdr3_id
+ON link_gdr3_vvv (gdr3_source_id);
 
 -- Concatenate all
 
@@ -117,7 +130,7 @@ FROM merged_sources AS m
   LEFT JOIN link_gdr3_tmass as ltmass on m.tmass_source_id = ltmass.tmass_source_id
   LEFT JOIN link_gdr3_vvv as lvvv on m.vvv_source_id = lvvv.vvv_source_id
   LEFT JOIN link_gdr3_sirius as lsirius on m.sirius_source_id = lsirius.sirius_source_id
-WHERE (link_gdr3_tmass IS NOT NULL) OR (link_gdr3_vvv IS NOT NULL) OR (link_gdr3_sirius IS NOT NULL);
+WHERE (ltmass.tmass_source_id IS NOT NULL) OR (lvvv.vvv_source_id IS NOT NULL) OR (lsirius.sirius_source_id IS NOT NULL);
 
 CREATE INDEX IF NOT EXISTS link_gdr3_merged_source_id
   ON link_gdr3 (merged_source_id);
