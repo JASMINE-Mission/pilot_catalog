@@ -117,7 +117,7 @@ FROM merged_sources AS m
   LEFT JOIN link_gdr3_tmass as ltmass on m.tmass_source_id = ltmass.tmass_source_id
   LEFT JOIN link_gdr3_vvv as lvvv on m.vvv_source_id = lvvv.vvv_source_id
   LEFT JOIN link_gdr3_sirius as lsirius on m.sirius_source_id = lsirius.sirius_source_id
-WHERE (link_gdr3_tmass IS NOT NULL) OR (link_gdr3_vvv IS NOT NULL) OR (link_gdr3_sirius IS NOT NULL)
+WHERE (link_gdr3_tmass IS NOT NULL) OR (link_gdr3_vvv IS NOT NULL) OR (link_gdr3_sirius IS NOT NULL);
 
 CREATE INDEX IF NOT EXISTS link_gdr3_merged_source_id
   ON link_gdr3 (merged_source_id);
