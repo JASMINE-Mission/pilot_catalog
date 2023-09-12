@@ -97,7 +97,7 @@ CREATE TABLE link_gdr3_full (
   link_id                BIGSERIAL PRIMARY KEY,
   merged_source_id       BIGINT NOT NULL,
   gdr3_source_id         BIGINT NOT NULL,
-  order                  BIGINT,
+  ordering               INT,
   distance               FLOAT(10),
   gdr3_tmass_source_id   BIGINT,
   gdr3_vvv_source_id     BIGINT,
@@ -109,7 +109,7 @@ CREATE TABLE link_gdr3_full (
 
 
 INSERT INTO link_gdr3_full
-  (merged_source_id,gdr3_source_id,order,distance,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
+  (merged_source_id,gdr3_source_id,ordering,distance,gdr3_tmass_source_id,gdr3_vvv_source_id,gdr3_sirius_source_id,distance_tmass,distance_vvv,distance_sirius)
 SELECT
   m.source_id AS merged_source_id,
   Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.gdr3_source_id
@@ -118,7 +118,7 @@ SELECT
   End As gdr3_source_id,
   ROW_NUMBER () OVER(PARTITION BY m.source_id ORDER BY Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.distance
         When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
-        Else ltmass.distance END ASC) as order,
+        Else ltmass.distance END ASC) as ordering,
   Case When lsirius.distance <= COALESCE(lvvv.distance,999) And lsirius.distance <= COALESCE(ltmass.distance,999) Then lsirius.distance
         When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
         Else ltmass.distance
@@ -155,7 +155,7 @@ ALTER TABLE link_gdr3 ADD CONSTRAINT
   REFERENCES gdr3_sources (source_id) ON DELETE CASCADE;
 
 INSERT INTO link_gdr3 (merged_source_id,gdr3_source_id)
-SELECT merged_source_id,gdr3_source_id FROM link_gdr3_full WHERE order=1;
+SELECT merged_source_id,gdr3_source_id FROM link_gdr3_full WHERE ordering=1;
 
 
 CREATE INDEX IF NOT EXISTS link_gdr3_merged_source_id
