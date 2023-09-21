@@ -44,8 +44,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print(args.src,args.out)
-
     if os.path.exists(args.out):
         if not args.overwrite:
             raise RuntimeError(f'file {args.out} already exists.')
