@@ -54,7 +54,7 @@ if __name__ == '__main__':
     df.loc[df.e_J1ap3<1e-5] = np.nan
 
     ## Columns to save
-    final_cols = ["source_id","glon","glat","ra","dec","Var","Prim","phot_z_flag","phot_z_mag","phot_z_mag_error",
+    final_cols = ["source_id","glon","glat","ra","dec","Var","phot_z_flag","phot_z_mag","phot_z_mag_error",
                 "phot_y_flag","phot_y_mag","phot_y_mag_error",
                 "phot_j_flag","phot_j_mag","phot_j_mag_error",
                 "phot_h_flag","phot_h_mag","phot_h_mag_error",
