@@ -48,8 +48,10 @@ if __name__ == '__main__':
         if not args.overwrite:
             raise RuntimeError(f'file {args.out} already exists.')
 
-    hdu = fits.open(args.src)[1]
-    df = pd.DataFrame(np.array(hdu.data))
+    df = pd.read_csv(args.src)
+
+    ## FIRST OF ALL! CORRECT ERRORS e_J1ap3 = 0
+    df.loc[df.e_J1ap3<1e-5] = np.nan
 
     ## Columns to save
     final_cols = ["source_id","glon","glat","ra","dec","Var","Prim","phot_z_flag","phot_z_mag","phot_z_mag_error",
