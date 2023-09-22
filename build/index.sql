@@ -81,7 +81,7 @@ CREATE INDEX IF NOT EXISTS vvv4_sources_glon
   ON vvv4_sources (glon);
 CREATE INDEX IF NOT EXISTS vvv4_sources_glat
   ON vvv4_sources (glat);
-CLUSTER vvv4_sources_glonglat ON vvv_sources;
+CLUSTER vvv4_sources_glonglat ON vvv4_sources;
 ANALYZE vvv4_sources;
 
 CREATE INDEX IF NOT EXISTS gdr3_sources_tmass_designation
