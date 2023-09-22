@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS vvv4_sources (
   glat              FLOAT NOT NULL,
   ra                FLOAT NOT NULL,
   dec               FLOAT NOT NULL,
-  Var               INTEGER,
+  Var               FLOAT,
   phot_z_flag       FLOAT,
   phot_z_mag        FLOAT,
   phot_z_mag_error  FLOAT,
