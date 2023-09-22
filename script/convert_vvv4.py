@@ -51,7 +51,7 @@ if __name__ == '__main__':
     df = pd.read_csv(args.src)
 
     ## FIRST OF ALL! CORRECT ERRORS e_J1ap3 = 0
-    df.loc[df.e_J1ap3<1e-5] = np.nan
+    df.loc[df.e_J1ap3<1e-5,"e_J1ap3"] = np.nan
 
     ## Columns to save
     final_cols = ["source_id","glon","glat","ra","dec","Var","phot_z_flag","phot_z_mag","phot_z_mag_error",
