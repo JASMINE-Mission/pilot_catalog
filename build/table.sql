@@ -71,6 +71,30 @@ CREATE TABLE IF NOT EXISTS vvv_sources (
   phot_ks_mag_error FLOAT
 );
 
+CREATE TABLE IF NOT EXISTS vvv4_sources (
+  source_id         BIGINT PRIMARY KEY,
+  glon              FLOAT NOT NULL,
+  glat              FLOAT NOT NULL,
+  ra                FLOAT NOT NULL,
+  dec               FLOAT NOT NULL,
+  Var               INTEGER,
+  phot_z_flag       INTEGER,
+  phot_z_mag        FLOAT,
+  phot_z_mag_error  FLOAT,
+  phot_y_flag       INTEGER,
+  phot_y_mag        FLOAT,
+  phot_y_mag_error  FLOAT,
+  phot_j_flag       INTEGER,
+  phot_j_mag        FLOAT,
+  phot_j_mag_error  FLOAT,
+  phot_h_flag       INTEGER,
+  phot_h_mag        FLOAT,
+  phot_h_mag_error  FLOAT,
+  phot_ks_flag      INTEGER,
+  phot_ks_mag       FLOAT,
+  phot_ks_mag_error FLOAT
+);
+
 
 CREATE TABLE IF NOT EXISTS gdr3_sources (
   source_id          BIGINT PRIMARY KEY,
