@@ -73,7 +73,7 @@ SELECT  --vvv unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM vvv_sources_clean as v WHERE  v.source_id NOT IN (SELECT vvv_source_id FROM vvv_sirius_xmatch) AND  v.source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_xmatch)
+  FROM vvv4_sources_clean as v WHERE  v.source_id NOT IN (SELECT vvv_source_id FROM vvv_sirius_xmatch) AND  v.source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_xmatch)
 UNION
 SELECT  --sirius unique sources  
   nextval('merged_sources_source_id_seq') AS source_id,

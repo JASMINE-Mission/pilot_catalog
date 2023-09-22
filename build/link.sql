@@ -78,7 +78,7 @@ FROM gdr3_sources AS g, LATERAL(
         CASE WHEN (v0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE v0.phot_j_mag-g.phot_j_mag_pred END)
           ELSE v0.phot_h_mag-g.phot_h_mag_pred END) 
             ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
-      FROM vvv_sources_clean AS v0 
+      FROM vvv4_sources_clean AS v0 
       WHERE q3c_join(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv,2./3600.)) as aux WHERE aux.mag_diff < 1.0)
 INSERT INTO link_gdr3_vvv
   (vvv_source_id,gdr3_source_id,distance)
