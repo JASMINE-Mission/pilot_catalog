@@ -29,7 +29,7 @@ ALTER TABLE merged_sources ADD CONSTRAINT
   REFERENCES sirius_sources_clean (source_id) ON DELETE CASCADE;
 ALTER TABLE merged_sources ADD CONSTRAINT
   FK_merged_vvv_id FOREIGN KEY (vvv_source_id)
-  REFERENCES vvv_sources_clean (source_id) ON DELETE CASCADE;
+  REFERENCES vvv4_sources_clean (source_id) ON DELETE CASCADE;
 
 
 INSERT INTO merged_sources
