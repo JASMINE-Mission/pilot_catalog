@@ -211,7 +211,7 @@ CLUSTER merged_sources_glonglat ON merged_sources;
 ANALYZE merged_sources;
 
 
-DROP TABLE IF EXISTS tmass_vvv_sirius_xmatch CASCADE;
-DROP TABLE IF EXISTS tmass_sirius_xmatch CASCADE;
-DROP TABLE IF EXISTS tmass_vvv_xmatch CASCADE;
-DROP TABLE IF EXISTS vvv_sirius_xmatch CASCADE;
+--DROP TABLE IF EXISTS tmass_vvv_sirius_xmatch CASCADE;
+--DROP TABLE IF EXISTS tmass_sirius_xmatch CASCADE;
+--DROP TABLE IF EXISTS tmass_vvv_xmatch CASCADE;
+--DROP TABLE IF EXISTS vvv_sirius_xmatch CASCADE;
