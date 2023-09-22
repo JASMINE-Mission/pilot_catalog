@@ -150,6 +150,10 @@ if __name__ == '__main__':
                                                 df.Ks2perrb.values)
 
 
+    ## Remove sources without photometry (~2% of sources have NO photometry at all, in no bands or apertures. Others, only some bands in 1 aperture != ap3)
+    df = df.query("~(phot_z_mag.isnull() and phot_y_mag.isnull() and phot_j_mag.isnull() and phot_h_mag.isnull() and phot_ks_mag.isnull())")
+
+    
     if os.path.exists(args.out):
         print(f'Warning: overwrite {args.out}', file=sys.stderr)
 
