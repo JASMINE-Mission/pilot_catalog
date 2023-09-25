@@ -97,3 +97,27 @@ CREATE INDEX IF NOT EXISTS tmass_vvv_sirius_xmatch_vvv_sourceid
 ON tmass_vvv_sirius_xmatch (vvv_source_id);
 CREATE INDEX IF NOT EXISTS tmass_vvv_sirius_xmatch_sirius_sourceid
 ON tmass_vvv_sirius_xmatch (sirius_source_id);
+
+
+DROP TABLE IF EXISTS tmass_vvv_sirius_xmatch_V2 CASCADE;
+CREATE TABLE tmass_vvv_sirius_xmatch_V2 AS
+SELECT ts.tmass_source_id,ts.sirius_source_id,vs.vvv_source_id,ts.ra as ra, ts.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
+weighted_avg3(ts.tmass_j_mag,1/POWER(ts.tmass_j_mag_error,2),
+            ts.sirius_j_mag,1/POWER(ts.sirius_j_mag_error,2),
+            vs.vvv_j_mag,1/POWER(vs.vvv_j_mag_error,2)) as phot_j_mag, 
+SQRT(weighted_avg_error3(1/POWER(ts.tmass_j_mag_error,2),
+            1/POWER(ts.sirius_j_mag_error,2),
+            1/POWER(vs.vvv_j_mag_error,2))) as phot_j_mag_error,
+weighted_avg3(ts.tmass_h_mag,1/POWER(ts.tmass_h_mag_error,2),
+            ts.sirius_h_mag,1/POWER(ts.sirius_h_mag_error,2),
+            vs.vvv_h_mag,1/POWER(vs.vvv_h_mag_error,2)) as phot_h_mag, 
+SQRT(weighted_avg_error3(1/POWER(ts.tmass_h_mag_error,2),
+            1/POWER(ts.sirius_h_mag_error,2),
+            1/POWER(vs.vvv_h_mag_error,2))) as phot_h_mag_error,
+weighted_avg3(ts.tmass_ks_mag,1/POWER(ts.tmass_ks_mag_error,2),
+            ts.sirius_ks_mag,1/POWER(ts.sirius_ks_mag_error,2),
+            vs.vvv_ks_mag,1/POWER(vs.vvv_ks_mag_error,2)) as phot_ks_mag, 
+SQRT(weighted_avg_error3(1/POWER(ts.tmass_ks_mag_error,2),
+            1/POWER(ts.sirius_ks_mag_error,2),
+            1/POWER(vs.vvv_ks_mag_error,2))) as phot_ks_mag_error
+FROM tmass_sirius_xmatch as ts INNER JOIN tmass_vvv_xmatch as tv ON ts.tmass_source_id=tv.tmass_source_id;
