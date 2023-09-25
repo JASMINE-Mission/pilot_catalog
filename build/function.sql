@@ -133,10 +133,10 @@ RETURNS FLOAT AS $$
         WHEN $2 IS NULL THEN $3
       ELSE CASE 
         WHEN ($1 IS NULL) AND ($3 IS NULL) THEN NULL --everything is null
-        ELSE (COALESCE($1,$3)+COALESCE($3,$1))/2 --only errors are null
+        ELSE ROUND((COALESCE($1,$3)+COALESCE($3,$1))/2,3) --only errors are null
         END
       END
-    ELSE ($1*$2+$3*$4)/($2+$4)
+    ELSE ROUND(($1*$2+$3*$4)/($2+$4),3)
     END
 $$ LANGUAGE SQL
 IMMUTABLE;
@@ -146,13 +146,9 @@ CREATE OR REPLACE FUNCTION weighted_avg_error(
   FLOAT) -- weight in the second catalog
 RETURNS FLOAT AS $$
   SELECT CASE 
-    WHEN ($1 IS NULL) OR ($2 IS NULL) THEN 
-      CASE
-        WHEN $2 IS NULL THEN $1
-        WHEN $1 IS NULL THEN $2
-      ELSE NULL --everything is null
-      END
-    ELSE 1/($1+$2)
+    WHEN ($1 IS NULL) AND ($2 IS NULL) THEN 
+      NULL --everything is null
+    ELSE ROUND(1/(COALESCE($1,0)+COALESCE($2,0)),3)
     END
 $$ LANGUAGE SQL
 IMMUTABLE;
@@ -168,9 +164,23 @@ CREATE OR REPLACE FUNCTION weighted_avg3(
 RETURNS FLOAT AS $$
   SELECT CASE 
     WHEN ($2 IS NULL) AND ($4 IS NULL) AND ($6 IS NULL) THEN --only errors are null
-      NULLIF((COALESCE($1,0)+COALESCE($3,0)+COALESCE($5,0))/NULLIF(COALESCE($1/$1,0)+COALESCE($2/$2,0)+COALESCE($3/$3,0),0),0)
+        ROUND(NULLIF((COALESCE($1,0)+COALESCE($3,0)+COALESCE($5,0))/NULLIF(COALESCE($1/$1,0)+COALESCE($2/$2,0)+COALESCE($3/$3,0),0),0),3)
       ELSE
-      NULLIF((COALESCE($1*$2,0)+COALESCE($3*$4,0)+COALESCE($5*$6,0))/NULLIF((COALESCE($2,0)*COALESCE($1/$1,0)+COALESCE($4,0)*COALESCE($3/$3,0)+COALESCE($6,0)*COALESCE($5/$5,0)),0),0)
+        ROUND(NULLIF((COALESCE($1*$2,0)+COALESCE($3*$4,0)+COALESCE($5*$6,0))/NULLIF((COALESCE($2,0)*COALESCE($1/$1,0)+COALESCE($4,0)*COALESCE($3/$3,0)+COALESCE($6,0)*COALESCE($5/$5,0)),0),0),3)
+    END
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION weighted_avg_error3(
+  FLOAT, -- weight in the first catalog
+  FLOAT, -- weight in the second catalog
+  FLOAT) -- weight in the third catalog
+RETURNS FLOAT AS $$
+  SELECT CASE 
+    WHEN ($2 IS NULL) AND ($4 IS NULL) AND ($6 IS NULL) THEN --only errors are null
+        NULL
+      ELSE
+        ROUND(1/NULLIF(COALESCE($2,0)+COALESCE($4,0)+COALESCE($6,0),0),3)
     END
 $$ LANGUAGE SQL
 IMMUTABLE;
