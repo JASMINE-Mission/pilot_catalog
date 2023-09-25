@@ -117,9 +117,7 @@ CREATE OR REPLACE FUNCTION weighted_avg_error_vector(weights numeric[])
   LANGUAGE SQL
   IMMUTABLE
 AS $$
-BEGIN
-  RETURN (SELECT 1/SUM(w) FROM UNNEST(weights) AS t(w))
-END;
+SELECT 1/SUM(w) FROM UNNEST(weights) AS t(w)
 $$;
 
 CREATE OR REPLACE FUNCTION weighted_avg(
