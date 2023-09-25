@@ -101,7 +101,7 @@ ON tmass_vvv_sirius_xmatch (sirius_source_id);
 
 DROP TABLE IF EXISTS sirius_vvv_tmass_xmatch CASCADE;
 CREATE TABLE sirius_vvv_tmass_xmatch AS
-SELECT ts.tmass_source_id,ts.sirius_source_id,vs.vvv_source_id,ts.ra as ra, ts.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
+SELECT ts.tmass_source_id,ts.sirius_source_id,tv.vvv_source_id,ts.ra as ra, ts.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
 weighted_avg3(ts.tmass_j_mag,1/POWER(ts.tmass_j_mag_error,2),
             ts.sirius_j_mag,1/POWER(ts.sirius_j_mag_error,2),
             tv.vvv_j_mag,1/POWER(tv.vvv_j_mag_error,2)) as phot_j_mag, 
@@ -126,7 +126,7 @@ FROM tmass_sirius_xmatch as ts INNER JOIN tmass_vvv_xmatch as tv ON ts.tmass_sou
 
 DROP TABLE IF EXISTS sirius_tmass_vvv_xmatch CASCADE;
 CREATE TABLE sirius_tmass_vvv_xmatch AS
-SELECT tv.tmass_source_id,tv.sirius_source_id,vs.vvv_source_id,vs.ra as ra, vs.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
+SELECT tv.tmass_source_id,vs.sirius_source_id,vs.vvv_source_id,vs.ra as ra, vs.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
 weighted_avg3(tv.tmass_j_mag,1/POWER(tv.tmass_j_mag_error,2),
             vs.sirius_j_mag,1/POWER(vs.sirius_j_mag_error,2),
             tv.vvv_j_mag,1/POWER(tv.vvv_j_mag_error,2)) as phot_j_mag, 
