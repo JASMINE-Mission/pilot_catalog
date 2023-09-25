@@ -136,7 +136,7 @@ RETURNS FLOAT AS $$
         ELSE ROUND((COALESCE($1,$3)+COALESCE($3,$1))::numeric/2,3) --only errors are null
         END
       END
-    ELSE ROUND(($1*$2+$3*$4)/($2+$4),3)
+    ELSE ROUND((($1*$2+$3*$4)/($2+$4))::numeric,3)
     END
 $$ LANGUAGE SQL
 IMMUTABLE;
@@ -177,7 +177,7 @@ CREATE OR REPLACE FUNCTION weighted_avg_error3(
   FLOAT) -- weight in the third catalog
 RETURNS FLOAT AS $$
   SELECT CASE 
-    WHEN ($2 IS NULL) AND ($4 IS NULL) AND ($6 IS NULL) THEN --only errors are null
+    WHEN ($1 IS NULL) AND ($2 IS NULL) AND ($3 IS NULL) THEN --only errors are null
         NULL
       ELSE
         ROUND(1/NULLIF(COALESCE($2,0)+COALESCE($4,0)+COALESCE($6,0),0)::numeric,3)
