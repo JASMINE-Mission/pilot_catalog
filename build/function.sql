@@ -99,24 +99,70 @@ RETURNS BOOLEAN AS $$
 $$ LANGUAGE SQL;
 
 
+CREATE OR REPLACE FUNCTION weighted_avg_vector(quantity numeric[],weights numeric[])
+  RETURNS numeric
+  LANGUAGE SQL
+  IMMUTABLE
+AS $$
+BEGIN
+  RETURN (SELECT 
+            CASE WHEN (ARRAY_REMOVE(weights, NULL) = '{}') AND (ARRAY_REMOVE(quantity, NULL) != '{}') 
+              THEN AVG(q)          -- if no weights are provided, then take the simple average
+              ELSE SUM(q*w)/SUM(w) -- assumes that when q is null, w is also null
+            END
+            FROM UNNEST(quantity,weights) AS t(q,w)
+          )
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION weighted_avg_error_vector(weights numeric[])
+  RETURNS numeric
+  LANGUAGE SQL
+  IMMUTABLE
+AS $$
+BEGIN
+  RETURN (SELECT 1/SUM(w) FROM UNNEST(weights) AS t(w))
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION weighted_avg(
-  FLOAT, -- magnitude in the first catalog
-  FLOAT, -- magnitude uncertainty in the first catalog
-  FLOAT, -- magnitude in the second catalog
-  FLOAT) -- magnitude uncertainty in the second catalog
+  FLOAT, -- quantity in the first catalog
+  FLOAT, -- weight in the first catalog
+  FLOAT, -- quantity in the second catalog
+  FLOAT) -- weight in the second catalog
 RETURNS FLOAT AS $$
   SELECT CASE 
-    WHEN ($2 IS NULL) OR ($4 IS NULL) THEN CASE
-      WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
-      WHEN COALESCE($2,1000) > COALESCE($4,1000) THEN $3
+    WHEN ($2 IS NULL) OR ($4 IS NULL) THEN 
+      CASE
+        WHEN $4 IS NULL THEN $1
+        WHEN $2 IS NULL THEN $3
       ELSE CASE 
-        WHEN ($1 IS NULL) AND ($3 IS NULL) THEN NULL
-        ELSE (COALESCE($1,$3)+COALESCE($3,$1))/2 
+        WHEN ($1 IS NULL) AND ($3 IS NULL) THEN NULL --everything is null
+        ELSE (COALESCE($1,$3)+COALESCE($3,$1))/2 --only errors are null
         END
       END
-    ELSE ($1/$2+$3/$4)/(1/$2+1/$4)
+    ELSE ($1*$2+$3*$4)/($2+$4)
     END
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION weighted_avg_error(
+  FLOAT, -- weight in the first catalog
+  FLOAT) -- weight in the second catalog
+RETURNS FLOAT AS $$
+  SELECT CASE 
+    WHEN ($1 IS NULL) OR ($2 IS NULL) THEN 
+      CASE
+        WHEN $2 IS NULL THEN $1
+        WHEN $1 IS NULL THEN $2
+      ELSE NULL --everything is null
+      END
+    ELSE 1/($1+$2)
+    END
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+
 
 CREATE OR REPLACE FUNCTION select_max(
   FLOAT, -- value in the first catalog
@@ -128,14 +174,16 @@ RETURNS FLOAT AS $$
     ELSE CASE WHEN ($1 IS NULL) AND ($2 IS NULL) THEN NULL 
       ELSE COALESCE($1,$2) END
   END
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL
+IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION compute_hw(
   FLOAT, -- J mag
   FLOAT) -- H mag
 RETURNS FLOAT AS $$
   SELECT 0.7829*$1 + 0.2171*$2- 0.0323*($1-$2)^2
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL
+IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION compute_hw_error(
   FLOAT, -- J mag
@@ -144,7 +192,8 @@ CREATE OR REPLACE FUNCTION compute_hw_error(
   FLOAT) -- H mag error
 RETURNS FLOAT AS $$
   SELECT sqrt(0.035^2 + (0.7829*$2)^2 + (0.2171*$4)^2 + (0.0323*2*($1-$3)*$2)^2 + (0.0323*2*($1-$3)*$4)^2)
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL
+IMMUTABLE;
 
 
 CREATE OR REPLACE FUNCTION compute_glon(
@@ -152,13 +201,15 @@ CREATE OR REPLACE FUNCTION compute_glon(
   FLOAT) -- DEC (deg)
 RETURNS FLOAT AS $$
   SELECT DEGREES(ATAN2((+0.4941094278755837*COS(RADIANS($1))-0.4448296299600112*SIN(RADIANS($1)))*COS(RADIANS($2))+0.7469822444972189*SIN(RADIANS($2)), (-0.0548755604162154*COS(RADIANS($1))-0.8734370902348850*SIN(RADIANS($1)))*COS(RADIANS($2))-0.4838350155487132*SIN(RADIANS($2))))
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL
+IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION compute_glat(
   FLOAT, -- RA (deg)
   FLOAT) -- DEC (deg)
 RETURNS FLOAT AS $$
   SELECT DEGREES(ATAN2((-0.8676661490190047*COS(RADIANS($1))-0.1980763734312015*SIN(RADIANS($1)))*COS(RADIANS($2))+0.4559837761750669*SIN(RADIANS($2)),SQRT(POWER((+0.4941094278755837*COS(RADIANS($1))-0.4448296299600112*SIN(RADIANS($1)))*COS(RADIANS($2))+0.7469822444972189*SIN(RADIANS($2)),2)+POWER((-0.0548755604162154*COS(RADIANS($1))-0.8734370902348850*SIN(RADIANS($1)))*COS(RADIANS($2))-0.4838350155487132*SIN(RADIANS($2)),2))))
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL
+IMMUTABLE;
 
 
