@@ -180,7 +180,7 @@ RETURNS FLOAT AS $$
     WHEN ($1 IS NULL) AND ($2 IS NULL) AND ($3 IS NULL) THEN --only errors are null
         NULL
       ELSE
-        ROUND(1/NULLIF(COALESCE($2,0)+COALESCE($4,0)+COALESCE($6,0),0)::numeric,3)
+        ROUND(1/NULLIF(COALESCE($1,0)+COALESCE($2,0)+COALESCE($3,0),0)::numeric,3)
     END
 $$ LANGUAGE SQL
 IMMUTABLE;
