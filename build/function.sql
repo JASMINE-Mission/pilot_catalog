@@ -104,15 +104,12 @@ CREATE OR REPLACE FUNCTION weighted_avg_vector(quantity numeric[],weights numeri
   LANGUAGE SQL
   IMMUTABLE
 AS $$
-BEGIN
-  RETURN (SELECT 
-            CASE WHEN (ARRAY_REMOVE(weights, NULL) = '{}') AND (ARRAY_REMOVE(quantity, NULL) != '{}') 
-              THEN AVG(q)          -- if no weights are provided, then take the simple average
-              ELSE SUM(q*w)/SUM(w) -- assumes that when q is null, w is also null
-            END
-            FROM UNNEST(quantity,weights) AS t(q,w)
-          )
-END;
+SELECT 
+  CASE WHEN (ARRAY_REMOVE(weights, NULL) = '{}') AND (ARRAY_REMOVE(quantity, NULL) != '{}') 
+    THEN AVG(q)          -- if no weights are provided, then take the simple average
+    ELSE SUM(q*w)/SUM(w) -- assumes that when q is null, w is also null
+  END
+  FROM UNNEST(quantity,weights) AS t(q,w)
 $$;
 
 CREATE OR REPLACE FUNCTION weighted_avg_error_vector(weights numeric[])
