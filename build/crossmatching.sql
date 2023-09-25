@@ -84,7 +84,7 @@ weighted_avg3(ts.tmass_ks_mag,1/POWER(ts.tmass_ks_mag_error,2),
             vs.vvv_ks_mag,1/POWER(vs.vvv_ks_mag_error,2)) as phot_ks_mag, 
 SQRT(weighted_avg_error3(1/POWER(ts.tmass_ks_mag_error,2),
             1/POWER(ts.sirius_ks_mag_error,2),
-            1/POWER(vs.vvv_ks_mag_error,2))) as phot_ks_mag_error,
+            1/POWER(vs.vvv_ks_mag_error,2))) as phot_ks_mag_error
 FROM vvv_sirius_xmatch as vs INNER JOIN tmass_sirius_xmatch as ts ON ts.sirius_source_id=vs.sirius_source_id;
 
 CREATE INDEX IF NOT EXISTS tmass_vvv_sirius_xmatch_tmass_sourceid
