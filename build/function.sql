@@ -158,6 +158,23 @@ $$ LANGUAGE SQL
 IMMUTABLE;
 
 
+CREATE OR REPLACE FUNCTION weighted_avg3(
+  FLOAT, -- quantity in the first catalog
+  FLOAT, -- weight in the first catalog
+  FLOAT, -- quantity in the second catalog
+  FLOAT, -- weight in the second catalog
+  FLOAT, -- quantity in the third catalog
+  FLOAT) -- weight in the third catalog
+RETURNS FLOAT AS $$
+  SELECT CASE 
+    WHEN ($2 IS NULL) AND ($4 IS NULL) AND ($6 IS NULL) THEN --only errors are null
+      NULLIF((COALESCE($1,0)+COALESCE($3,0)+COALESCE($5,0))/(COALESCE($1/$1,0)+COALESCE($2/$2,0)+COALESCE($3/$3,0)),0)
+      ELSE
+      NULLIF((COALESCE($1*$2,0)+COALESCE($3*$4,0)+COALESCE($5*$6,0))/NULLIF((COALESCE($2,0)*COALESCE($1/$1,0)+COALESCE($4,0)*COALESCE($3/$3,0)+COALESCE($6,0)*COALESCE($5/$5,0)),0),0)
+    END
+$$ LANGUAGE SQL
+IMMUTABLE;
+
 
 CREATE OR REPLACE FUNCTION select_max(
   FLOAT, -- value in the first catalog
