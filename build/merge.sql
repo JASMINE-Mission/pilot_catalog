@@ -52,7 +52,7 @@ SELECT  --tmass unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM tmass_sources_clean as t WHERE  t.source_id NOT IN (SELECT tmass_source_id FROM tmass_sirius_xmatch) AND  t.source_id NOT IN (SELECT tmass_source_id FROM tmass_vvv_xmatch)
+  FROM tmass_sources_clean as t LEFT OUTER JOIN tmass_sirius_xmatch as tsx ON t.source_id=tsx.tmass_source_id LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON t.source_id = tvx.tmass_source_id WHERE tsx.tmass_source_id IS NULL AND tvx.tmass_source_id IS NULL
 UNION
 SELECT  --vvv unique sources  
   nextval('merged_sources_source_id_seq') AS source_id,
@@ -73,7 +73,7 @@ SELECT  --vvv unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM vvv4_sources_clean as v WHERE  v.source_id NOT IN (SELECT vvv_source_id FROM vvv_sirius_xmatch) AND  v.source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_xmatch)
+  FROM vvv4_sources_clean as v LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON v.source_id = tvx.vvv_source_id LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON v.source_id = vsx.vvv_source_id WHERE tvx.vvv_source_id IS NULL AND vsx.vvv_source_id IS NULL
 UNION
 SELECT  --sirius unique sources  
   nextval('merged_sources_source_id_seq') AS source_id,
@@ -94,7 +94,7 @@ SELECT  --sirius unique sources
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM sirius_sources_clean as s WHERE  s.source_id NOT IN (SELECT sirius_source_id FROM vvv_sirius_xmatch) AND  s.source_id NOT IN (SELECT sirius_source_id FROM tmass_sirius_xmatch)
+  FROM sirius_sources_clean as s LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON s.source_id = vsx.sirius_source_id LEFT OUTER JOIN tmass_sirius_xmatch as tsx ON s.source_id = tsx.sirius_source_id WHERE vsx.sirius_source_id IS NULL AND tsx.sirius_source_id IS NULL
 UNION
 SELECT  --2MASSxSIRIUS
   nextval('merged_sources_source_id_seq') AS source_id,
@@ -115,7 +115,7 @@ SELECT  --2MASSxSIRIUS
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM tmass_sirius_xmatch as ts WHERE  ts.sirius_source_id NOT IN (SELECT sirius_source_id FROM tmass_vvv_sirius_xmatch)
+  FROM tmass_sirius_xmatch as ts LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON ts.xmatch_source_id = tvsx.tmass_x_sirius_id WHERE tvsx.tmass_x_sirius_id IS NULL
 UNION
 SELECT  --2MASSxVVV
   nextval('merged_sources_source_id_seq') AS source_id,
@@ -136,7 +136,7 @@ SELECT  --2MASSxVVV
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM tmass_vvv_xmatch as tv WHERE  tv.vvv_source_id NOT IN (SELECT vvv_source_id FROM tmass_vvv_sirius_xmatch)
+  FROM tmass_vvv_xmatch as tv LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON tv.xmatch_source_id = tvsx.tmass_x_vvv_id WHERE tvsx.tmass_x_vvv_id IS NULL
 UNION
 SELECT  --VVVxSIRIUS  
   nextval('merged_sources_source_id_seq') AS source_id,
@@ -157,7 +157,7 @@ SELECT  --VVVxSIRIUS
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM vvv_sirius_xmatch as vs WHERE  vs.sirius_source_id NOT IN (SELECT sirius_source_id FROM tmass_vvv_sirius_xmatch)
+  FROM vvv_sirius_xmatch as vs LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON vs.xmatch_source_id = tvsx.vvv_x_sirius_id WHERE tvsx.vvv_x_sirius_id IS NULL
 UNION
 SELECT  --2MASSxVVVxSIRIUS  
   nextval('merged_sources_source_id_seq') AS source_id,
