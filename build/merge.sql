@@ -178,7 +178,7 @@ SELECT  --2MASSxVVVxSIRIUS
   phot_h_mag_error, 
   phot_ks_mag, 
   phot_ks_mag_error 
-  FROM tmass_vvv_sirius_xmatch as tvs WHERE  AND (tvs.phot_j_mag IS NOT NULL OR tvs.phot_h_mag IS NOT NULL OR tvs.phot_ks_mag IS NOT NULL);
+  FROM tmass_vvv_sirius_xmatch as tvs WHERE (tvs.phot_j_mag IS NOT NULL OR tvs.phot_h_mag IS NOT NULL OR tvs.phot_ks_mag IS NOT NULL);
 
 
 CREATE INDEX IF NOT EXISTS merged_sources_tmass_source_id
