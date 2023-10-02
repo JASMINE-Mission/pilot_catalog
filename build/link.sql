@@ -123,9 +123,9 @@ SELECT
         When lvvv.distance < COALESCE(lsirius.distance,999) And lvvv.distance <= COALESCE(ltmass.distance,999) Then  lvvv.distance
         Else ltmass.distance
   End As distance,
-  ltmass.gdr3_source_id AS gdr3_tmass_source_id,
-  lvvv.gdr3_source_id AS gdr3_vvv_source_id,
-  lsirius.gdr3_source_id AS gdr3_sirius_source_id,
+  ltmass.tmass_source_id AS gdr3_tmass_source_id,
+  lvvv.vvv_source_id AS gdr3_vvv_source_id,
+  lsirius.sirius_source_id AS gdr3_sirius_source_id,
   ltmass.distance AS distance_tmass,
   lvvv.distance AS distance_vvv,
   lsirius.distance AS distance_sirius
