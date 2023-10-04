@@ -45,7 +45,7 @@ FROM gdr3_sources AS g, LATERAL(
           ELSE s0.phot_h_mag-g.phot_h_mag_pred END) 
             ELSE s0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
       FROM sirius_sources_clean AS s0 
-      WHERE q3c_join(s0.ra,s0.dec,g.ra_sirius,g.dec_sirius,2./3600.)) as aux WHERE aux.mag_diff < 1.0)
+      WHERE q3c_join(s0.ra,s0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) as aux WHERE aux.mag_diff < 1.0)
 INSERT INTO link_gdr3_sirius
   (sirius_source_id,gdr3_source_id,distance)
 SELECT sirius_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
@@ -79,7 +79,7 @@ FROM gdr3_sources AS g, LATERAL(
           ELSE v0.phot_h_mag-g.phot_h_mag_pred END) 
             ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
       FROM vvv4_sources_clean AS v0 
-      WHERE q3c_join(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv,2./3600.)) as aux WHERE aux.mag_diff < 1.0)
+      WHERE q3c_join(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv,1./3600.)) as aux WHERE aux.mag_diff < 1.0)
 INSERT INTO link_gdr3_vvv
   (vvv_source_id,gdr3_source_id,distance)
 SELECT vvv_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
@@ -145,7 +145,10 @@ CREATE TABLE link_gdr3 (
   link_id                BIGSERIAL PRIMARY KEY,
   merged_source_id       BIGINT NOT NULL,
   gdr3_source_id         BIGINT NOT NULL,
-  distance               FLOAT(10)
+  distance               FLOAT(10),
+  tmass_source_id        BIGINT,
+  vvv_source_id          BIGINT,
+  sirius_source_id       BIGINT
 );
 
 ALTER TABLE link_gdr3 ADD CONSTRAINT
@@ -163,6 +166,9 @@ WITH neighbours AS (SELECT
   aux.source_id AS merged_source_id,
   g.source_id AS gdr3_source_id,
   aux.distance AS distance,
+  aux.tmass_source_id AS tmass_source_id,
+  aux.vvv_source_id AS vvv_source_id,
+  aux.sirius_source_id AS sirius_source_id,
   ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
 FROM gdr3_sources AS g, LATERAL(
   SELECT source_id,3600.0*q3c_dist(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv) as distance,
@@ -172,10 +178,10 @@ FROM gdr3_sources AS g, LATERAL(
           ELSE m0.phot_h_mag-g.phot_h_mag_pred END) 
             ELSE m0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
       FROM merged_sources AS m0 
-      WHERE q3c_join(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv,2./3600.)) as aux WHERE aux.mag_diff < 1.0)
+      WHERE q3c_join(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv,1./3600.)) as aux WHERE aux.mag_diff < 1.0)
 INSERT INTO link_gdr3
-  (merged_source_id,gdr3_source_id,distance)
-SELECT merged_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
+  (merged_source_id,gdr3_source_id,distance,tmass_source_id,vvv_source_id,sirius_source_id)
+SELECT merged_source_id, gdr3_source_id, distance,tmass_source_id,vvv_source_id,sirius_source_id FROM neighbours WHERE ordering = 1;
 
 
 
