@@ -144,7 +144,8 @@ DROP TABLE IF EXISTS link_gdr3 CASCADE;
 CREATE TABLE link_gdr3 (
   link_id                BIGSERIAL PRIMARY KEY,
   merged_source_id       BIGINT NOT NULL,
-  gdr3_source_id         BIGINT NOT NULL
+  gdr3_source_id         BIGINT NOT NULL,
+  distance               FLOAT(10)
 );
 
 ALTER TABLE link_gdr3 ADD CONSTRAINT
