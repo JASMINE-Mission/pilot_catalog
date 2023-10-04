@@ -171,7 +171,7 @@ WITH neighbours AS (SELECT
   aux.sirius_source_id AS sirius_source_id,
   ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
 FROM gdr3_sources AS g, LATERAL(
-  SELECT source_id,3600.0*q3c_dist(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv) as distance,
+  SELECT source_id,3600.0*q3c_dist(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv) as distance,tmass_source_id,vvv_source_id,sirius_source_id,
     CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
       (CASE WHEN (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
         CASE WHEN (m0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE m0.phot_j_mag-g.phot_j_mag_pred END)
