@@ -217,6 +217,36 @@ RETURNS FLOAT AS $$
 $$ LANGUAGE SQL
 IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION correct_jmag(
+  FLOAT, -- vvv jmag
+  FLOAT  -- 2MASS or SIRIUS jmag
+  -- a = 0.160, b = -4.035, c = 25.396
+)
+RETURNS FLOAT AS $$
+  SELECT $1-(0.160*POWER($2,2) - 4.035*$2 + 25.396)
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION correct_hmag(
+  FLOAT, -- vvv hmag
+  FLOAT  -- 2MASS or SIRIUS hmag
+  -- a = 0.145, b = -3.699, c = 23.547
+)
+RETURNS FLOAT AS $$
+  SELECT $1-(0.145*POWER($2,2) - 3.699*$2 + 23.547)
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION correct_ksmag(
+  FLOAT, -- vvv ksmag
+  FLOAT  -- 2MASS or SIRIUS ksmag
+  -- a = 0.158, b = -3.746, c = 22.223
+)
+RETURNS FLOAT AS $$
+  SELECT $1-(0.158*POWER($2,2) - 3.746*$2 + 22.223)
+$$ LANGUAGE SQL
+IMMUTABLE;
+
 
 CREATE OR REPLACE FUNCTION compute_glon(
   FLOAT, -- RA (deg)
