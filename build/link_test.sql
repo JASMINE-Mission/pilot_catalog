@@ -1,3 +1,5 @@
+\timing on
+
 DROP TABLE IF EXISTS link_gdr3 CASCADE;
 CREATE TABLE link_gdr3 (
   link_id                BIGSERIAL PRIMARY KEY,
