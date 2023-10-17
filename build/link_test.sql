@@ -45,6 +45,6 @@ WITH neighbours AS (SELECT
   (SELECT m.gdr3_source_id AS source_id,COALESCE(CAST(CAST(lt.gdr3_source_id != m.gdr3_source_id AS int) AS VARCHAR)::BIT(6)>>5,'001000'::bit(6)) | COALESCE(CAST(CAST(lv.gdr3_source_id != m.gdr3_source_id AS int) AS VARCHAR)::BIT(6)>>4,'001000'::bit(6)) | COALESCE(CAST(CAST(ls.gdr3_source_id != m.gdr3_source_id AS int) AS VARCHAR)::BIT(6)>>3,'001000'::bit(6)) AS flag FROM neighbours as m LEFT JOIN link_gdr3_tmass as lt ON m.tmass_source_id = lt.tmass_source_id LEFT JOIN link_gdr3_sirius AS ls ON m.sirius_source_id = ls.sirius_source_id LEFT JOIN link_gdr3_vvv AS lv ON m.vvv_source_id = lv.vvv_source_id WHERE m.sirius_source_id IS NOT NULL OR m.tmass_source_id IS NOT NULL OR m.vvv_source_id IS NOT NULL) as g GROUP BY source_id
   )
 INSERT INTO link_gdr3
-  (merged_source_id,gdr3_source_id,distance,tmass_source_id,vvv_source_id,sirius_source_id)
+  (merged_source_id,gdr3_source_id,distance,tmass_source_id,vvv_source_id,sirius_source_id,flag)
 SELECT n.merged_source_id, n.gdr3_source_id, n.distance,n.tmass_source_id,n.vvv_source_id,n.sirius_source_id,f.flag FROM neighbours AS n LEFT JOIN flag_table as f ON f.source_id = n.gdr3_source_id WHERE ordering = 1;
 
