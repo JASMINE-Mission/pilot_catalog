@@ -51,5 +51,5 @@ WITH flag_table AS (
 )
 INSERT INTO link_gdr3
   (flag)
-SELECT new_flag FROM link_gdr3 AS l INNER JOIN flag_table AS f ON f.source_id = l.grd3_source_id ORDER BY l.gdr3_source_id;
+SELECT new_flag FROM link_gdr3 AS l INNER JOIN flag_table AS f ON f.source_id = l.gdr3_source_id ORDER BY l.gdr3_source_id;
 
