@@ -1,25 +1,25 @@
 \timing on
 
-\echo STARTING
-DROP TABLE IF EXISTS link_gdr3 CASCADE;
-CREATE TABLE link_gdr3 (
-  link_id                BIGSERIAL PRIMARY KEY,
-  merged_source_id       BIGINT NOT NULL,
-  gdr3_source_id         BIGINT NOT NULL,
-  distance               FLOAT(10),
-  tmass_source_id        BIGINT,
-  vvv_source_id          BIGINT,
-  sirius_source_id       BIGINT,
-  flag                   BIT(7)
-);
+--\echo STARTING
+--DROP TABLE IF EXISTS link_gdr3 CASCADE;
+--CREATE TABLE link_gdr3 (
+--  link_id                BIGSERIAL PRIMARY KEY,
+--  merged_source_id       BIGINT NOT NULL,
+--  gdr3_source_id         BIGINT NOT NULL,
+--  distance               FLOAT(10),
+--  tmass_source_id        BIGINT,
+--  vvv_source_id          BIGINT,
+--  sirius_source_id       BIGINT,
+--  flag                   BIT(7)
+--);
 
-\echo link_gdr3 reseted 
-ALTER TABLE link_gdr3 ADD CONSTRAINT
-  FK_link_gdr3_0 FOREIGN KEY (merged_source_id)
-  REFERENCES merged_sources (source_id) ON DELETE CASCADE;
-ALTER TABLE link_gdr3 ADD CONSTRAINT
-  FK_link_gdr3_1 FOREIGN KEY (gdr3_source_id)
-  REFERENCES gdr3_sources (source_id) ON DELETE CASCADE;
+--\echo link_gdr3 reseted 
+--ALTER TABLE link_gdr3 ADD CONSTRAINT
+--  FK_link_gdr3_0 FOREIGN KEY (merged_source_id)
+--  REFERENCES merged_sources (source_id) ON DELETE CASCADE;
+--ALTER TABLE link_gdr3 ADD CONSTRAINT
+--  FK_link_gdr3_1 FOREIGN KEY (gdr3_source_id)
+--  REFERENCES gdr3_sources (source_id) ON DELETE CASCADE;
 
 --INSERT INTO link_gdr3 (merged_source_id,gdr3_source_id)
 --SELECT merged_source_id,gdr3_source_id FROM link_gdr3_full WHERE ordering=1;
@@ -88,7 +88,7 @@ CREATE TABLE flag_table AS (
     CASE WHEN m.vvv_source_id IS NULL THEN '000000'::bit(6) ELSE COALESCE(CAST(CAST(lv.gdr3_source_id != m.gdr3_source_id AS int) AS VARCHAR)::BIT(6)>>4,'010000'::bit(6)) END | 
     CASE WHEN m.sirius_source_id IS NULL THEN '000000'::bit(6) ELSE COALESCE(CAST(CAST(ls.gdr3_source_id != m.gdr3_source_id AS int) AS VARCHAR)::BIT(6)>>3,'100000'::bit(6)) END AS flag FROM neighbours as m LEFT JOIN link_gdr3_tmass as lt ON m.tmass_source_id = lt.tmass_source_id LEFT JOIN link_gdr3_sirius AS ls ON m.sirius_source_id = ls.sirius_source_id LEFT JOIN link_gdr3_vvv AS lv ON m.vvv_source_id = lv.vvv_source_id) as g GROUP BY source_id);
 
-INSERT INTO link_gdr3
-  (merged_source_id,gdr3_source_id,distance,tmass_source_id,vvv_source_id,sirius_source_id,flag)
-SELECT n.merged_source_id, n.gdr3_source_id, n.distance,n.tmass_source_id,n.vvv_source_id,n.sirius_source_id,f.flag FROM neighbours AS n INNER JOIN flag_table as f ON f.source_id = n.gdr3_source_id WHERE f.ordering=1;
+--INSERT INTO link_gdr3
+ -- (merged_source_id,gdr3_source_id,distance,tmass_source_id,vvv_source_id,sirius_source_id,flag)
+--SELECT n.merged_source_id, n.gdr3_source_id, n.distance,n.tmass_source_id,n.vvv_source_id,n.sirius_source_id,f.flag FROM neighbours AS n INNER JOIN flag_table as f ON f.source_id = n.gdr3_source_id WHERE f.ordering=1;
 
