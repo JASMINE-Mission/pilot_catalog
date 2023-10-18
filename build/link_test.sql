@@ -78,7 +78,7 @@ FROM gdr3_sources AS g, LATERAL(
             ELSE 0
         END AS mag_diff
     FROM (SELECT * FROM merged_sources WHERE position_source='S') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) AS aux 
-    WHERE ABS(aux.mag_diff) < 1.0;);
+    WHERE ABS(aux.mag_diff) < 1.0);
 
 DROP TABLE IF EXISTS neighbours CASCADE;
 CREATE TABLE flag_table AS (
