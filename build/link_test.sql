@@ -80,7 +80,7 @@ FROM gdr3_sources AS g, LATERAL(
     FROM (SELECT * FROM merged_sources WHERE position_source='S') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) AS aux 
     WHERE ABS(aux.mag_diff) < 1.0);
 
-DROP TABLE IF EXISTS neighbours CASCADE;
+DROP TABLE IF EXISTS neighbours2 CASCADE;
 CREATE TABLE neighbours2 AS (
     SELECT ROW_NUMBER () OVER(PARTITION BY n.gdr3_source_id ORDER BY n.distance ASC) AS ordering, n.* FROM neighbours AS n
 )
