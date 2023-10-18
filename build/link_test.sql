@@ -80,7 +80,7 @@ FROM gdr3_sources AS g, LATERAL(
     FROM (SELECT * FROM merged_sources WHERE position_source='S') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) AS aux 
     WHERE ABS(aux.mag_diff) < 1.0);
 
-DROP TABLE IF EXISTS neighbours CASCADE;
+DROP TABLE IF EXISTS flag_table CASCADE;
 CREATE TABLE flag_table AS (
   SELECT ROW_NUMBER () OVER(PARTITION BY m.gdr3_source_id ORDER BY m.distance ASC) as ordering, source_id, CAST(MIN(CAST(flag AS int)) + CAST(POWER(2,7) AS INT) AS BIT(7)) | (CAST(CAST(COUNT(*)>1 AS int) AS VARCHAR))::BIT(7) AS flag FROM
   (SELECT m.gdr3_source_id AS source_id,
