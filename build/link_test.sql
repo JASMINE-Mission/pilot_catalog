@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS link_gdr3 CASCADE;
 CREATE TABLE link_gdr3 (
   link_id                BIGSERIAL PRIMARY KEY,
+  ordering               INT,
   merged_source_id       BIGINT NOT NULL,
   gdr3_source_id         BIGINT NOT NULL,
   distance               FLOAT(10),
@@ -24,24 +25,58 @@ ALTER TABLE link_gdr3 ADD CONSTRAINT
 
 
 WITH neighbours AS (SELECT
-  aux.source_id AS merged_source_id,
-  g.source_id AS gdr3_source_id,
-  aux.distance AS distance,
-  aux.tmass_source_id AS tmass_source_id,
-  aux.vvv_source_id AS vvv_source_id,
-  aux.sirius_source_id AS sirius_source_id,
-  ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
-  FROM gdr3_sources AS g, LATERAL(
-    SELECT source_id,3600.0*q3c_dist(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv) as distance,tmass_source_id,vvv_source_id,sirius_source_id,
-      CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
-        (CASE WHEN (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
-          CASE WHEN (m0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE m0.phot_j_mag-g.phot_j_mag_pred END)
-            ELSE m0.phot_h_mag-g.phot_h_mag_pred END) 
-              ELSE m0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
-        FROM merged_sources AS m0 
-        WHERE CASE WHEN m0.position_source='T' THEN q3c_join(g.ra,g.dec,m0.ra,m0.dec,1./3600.) ELSE 
-        CASE WHEN m0.position_source='V' THEN q3c_join(g.ra_vvv,g.dec_vvv,m0.ra,m0.dec,1./3600.) ELSE
-            q3c_join(g.ra_sirius,g.dec_sirius,m0.ra,m0.dec,1./3600.) END END) as aux WHERE aux.mag_diff < 1.0),
+aux.source_id AS merged_source_id,
+g.source_id AS gdr3_source_id,
+aux.distance AS distance,
+aux.tmass_source_id AS tmass_source_id,
+aux.vvv_source_id AS vvv_source_id,
+aux.sirius_source_id AS sirius_source_id
+FROM gdr3_sources AS g, LATERAL(
+    SELECT m0.source_id,m0.tmass_source_id,m0.vvv_source_id,m0.sirius_source_id,
+        3600.0*q3c_dist(g.ra,g.dec,m0.ra,m0.dec) AS distance,
+        CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
+            WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NOT NULL THEN m0.phot_h_mag-g.phot_h_mag_pred
+            WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL AND (m0.phot_j_mag-g.phot_j_mag_pred) IS NOT NULL THEN m0.phot_j_mag-g.phot_j_mag_pred
+            ELSE 0
+        END AS mag_diff
+    FROM (SELECT * FROM merged_sources WHERE position_source='T') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra,g.dec,1./3600.)) AS aux 
+    WHERE ABS(aux.mag_diff) < 1.0
+UNION
+SELECT
+aux.source_id AS merged_source_id,
+g.source_id AS gdr3_source_id,
+aux.distance AS distance,
+aux.tmass_source_id AS tmass_source_id,
+aux.vvv_source_id AS vvv_source_id,
+aux.sirius_source_id AS sirius_source_id
+FROM gdr3_sources AS g, LATERAL(
+    SELECT m0.source_id,m0.tmass_source_id,m0.vvv_source_id,m0.sirius_source_id,
+        3600.0*q3c_dist(g.ra_vvv,g.dec_vvv,m0.ra,m0.dec) AS distance,
+        CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
+            WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NOT NULL THEN m0.phot_h_mag-g.phot_h_mag_pred
+            WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL AND (m0.phot_j_mag-g.phot_j_mag_pred) IS NOT NULL THEN m0.phot_j_mag-g.phot_j_mag_pred
+            ELSE 0
+        END AS mag_diff
+    FROM (SELECT * FROM merged_sources WHERE position_source='V') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv,1./3600.)) AS aux 
+    WHERE ABS(aux.mag_diff) < 1.0
+UNION
+SELECT
+aux.source_id AS merged_source_id,
+g.source_id AS gdr3_source_id,
+aux.distance AS distance,
+aux.tmass_source_id AS tmass_source_id,
+aux.vvv_source_id AS vvv_source_id,
+aux.sirius_source_id AS sirius_source_id
+FROM gdr3_sources AS g, LATERAL(
+    SELECT m0.source_id,m0.tmass_source_id,m0.vvv_source_id,m0.sirius_source_id,
+        3600.0*q3c_dist(g.ra_sirius,g.dec_sirius,m0.ra,m0.dec) AS distance,
+        CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
+            WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NOT NULL THEN m0.phot_h_mag-g.phot_h_mag_pred
+            WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL AND (m0.phot_j_mag-g.phot_j_mag_pred) IS NOT NULL THEN m0.phot_j_mag-g.phot_j_mag_pred
+            ELSE 0
+        END AS mag_diff
+    FROM (SELECT * FROM merged_sources WHERE position_source='S') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) AS aux 
+    WHERE ABS(aux.mag_diff) < 1.0;),
   flag_table AS (
   SELECT source_id, CAST(MIN(CAST(flag AS int)) + CAST(POWER(2,7) AS INT) AS BIT(7)) | (CAST(CAST(COUNT(*)>1 AS int) AS VARCHAR))::BIT(7) AS flag FROM
   (SELECT m.gdr3_source_id AS source_id,
@@ -50,7 +85,6 @@ WITH neighbours AS (SELECT
     CASE WHEN m.sirius_source_id IS NULL THEN '000000'::bit(6) ELSE COALESCE(CAST(CAST(ls.gdr3_source_id != m.gdr3_source_id AS int) AS VARCHAR)::BIT(6)>>3,'100000'::bit(6)) END AS flag FROM neighbours as m LEFT JOIN link_gdr3_tmass as lt ON m.tmass_source_id = lt.tmass_source_id LEFT JOIN link_gdr3_sirius AS ls ON m.sirius_source_id = ls.sirius_source_id LEFT JOIN link_gdr3_vvv AS lv ON m.vvv_source_id = lv.vvv_source_id) as g GROUP BY source_id
   )
 INSERT INTO link_gdr3
-  (merged_source_id,gdr3_source_id,distance,tmass_source_id,vvv_source_id,sirius_source_id,flag)
-SELECT n.merged_source_id, n.gdr3_source_id, n.distance,n.tmass_source_id,n.vvv_source_id,n.sirius_source_id,f.flag FROM neighbours AS n LEFT JOIN flag_table as f ON f.source_id = n.gdr3_source_id WHERE ordering = 1;
-
+  (ordering,merged_source_id,gdr3_source_id,distance,tmass_source_id,vvv_source_id,sirius_source_id,flag)
+SELECT ROW_NUMBER () OVER(PARTITION BY n.gdr3_source_id ORDER BY n.distance ASC) as ordering,n.merged_source_id, n.gdr3_source_id, n.distance,n.tmass_source_id,n.vvv_source_id,n.sirius_source_id,f.flag FROM neighbours AS n LEFT JOIN flag_table as f ON f.source_id = n.gdr3_source_id;
 
