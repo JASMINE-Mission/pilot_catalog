@@ -85,11 +85,10 @@ CREATE TABLE neighbours2 AS (
     SELECT ROW_NUMBER () OVER(PARTITION BY n.gdr3_source_id ORDER BY n.distance ASC) AS ordering, n.* FROM neighbours AS n
 );
 
+DROP TABLE IF EXISTS flag_table CASCADE;
 WITH aux AS(
     SELECT * FROM neighbours2 AS n WHERE ordering = 1
-);
-
-DROP TABLE IF EXISTS flag_table CASCADE;
+)
 CREATE TABLE flag_table AS (
   SELECT source_id, CAST(MIN(CAST(flag AS int)) + CAST(POWER(2,7) AS INT) AS BIT(7)) | (CAST(CAST(COUNT(*)>1 AS int) AS VARCHAR))::BIT(7) AS flag FROM
   (SELECT m.gdr3_source_id AS source_id,
