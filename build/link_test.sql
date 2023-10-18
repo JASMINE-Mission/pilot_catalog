@@ -83,11 +83,11 @@ FROM gdr3_sources AS g, LATERAL(
 DROP TABLE IF EXISTS neighbours2 CASCADE;
 CREATE TABLE neighbours2 AS (
     SELECT ROW_NUMBER () OVER(PARTITION BY n.gdr3_source_id ORDER BY n.distance ASC) AS ordering, n.* FROM neighbours AS n
-)
+);
 
 WITH aux AS(
     SELECT * FROM neighbours2 AS n WHERE ordering = 1
-)
+);
 
 DROP TABLE IF EXISTS flag_table CASCADE;
 CREATE TABLE flag_table AS (
