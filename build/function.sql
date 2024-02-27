@@ -38,8 +38,21 @@ CREATE OR REPLACE FUNCTION select_better(
   FLOAT) -- magnitude uncertainty in the second catalog
 RETURNS FLOAT AS $$
   SELECT CASE
-    WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
+    WHEN COALESCE($2,1000) <= COALESCE($4,1000) THEN $1
     WHEN COALESCE($2,1000) > COALESCE($4,1000) THEN $3
+    ELSE NULL
+  END
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION select_worst(
+  FLOAT, -- magnitude in the first catalog
+  FLOAT, -- magnitude uncertainty in the first catalog
+  FLOAT, -- magnitude in the second catalog
+  FLOAT) -- magnitude uncertainty in the second catalog
+RETURNS FLOAT AS $$
+  SELECT CASE
+    WHEN COALESCE($2,1000) > COALESCE($4,1000) THEN $1
+    WHEN COALESCE($2,1000) <= COALESCE($4,1000) THEN $3
     ELSE NULL
   END
 $$ LANGUAGE SQL;
