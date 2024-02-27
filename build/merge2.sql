@@ -23,14 +23,16 @@ SELECT c.*,m.tmass_source_id,m.vvv_source_id,m.sirius_source_id,SQRT(POWER(COALE
 
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_source_id
   ON merged_sources_dups_candidates (source_id);
-  CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_vvv_source_id
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_vvv_source_id
   ON merged_sources_dups_candidates (vvv_source_id);
-  CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_sirius_source_id
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_sirius_source_id
   ON merged_sources_dups_candidates (sirius_source_id);
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_tmass_source_id
   ON merged_sources_dups_candidates (tmass_source_id);
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_glonglat
   ON merged_sources_dups_candidates (q3c_ang2ipix(glon,glat));
+CLUSTER merged_sources_dups_candidates_glonglat ON merged_sources_dups_candidates;
+ANALYZE merged_sources_dups_candidates;
 
 DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
 
