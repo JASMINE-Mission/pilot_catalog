@@ -1,7 +1,20 @@
 DROP TABLE IF EXISTS merged_sources_dups_candidates CASCADE;
 
+CREATE TABLE merged_sources_dups_candidates(
+  source_id          BIGSERIAL PRIMARY KEY,
+  count              BIGINT NOT NULL,
+  glon               FLOAT NOT NULL,
+  glat               FLOAT NOT NULL,
+  phot_j_mag         FLOAT,
+  phot_h_mag         FLOAT,
+  phot_ks_mag        FLOAT,
+  phot_hw_mag        FLOAT,
+  position_source    VARCHAR(1),
+  magnitude_source   VARCHAR(3)
+);
+
 WITH AUX AS (SELECT * FROM merged_sources_confusion_12_5 WHERE count>1)
-CREATE TABLE merged_sources_dups_candidates AS
+INSERT INTO merged_sources_dups_candidates
 SELECT c.*,m.position_source,m.magnitude_source FROM aux as c LEFT JOIN merged_sources as m on m.source_id=c.source_id;
 
 
