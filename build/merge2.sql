@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS merged_sources_dups_candidates CASCADE;
 
 CREATE TABLE merged_sources_dups_candidates AS
-SELECT conf.*,m.position_source,m.magnitude_source FROM merged_sources_confusion_12_5 as conf WHERE count>1 INNER JOIN merged_sources as m on m.source_id=conf.source_id;
+SELECT conf.*,m.position_source,m.magnitude_source FROM merged_sources_confusion_12_5 as conf INNER JOIN merged_sources as m on m.source_id=conf.source_id WHERE conf.count>1;
 
 
 DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
