@@ -22,9 +22,9 @@ DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
 
 CREATE TABLE merged_sources_dups_typeA AS --the closest neighbour is a VVV source and the main source is bright
 SELECT t1.*,
-aux.source_id as source_id_neighbour,aux.position_source as position_source_neighbour,aux.ra as ra_neighbour, aux.dec as dec_neighbour 
+aux.source_id as source_id_neighbour,aux.position_source as position_source_neighbour,aux.glon as glon_neighbour, aux.glat as glat_neighbour 
 FROM merged_sources_dups_candidates AS t1, LATERAL(
-SELECT t2.source_id,t2.magnitude_source FROM merged_sources_dups_candidates AS t2 WHERE q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600)
+SELECT t2.source_id,t2.glon,t2.glat,t2.position_source,t2.magnitude_source FROM merged_sources_dups_candidates AS t2 WHERE q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600)
 ) as aux WHERE (aux.magnitude_source=="TV" OR aux.magnitude_source=="TVS" OR aux.magnitude_source=="VS" OR aux.magnitude_source=="V") AND 
 (t1.phot_j_mag<=13 OR t1.phot_h_mag<=13 OR t1.phot_ks_mag<=13) AND (t1.magnitude_source != "V");
 
