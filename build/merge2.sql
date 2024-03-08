@@ -1,34 +1,33 @@
 
 -- select candidates to be duplicates
-DROP TABLE IF EXISTS merged_sources_dups_candidates CASCADE;
+--DROP TABLE IF EXISTS merged_sources_dups_candidates CASCADE;
 
-CREATE TABLE merged_sources_dups_candidates AS
-SELECT m.*,c.count as num_neighbours,SQRT(POWER(COALESCE(m.phot_j_mag_error,0),2)+POWER(COALESCE(m.phot_h_mag_error,0),2)+POWER(COALESCE(m.phot_ks_mag_error,0),2)) as phot_error FROM merged_sources_confusion_12_5  as c LEFT JOIN merged_sources as m on m.source_id=c.source_id WHERE c.count>1;
+--CREATE TABLE merged_sources_dups_candidates AS
+--SELECT m.*,c.count as num_neighbours,SQRT(POWER(COALESCE(m.phot_j_mag_error,0),2)+POWER(COALESCE(m.phot_h_mag_error,0),2)+POWER(COALESCE(m.phot_ks_mag_error,0),2)) as phot_error FROM merged_sources_confusion_12_5  --as c LEFT JOIN merged_sources as m on m.source_id=c.source_id WHERE c.count>1;
 
-CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_source_id
-  ON merged_sources_dups_candidates (source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_vvv_source_id
-  ON merged_sources_dups_candidates (vvv_source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_sirius_source_id
-  ON merged_sources_dups_candidates (sirius_source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_tmass_source_id
-  ON merged_sources_dups_candidates (tmass_source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_glonglat
-  ON merged_sources_dups_candidates (q3c_ang2ipix(glon,glat));
-CLUSTER merged_sources_dups_candidates_glonglat ON merged_sources_dups_candidates;
-ANALYZE merged_sources_dups_candidates;
+--CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_source_id
+--  ON merged_sources_dups_candidates (source_id);
+--CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_vvv_source_id
+--  ON merged_sources_dups_candidates (vvv_source_id);
+--CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_sirius_source_id
+--  ON merged_sources_dups_candidates (sirius_source_id);
+--CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_tmass_source_id
+--  ON merged_sources_dups_candidates (tmass_source_id);
+--CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_glonglat
+--  ON merged_sources_dups_candidates (q3c_ang2ipix(glon,glat));
+--CLUSTER merged_sources_dups_candidates_glonglat ON merged_sources_dups_candidates;
+--ANALYZE merged_sources_dups_candidates;
 
 
--- DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
+DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
 
--- CREATE TABLE merged_sources_dups_typeA AS --the closest neighbour is a VVV source and the main source is bright
--- SELECT t1.*,
--- aux.source_id as source_id_neighbour,aux.position_source as position_source_neighbour,aux.glon as glon_neighbour, -- aux.glat as glat_neighbour,
--- CASE WHEN t1.source_id<aux.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(aux.source_id AS varchar)) -- ELSE CONCAT(CAST(aux.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
--- FROM merged_sources_dups_candidates AS t1, LATERAL(
--- SELECT t2.source_id,t2.glon,t2.glat,t2.position_source,t2.magnitude_source FROM merged_sources_dups_candidates AS -- t2 WHERE q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600)
--- ) as aux WHERE (aux.magnitude_source='TV' OR aux.magnitude_source='TVS' OR aux.magnitude_source='VS' OR aux.-- magnitude_source='V') AND 
--- (t1.phot_j_mag<=13 OR t1.phot_h_mag<=13 OR t1.phot_ks_mag<=13) AND (t1.magnitude_source != 'V');
+CREATE TABLE merged_sources_dups_typeA AS --the closest neighbour is a VVV source and the main source is bright
+SELECT t1.*,
+aux.source_id as source_id_neighbour,aux.position_source as position_source_neighbour,aux.glon as glon_neighbour, aux.glat as glat_neighbour,
+CASE WHEN t1.source_id<aux.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(aux.source_id AS varchar)) ELSE CONCAT(CAST(aux.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
+FROM merged_sources_dups_candidates AS t1, LATERAL(
+SELECT t2.source_id,t2.glon,t2.glat,t2.position_source,t2.magnitude_source FROM merged_sources_dups_candidates AS t2 WHERE q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600)
+) as aux WHERE (aux.source_id != t1.source_id) AND (aux.magnitude_source='TV' OR aux.magnitude_source='TVS' OR aux.magnitude_source='VS' OR aux.magnitude_source='V') AND (t1.phot_j_mag<=13 OR t1.phot_h_mag<=13 OR t1.phot_ks_mag<=13) AND (t1.magnitude_source != 'V');
 
 
 
