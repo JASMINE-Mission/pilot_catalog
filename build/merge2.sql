@@ -21,38 +21,37 @@
 
 DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
 
+WITH aux AS (SELECT t1.*,
+t2.source_id as source_id_neighbour,t2.position_source as position_source_neighbour,t2.magnitude_source as magnitude_source_neighbour,t2.glon as glon_neighbour, t2.glat as glat_neighbour,
+CASE WHEN t1.source_id<t2.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(t2.source_id AS varchar)) ELSE CONCAT(CAST(t2.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
+FROM merged_sources_dups_candidates AS t1 INNER JOIN merged_sources_dups_candidates AS t2 ON q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600.))
 CREATE TABLE merged_sources_dups_typeA AS --the closest neighbour is a VVV source and the main source is bright
-SELECT t1.*,
-aux.source_id as source_id_neighbour,aux.position_source as position_source_neighbour,aux.glon as glon_neighbour, aux.glat as glat_neighbour,
-CASE WHEN t1.source_id<aux.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(aux.source_id AS varchar)) ELSE CONCAT(CAST(aux.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
-FROM merged_sources_dups_candidates AS t1, LATERAL(
-SELECT t2.source_id,t2.glon,t2.glat,t2.position_source,t2.magnitude_source FROM merged_sources_dups_candidates AS t2 WHERE q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600)
-) as aux WHERE (aux.source_id != t1.source_id) AND (aux.magnitude_source='TV' OR aux.magnitude_source='TVS' OR aux.magnitude_source='VS' OR aux.magnitude_source='V') AND (t1.phot_j_mag<=13 OR t1.phot_h_mag<=13 OR t1.phot_ks_mag<=13) AND (t1.magnitude_source != 'V');
+SELECT aux.* FROM aux WHERE (aux.source_id != aux.source_id_neighbour) AND (aux.magnitude_source_neighbour='TV' OR aux.magnitude_source_neighbour='TVS' OR aux.magnitude_source_neighbour='VS' OR aux.magnitude_source_neighbour='V') AND (aux.phot_j_mag<=13 OR aux.phot_h_mag<=13 OR aux.phot_ks_mag<=13) AND (aux.magnitude_source != 'V');
 
 
 
 -- DROP TABLE IF EXISTS merged_sources_dups_typeB CASCADE;
 
--- CREATE TABLE merged_sources_dups_typeB AS --the closest neighbour is a VVV source and the main source is bright
--- SELECT select_better(t1.source_id,t1.phot_error,aux.source_id,aux.phot_error) as source_id,
--- select_better(t1.count,t1.phot_error,aux.count,aux.phot_error) as count,
--- select_better(t1.glon,t1.phot_error,aux.glon,aux.phot_error) as glon,
--- select_better(t1.glat,t1.phot_error,aux.glat,aux.phot_error) as glat,
--- select_better(t1.phot_j_mag,t1.phot_error,aux.phot_j_mag,aux.phot_error) as phot_j_mag,
--- select_better(t1.phot_h_mag,t1.phot_error,aux.phot_h_mag,aux.phot_error) as phot_h_mag,
--- select_better(t1.phot_ks_mag,t1.phot_error,aux.phot_ks_mag,aux.phot_error) as phot_ks_mag,
--- select_better(t1.phot_hw_mag,t1.phot_error,aux.phot_hw_mag,aux.phot_error) as phot_hw_mag,
--- select_better(t1.phot_error,t1.phot_error,aux.phot_error,aux.phot_error) as phot_error,
--- select_better(t1.position_source,t1.phot_error,aux.position_source,aux.phot_error) as position_source,
--- select_better(t1.magnitude_source,t1.phot_error,aux.magnitude_source,aux.phot_error) as magnitude_source,
--- select_worst(t1.source_id,t1.phot_error,aux.source_id,aux.phot_error) as source_id_neighbour,
--- select_worst(t1.position_source,t1.phot_error,aux.position_source,aux.phot_error) as position_source_neighbour,
--- select_worst(t1.glon,t1.phot_error,aux.glon,aux.phot_error) as glon_neighbour,
--- select_worst(t1.glat,t1.phot_error,aux.glat,aux.phot_error) as glat_neighbour,
--- CASE WHEN t1.source_id<aux.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(aux.source_id AS varchar)) -- ELSE CONCAT(CAST(aux.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
--- FROM merged_sources_dups_candidates AS t1, LATERAL(
--- SELECT t2.* FROM merged_sources_dups_candidates AS t2 WHERE t1.tmass_source_id = t2.tmass_source_id OR t1.-- vvv_source_id=t2.vvv_source_id OR t1.sirius_source_id = t2.sirius_source_id
--- ) as aux;
+-- CREATE TABLE merged_sources_dups_typeB AS --two merged sources sharing the same source from any catalogue
+-- SELECT select_better(t1.source_id,t1.phot_error,t2.source_id,t2.phot_error) as source_id,
+-- select_better(t1.count,t1.phot_error,t2.count,t2.phot_error) as count,
+-- select_better(t1.glon,t1.phot_error,t2.glon,t2.phot_error) as glon,
+-- select_better(t1.glat,t1.phot_error,t2.glat,t2.phot_error) as glat,
+-- select_better(t1.phot_j_mag,t1.phot_error,t2.phot_j_mag,t2.phot_error) as phot_j_mag,
+-- select_better(t1.phot_h_mag,t1.phot_error,t2.phot_h_mag,t2.phot_error) as phot_h_mag,
+-- select_better(t1.phot_ks_mag,t1.phot_error,t2.phot_ks_mag,t2.phot_error) as phot_ks_mag,
+-- select_better(t1.phot_hw_mag,t1.phot_error,t2.phot_hw_mag,t2.phot_error) as phot_hw_mag,
+-- select_better(t1.phot_error,t1.phot_error,t2.phot_error,t2.phot_error) as phot_error,
+-- select_better(t1.position_source,t1.phot_error,t2.position_source,t2.phot_error) as position_source,
+-- select_better(t1.magnitude_source,t1.phot_error,t2.magnitude_source,t2.phot_error) as magnitude_source,
+-- select_worst(t1.source_id,t1.phot_error,t2.source_id,t2.phot_error) as source_id_neighbour,
+-- select_worst(t1.position_source,t1.phot_error,t2.position_source,t2.phot_error) as position_source_neighbour,
+-- select_worst(t1.glon,t1.phot_error,t2.glon,t2.phot_error) as glon_neighbour,
+-- select_worst(t1.glat,t1.phot_error,t2.glat,t2.phot_error) as glat_neighbour,
+-- CASE WHEN t1.source_id<t2.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(t2.source_id AS varchar)) -- ELSE CONCAT(CAST(t2.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
+-- FROM merged_sources_dups_candidates AS t1, INNER JOIN
+-- SELECT t2.* FROM merged_sources_dups_candidates AS t2 WHERE (t1.tmass_source_id = t2.tmass_source_id OR t1.-- vvv_source_id=t2.vvv_source_id OR t1.sirius_source_id = t2.sirius_source_id) AND (t1.source_id != t2.source_id)
+-- ;
 
 
 
