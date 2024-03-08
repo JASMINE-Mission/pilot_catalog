@@ -21,14 +21,15 @@
 
 DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
 
-WITH aux AS (SELECT t1.*,
-t2.source_id as source_id_neighbour,t2.position_source as position_source_neighbour,t2.magnitude_source as magnitude_source_neighbour,t2.glon as glon_neighbour, t2.glat as glat_neighbour,
+CREATE TABLE merged_sources_dups_typeA_aux AS
+SELECT t1.*,t2.source_id as source_id_neighbour,t2.position_source as position_source_neighbour,t2.magnitude_source as magnitude_source_neighbour,t2.glon as glon_neighbour, t2.glat as glat_neighbour,
 CASE WHEN t1.source_id<t2.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(t2.source_id AS varchar)) ELSE CONCAT(CAST(t2.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
-FROM merged_sources_dups_candidates AS t1 INNER JOIN merged_sources_dups_candidates AS t2 ON q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600.))
+FROM merged_sources_dups_candidates AS t1 INNER JOIN merged_sources_dups_candidates AS t2 ON q3c_join(t1.glon,t1.glat,t2.glon,t2.glat,0.6/3600.);
+
 CREATE TABLE merged_sources_dups_typeA AS --the closest neighbour is a VVV source and the main source is bright
-SELECT aux.* FROM aux WHERE (aux.source_id != aux.source_id_neighbour) AND (aux.magnitude_source_neighbour='TV' OR aux.magnitude_source_neighbour='TVS' OR aux.magnitude_source_neighbour='VS' OR aux.magnitude_source_neighbour='V') AND (aux.phot_j_mag<=13 OR aux.phot_h_mag<=13 OR aux.phot_ks_mag<=13) AND (aux.magnitude_source != 'V');
+SELECT aux.* FROM merged_sources_dups_typeA_aux AS aux WHERE (aux.source_id != aux.source_id_neighbour) AND (aux.magnitude_source_neighbour='TV' OR aux.magnitude_source_neighbour='TVS' OR aux.magnitude_source_neighbour='VS' OR aux.magnitude_source_neighbour='V') AND (aux.phot_j_mag<=13 OR aux.phot_h_mag<=13 OR aux.phot_ks_mag<=13) AND (aux.magnitude_source != 'V');
 
-
+DROP TABLE merged_sources_dups_typeA_aux CASCADE;
 
 -- DROP TABLE IF EXISTS merged_sources_dups_typeB CASCADE;
 
