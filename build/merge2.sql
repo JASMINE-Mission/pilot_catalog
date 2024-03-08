@@ -1,35 +1,12 @@
 
--- index merged_sources_confusion_12_5 for quick access
-CREATE INDEX IF NOT EXISTS merged_sources_confusion_12_5_source_id
-  ON merged_sources_confusion_12_5 (source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_confusion_12_5_glonglat
-  ON merged_sources_confusion_12_5 (q3c_ang2ipix(glon,glat));
-CLUSTER merged_sources_confusion_12_5_glonglat ON merged_sources_confusion_12_5;
-ANALYZE merged_sources_confusion_12_5;
-
 -- select candidates to be duplicates
 DROP TABLE IF EXISTS merged_sources_dups_candidates CASCADE;
 
-CREATE TABLE merged_sources_dups_candidates(
-  source_id          BIGSERIAL PRIMARY KEY,
-  count              BIGINT NOT NULL,
-  glon               FLOAT NOT NULL,
-  glat               FLOAT NOT NULL,
-  phot_j_mag         FLOAT,
-  phot_h_mag         FLOAT,
-  phot_ks_mag        FLOAT,
-  phot_hw_mag        FLOAT,
-  tmass_source_id    BIGINT,
-  vvv_source_id      BIGINT,
-  sirius_source_id   BIGINT,
-  phot_error         FLOAT,
-  position_source    VARCHAR(1),
-  magnitude_source   VARCHAR(3)
-);
-
-INSERT INTO merged_sources_dups_candidates
+CREATE TABLE merged_sources_dups_candidates AS
 SELECT m.*,c.count as num_neighbours,SQRT(POWER(COALESCE(m.phot_j_mag_error,0),2)+POWER(COALESCE(m.phot_h_mag_error,0),2)+POWER(COALESCE(m.phot_ks_mag_error,0),2)) as phot_error FROM merged_sources_confusion_12_5  as c LEFT JOIN merged_sources as m on m.source_id=c.source_id WHERE c.count>1;
 
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_source_id
+  ON merged_sources_dups_candidates (source_id);
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_vvv_source_id
   ON merged_sources_dups_candidates (vvv_source_id);
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_sirius_source_id
