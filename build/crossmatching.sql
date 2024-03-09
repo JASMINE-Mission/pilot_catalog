@@ -170,7 +170,7 @@ ALTER TABLE vvv_sirius_xmatch ADD CONSTRAINT
   REFERENCES sirius_sources_clean (source_id) ON DELETE CASCADE;
 
 
--- separate into two magnitude ranges (bright and faint). For the bright, correct magnitudes of VVV
+-- If any of the three bands of SIRIUS is brighter than 12, ignore it (VVV is saturated). For the bright, correct magnitudes of VVV
 INSERT INTO vvv_sirius_xmatch
 SELECT nextval('vvv_sirius_xmatch_xmatch_source_id_seq') AS xmatch_source_id,v.source_id as vvv_source_id,s.source_id as sirius_source_id, s.ra as ra, s.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
 weighted_avg(correct_jmag(v.phot_j_mag,s.phot_j_mag),1/POWER(v.phot_j_mag_error,2),s.phot_j_mag,1/POWER(s.phot_j_mag_error,2)) as phot_j_mag, 
@@ -184,21 +184,9 @@ v.phot_j_mag_error as vvv_j_mag_error,v.phot_h_mag_error as vvv_h_mag_error,v.ph
 s.phot_j_mag as sirius_j_mag,s.phot_h_mag as sirius_h_mag,s.phot_ks_mag as sirius_ks_mag,
 s.phot_j_mag_error as sirius_j_mag_error,s.phot_h_mag_error as sirius_h_mag_error,s.phot_ks_mag_error as sirius_ks_mag_error,
 q3c_dist(s.ra,s.dec,v.ra,v.dec)*3600. as separation
-FROM (SELECT * FROM sirius_sources_clean WHERE COALESCE(phot_j_mag,0)<12 AND COALESCE(phot_h_mag,0)<12 AND COALESCE(phot_ks_mag,0)<12) as s INNER JOIN vvv4_sources_clean as v ON q3c_join(s.ra,s.dec,v.ra,v.dec,1./3600.)
-UNION
-SELECT nextval('vvv_sirius_xmatch_xmatch_source_id_seq') AS xmatch_source_id,v.source_id as vvv_source_id,s.source_id as sirius_source_id, s.ra as ra, s.dec as dec, CAST('S' AS VARCHAR(1)) AS position_source,
-weighted_avg(correct_jmag(v.phot_j_mag,s.phot_j_mag),1/POWER(v.phot_j_mag_error,2),s.phot_j_mag,1/POWER(s.phot_j_mag_error,2)) as phot_j_mag, 
-SQRT(weighted_avg_error(1/POWER(v.phot_j_mag_error,2),1/POWER(s.phot_j_mag_error,2))) as phot_j_mag_error,
-weighted_avg(correct_hmag(v.phot_h_mag,s.phot_h_mag),1/POWER(v.phot_h_mag_error,2),s.phot_h_mag,1/POWER(s.phot_h_mag_error,2)) as phot_h_mag,
-SQRT(weighted_avg_error(1/POWER(v.phot_h_mag_error,2),1/POWER(s.phot_h_mag_error,2))) as phot_h_mag_error,
-weighted_avg(correct_ksmag(v.phot_ks_mag,s.phot_ks_mag),1/POWER(v.phot_ks_mag_error,2),s.phot_ks_mag,1/POWER(s.phot_ks_mag_error,2)) as phot_ks_mag, 
-SQRT(weighted_avg_error(1/POWER(v.phot_ks_mag_error,2),1/POWER(s.phot_ks_mag_error,2))) as phot_ks_mag_error,
-v.phot_j_mag as vvv_j_mag,v.phot_h_mag as vvv_h_mag,v.phot_ks_mag as vvv_ks_mag,
-v.phot_j_mag_error as vvv_j_mag_error,v.phot_h_mag_error as vvv_h_mag_error,v.phot_ks_mag_error as vvv_ks_mag_error,
-s.phot_j_mag as sirius_j_mag,s.phot_h_mag as sirius_h_mag,s.phot_ks_mag as sirius_ks_mag,
-s.phot_j_mag_error as sirius_j_mag_error,s.phot_h_mag_error as sirius_h_mag_error,s.phot_ks_mag_error as sirius_ks_mag_error,
-q3c_dist(s.ra,s.dec,v.ra,v.dec)*3600. as separation
-FROM (SELECT * FROM sirius_sources_clean WHERE phot_j_mag>=12 OR phot_h_mag>=12 OR phot_ks_mag>=12) as s INNER JOIN vvv4_sources_clean as v ON q3c_join(s.ra,s.dec,v.ra,v.dec,1./3600.) AND jhk_match(v.phot_j_mag,s.phot_j_mag,v.phot_h_mag,s.phot_h_mag,v.phot_ks_mag,s.phot_ks_mag,1.0::FLOAT); 
+FROM sirius_sources_clean as s INNER JOIN vvv4_sources_clean as v ON q3c_join(s.ra,s.dec,v.ra,v.dec,1./3600.) AND jhk_match(v.phot_j_mag,CASE WHEN s.phot_j_mag < 12 THEN NULL ELSE s.phot_j_mag,
+v.phot_h_mag,CASE WHEN s.phot_h_mag < 12 THEN NULL ELSE s.phot_h_mag,
+v.phot_ks_mag,CASE WHEN s.phot_ks_mag < 12 THEN NULL ELSE s.phot_ks_mag,1.0::FLOAT)
 
 CREATE INDEX IF NOT EXISTS vvv_sirius_xmatch_vvv_sourceid
 ON vvv_sirius_xmatch (vvv_source_id);
