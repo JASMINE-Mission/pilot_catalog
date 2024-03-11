@@ -49,7 +49,7 @@ t.phot_j_mag_error as tmass_j_mag_error,t.phot_h_mag_error as tmass_h_mag_error,
 v.phot_j_mag as vvv_j_mag,v.phot_h_mag as vvv_h_mag,v.phot_ks_mag as vvv_ks_mag,
 v.phot_j_mag_error as vvv_j_mag_error,v.phot_h_mag_error as vvv_h_mag_error,v.phot_ks_mag_error as vvv_ks_mag_error,
 q3c_dist(t.ra,t.dec,v.ra,v.dec)*3600. as separation
-FROM vvv4_sources_clean as v INNER JOIN tmass_sources_clean as t ON q3c_join(t.ra,t.dec,v.ra,v.dec,1./3600.)  AND jhk_match(v.phot_j_mag,NULLIF(GREATEST(t.phot_j_mag,12,12)),v.phot_h_mag,NULLIF(GREATEST(t.phot_h_mag,12,12)), v.phot_ks_mag,NULLIF(GREATEST(t.phot_ks_mag,12,12))); 
+FROM vvv4_sources_clean as v INNER JOIN tmass_sources_clean as t ON q3c_join(t.ra,t.dec,v.ra,v.dec,1./3600.)  AND jhk_match(v.phot_j_mag,NULLIF(GREATEST(t.phot_j_mag,12),12),v.phot_h_mag,NULLIF(GREATEST(t.phot_h_mag,12),12), v.phot_ks_mag,NULLIF(GREATEST(t.phot_ks_mag,12),12)); 
 
 CREATE INDEX IF NOT EXISTS tmass_vvv_xmatch_tmass_sourceid
 ON tmass_vvv_xmatch (tmass_source_id);
@@ -170,7 +170,7 @@ v.phot_j_mag_error as vvv_j_mag_error,v.phot_h_mag_error as vvv_h_mag_error,v.ph
 s.phot_j_mag as sirius_j_mag,s.phot_h_mag as sirius_h_mag,s.phot_ks_mag as sirius_ks_mag,
 s.phot_j_mag_error as sirius_j_mag_error,s.phot_h_mag_error as sirius_h_mag_error,s.phot_ks_mag_error as sirius_ks_mag_error,
 q3c_dist(s.ra,s.dec,v.ra,v.dec)*3600. as separation
-FROM sirius_sources_clean as s INNER JOIN vvv4_sources_clean as v ON q3c_join(s.ra,s.dec,v.ra,v.dec,1./3600.) AND jhk_match(v.phot_j_mag,NULLIF(GREATEST(s.phot_j_mag,12,12)),v.phot_h_mag,NULLIF(GREATEST(s.phot_h_mag,12,12)), v.phot_ks_mag,NULLIF(GREATEST(s.phot_ks_mag,12,12)));
+FROM sirius_sources_clean as s INNER JOIN vvv4_sources_clean as v ON q3c_join(s.ra,s.dec,v.ra,v.dec,1./3600.) AND jhk_match(v.phot_j_mag,NULLIF(GREATEST(s.phot_j_mag,12),12),v.phot_h_mag,NULLIF(GREATEST(s.phot_h_mag,12),12), v.phot_ks_mag,NULLIF(GREATEST(s.phot_ks_mag,12),12));
 
 CREATE INDEX IF NOT EXISTS vvv_sirius_xmatch_vvv_sourceid
 ON vvv_sirius_xmatch (vvv_source_id);
