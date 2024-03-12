@@ -58,7 +58,7 @@ $$ LANGUAGE SQL;
 CREATE AGGREGATE select_better_agg(FLOAT,FLOAT)(
   sfunc = select_better_statetransition,
   stype = FLOAT[],
-  initcond = '{-1.0,NULL::FLOAT}'
+  initcond = '{-1.0,NULL}'
 );
 
 CREATE OR REPLACE FUNCTION select_worst(
