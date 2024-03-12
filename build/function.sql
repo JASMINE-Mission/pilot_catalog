@@ -50,7 +50,7 @@ CREATE OR REPLACE FUNCTION select_better_statetransition(
   next_err FLOAT) -- error in the contendent mag
 RETURNS FLOAT[] AS $$
   SELECT CASE
-    WHEN COALESCE(agg_state_arr[2],1000) >= COALESCE(next_err,1000) THEN ARRAY[next_mag,next_err]
+    WHEN COALESCE(agg_state_arr[2],1000) >= COALESCE(next_err,1000) THEN ARRAY[next_mag::FLOAT,next_err::FLOAT]
     ELSE agg_state_arr
   END
 $$ LANGUAGE SQL;
@@ -58,7 +58,7 @@ $$ LANGUAGE SQL;
 CREATE AGGREGATE select_better_agg(FLOAT,FLOAT)(
   sfunc = select_better_statetransition,
   stype = FLOAT[],
-  initcond = ARRAY[-1.0,NULL::FLOAT]
+  initcond = '{-1.0,NULL::FLOAT}'
 );
 
 CREATE OR REPLACE FUNCTION select_worst(
