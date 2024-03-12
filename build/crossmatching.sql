@@ -186,9 +186,9 @@ SELECT ts.tmass_source_id,ts.sirius_source_id,vs.vvv_source_id,ts.ra as ra, ts.d
 CASE WHEN ts.tmass_j_mag<=12 OR ts.sirius_j_mag<=12 THEN ts.phot_j_mag ELSE weighted_avg3(ts.tmass_j_mag,1/POWER(ts.tmass_j_mag_error,2),ts.sirius_j_mag,1/POWER(ts.sirius_j_mag_error,2),vs.vvv_j_mag,1/POWER(vs.vvv_j_mag_error,2)) END as phot_j_mag, 
 CASE WHEN ts.tmass_j_mag<=12 OR ts.sirius_j_mag<=12 THEN ts.phot_j_mag_error ELSE SQRT(weighted_avg_error3(1/POWER(ts.tmass_j_mag_error,2),1/POWER(ts.sirius_j_mag_error,2),1/POWER(vs.vvv_j_mag_error,2))) END as phot_j_mag_error,
 CASE WHEN ts.tmass_h_mag<=12 OR ts.sirius_h_mag<=12 THEN ts.phot_h_mag ELSE weighted_avg3(ts.tmass_h_mag,1/POWER(ts.tmass_h_mag_error,2),ts.sirius_h_mag,1/POWER(ts.sirius_h_mag_error,2),vs.vvv_h_mag,1/POWER(vs.vvv_h_mag_error,2)) END as phot_h_mag, 
-CASE WHEN ts.tmass_h_mag<=12 OR ts.sirius_h_mag<=12 THEN ts.phot_h_mag_error ELSE SQRT(weighted_avg_error3(1/POWER(ts.tmass_h_mag_error,2),1/POWER(ts.sirius_h_mag_error,2),1/POWER(vs.vvv_h_mag_error,2))) as phot_h_mag_error,
-CASE WHEN ts.tmass_ks_mag<=12 OR ts.sirius_ks_mag<=12 THEN ts.phot_ks_mag ELSE weighted_avg3(ts.tmass_ks_mag,1/POWER(ts.tmass_ks_mag_error,2),ts.sirius_ks_mag,1/POWER(ts.sirius_ks_mag_error,2),vs.vvv_ks_mag,1/POWER(vs.vvv_ks_mag_error,2)) as phot_ks_mag, 
-CASE WHEN ts.tmass_ks_mag<=12 OR ts.sirius_ks_mag<=12 THEN ts.phot_ks_mag_error ELSE SQRT(weighted_avg_error3(1/POWER(ts.tmass_ks_mag_error,2),1/POWER(ts.sirius_ks_mag_error,2),1/POWER(vs.vvv_ks_mag_error,2))) as phot_ks_mag_error,
+CASE WHEN ts.tmass_h_mag<=12 OR ts.sirius_h_mag<=12 THEN ts.phot_h_mag_error ELSE SQRT(weighted_avg_error3(1/POWER(ts.tmass_h_mag_error,2),1/POWER(ts.sirius_h_mag_error,2),1/POWER(vs.vvv_h_mag_error,2))) END as phot_h_mag_error,
+CASE WHEN ts.tmass_ks_mag<=12 OR ts.sirius_ks_mag<=12 THEN ts.phot_ks_mag ELSE weighted_avg3(ts.tmass_ks_mag,1/POWER(ts.tmass_ks_mag_error,2),ts.sirius_ks_mag,1/POWER(ts.sirius_ks_mag_error,2),vs.vvv_ks_mag,1/POWER(vs.vvv_ks_mag_error,2)) END as phot_ks_mag, 
+CASE WHEN ts.tmass_ks_mag<=12 OR ts.sirius_ks_mag<=12 THEN ts.phot_ks_mag_error ELSE SQRT(weighted_avg_error3(1/POWER(ts.tmass_ks_mag_error,2),1/POWER(ts.sirius_ks_mag_error,2),1/POWER(vs.vvv_ks_mag_error,2))) END as phot_ks_mag_error,
 ts.xmatch_source_id as tmass_x_sirius_id,
 vs.xmatch_source_id as vvv_x_sirius_id,
 tv.xmatch_source_id as tmass_x_vvv_id
