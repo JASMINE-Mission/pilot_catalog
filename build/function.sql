@@ -38,8 +38,8 @@ CREATE OR REPLACE FUNCTION select_better(
   FLOAT) -- magnitude uncertainty in the second catalog
 RETURNS FLOAT AS $$
   SELECT CASE
-    WHEN COALESCE($2,1000) <= COALESCE($4,1000) THEN $1
-    WHEN COALESCE($2,1000) > COALESCE($4,1000) THEN $3
+    WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
+    WHEN COALESCE($2,1000) >= COALESCE($4,1000) THEN $3
     ELSE NULL
   END
 $$ LANGUAGE SQL;
@@ -57,7 +57,7 @@ $$ LANGUAGE SQL;
 CREATE AGGREGATE select_better_agg(FLOAT,FLOAT)(
   sfunc = select_better_statetransition
   stype = FLOAT[]
-  initcond = ARRAY[0.0,999.9]
+  initcond = ARRAY[-1,NULL]
 )
 
 CREATE OR REPLACE FUNCTION select_worst(
