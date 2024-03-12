@@ -45,16 +45,15 @@ RETURNS FLOAT AS $$
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION select_better_statetransition(
-  agg_state_arr FLOAT[],
-  next_mag FLOAT,
-  next_err FLOAT)
+  agg_state_arr FLOAT[], --current state (mag,mag_error)
+  next_mag FLOAT, -- contendent for best mag
+  next_err FLOAT) -- error in the contendent mag
 RETURNS FLOAT[] AS $$
   SELECT CASE
-    WHEN COALESCE(agg_state_arr[1],1000) < COALESCE(next_err,1000) THEN agg_state_arr
     WHEN COALESCE(agg_state_arr[1],1000) >= COALESCE(next_err,1000) THEN ARRAY[next_mag,next_err]
-    ELSE NULL
+    ELSE agg_state_arr
   END
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE SQL;
 
 CREATE AGGREGATE select_better_agg(FLOAT,FLOAT)(
   sfunc = select_better_statetransition,
