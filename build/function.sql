@@ -52,13 +52,13 @@ RETURNS FLOAT[] AS $$
   BEGIN
     RETURN select_better(agg_state_arr[0],agg_state_arr[1],next_mag,next_err)
   END;
-$$ LANGUAGE SQL;
+$$ LANGUAGE plpgsql;
 
 CREATE AGGREGATE select_better_agg(FLOAT,FLOAT)(
-  sfunc = select_better_statetransition
-  stype = FLOAT[]
+  sfunc = select_better_statetransition,
+  stype = FLOAT[],
   initcond = ARRAY[-1,NULL]
-)
+);
 
 CREATE OR REPLACE FUNCTION select_worst(
   FLOAT, -- magnitude in the first catalog
