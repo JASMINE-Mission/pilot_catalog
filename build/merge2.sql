@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS merged_sources_dups_sirius CASCADE;
 
 CREATE TABLE merged_sources_dups_sirius AS --two merged sources sharing the same source from any catalogue
 SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
-select_better_agg(tmass_source_id,phot_error) as tmass_source_id,,
+select_better_agg(tmass_source_id,phot_error) as tmass_source_id,
 sirius_source_id,
 select_better_agg(vvv_source_id,phot_error) as vvv_source_id,
 select_better_agg(glon,phot_error) as glon,
@@ -83,7 +83,7 @@ DROP TABLE IF EXISTS merged_sources_dups_vvv CASCADE;
 
 CREATE TABLE merged_sources_dups_vvv AS --two merged sources sharing the same source from any catalogue
 SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
-select_better_agg(tmass_source_id,phot_error) as tmass_source_id,,
+select_better_agg(tmass_source_id,phot_error) as tmass_source_id,
 select_better_agg(sirius_source_id,phot_error) as sirius_source_id,
 vvv_source_id,
 select_better_agg(glon,phot_error) as glon,
