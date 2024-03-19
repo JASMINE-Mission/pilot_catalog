@@ -51,6 +51,7 @@ select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
 select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
 select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
 MAX(num_neighbours) as num_neighbours,
+select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE tmass_source_id IS NOT NULL GROUP BY tmass_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
@@ -73,6 +74,7 @@ select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
 select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
 select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
 MAX(num_neighbours) as num_neighbours,
+select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE sirius_source_id IS NOT NULL GROUP BY sirius_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
@@ -95,6 +97,7 @@ select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
 select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
 select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
 MAX(num_neighbours) as num_neighbours,
+select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE vvv_source_id IS NOT NULL GROUP BY vvv_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
@@ -128,7 +131,7 @@ DROP TABLE IF EXISTS merged_sources_dups_candidates2_full CASCADE;
 CREATE TABLE merged_sources_dups_candidates2_full AS
 SELECT * FROM merged_sources_dups_candidates2
 UNION
-SELECT DISTINCT ON (tmass_source_id,sirius_source_id,vvv_source_id) aux.source_id, aux.tmass_source_id,aux.sirius_source_id,aux.vvv_source_id,aux.glon,aux.glat,aux.ra,aux.dec,aux.position_source,aux.magnitude_source,aux.phot_hw_mag,aux.phot_hw_mag_error,aux.phot_j_mag,aux.phot_j_mag_error,aux.phot_h_mag,aux.phot_h_mag_error,aux.phot_ks_mag,aux.phot_ks_mag_error FROM (SELECT * FROM merged_sources_dups_tmass UNION SELECT * FROM merged_sources_dups_sirius UNION SELECT * FROM merged_sources_dups_vvv) AS aux;
+SELECT DISTINCT ON (tmass_source_id,sirius_source_id,vvv_source_id) aux.source_id, aux.tmass_source_id,aux.sirius_source_id,aux.vvv_source_id,aux.glon,aux.glat,aux.ra,aux.dec,aux.position_source,aux.magnitude_source,aux.phot_hw_mag,aux.phot_hw_mag_error,aux.phot_j_mag,aux.phot_j_mag_error,aux.phot_h_mag,aux.phot_h_mag_error,aux.phot_ks_mag,aux.phot_ks_mag_error,aux.num_neighbours,aux.phot_error FROM (SELECT * FROM merged_sources_dups_tmass UNION SELECT * FROM merged_sources_dups_sirius UNION SELECT * FROM merged_sources_dups_vvv) AS aux;
 
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_full_source_id
   ON merged_sources_dups_candidates2_full (source_id);
