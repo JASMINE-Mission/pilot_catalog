@@ -67,7 +67,7 @@ CREATE OR REPLACE AGGREGATE select_better_agg(FLOAT,FLOAT)(
   sfunc = select_better_statetransition,
   stype = FLOAT[],
   initcond = '{-1.0,NULL}',
-  ffunc = select_better_final
+  finalfunc = select_better_final
 );
 
 CREATE OR REPLACE FUNCTION select_worst(
