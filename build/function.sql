@@ -58,7 +58,7 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION select_better_final(
   agg_state_arr FLOAT[] --current state (mag,mag_error)
 )
-RETURNS FLOAT[] AS $$
+RETURNS FLOAT AS $$
   SELECT agg_state_arr[0]
 $$ LANGUAGE SQL;
 
