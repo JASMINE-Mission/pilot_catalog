@@ -38,18 +38,12 @@ ANALYZE merged_sources_dups_candidates;
 DROP TABLE IF EXISTS merged_sources_dups_tmass CASCADE;
 
 CREATE TABLE merged_sources_dups_tmass AS --two merged sources sharing the same source from any catalogue
-SELECT * FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
+SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
 tmass_source_id,
 select_better_agg(sirius_source_id,phot_error) as sirius_source_id,
 select_better_agg(vvv_source_id,phot_error) as vvv_source_id,
 select_better_agg(glon,phot_error) as glon,
 select_better_agg(glat,phot_error) as glat,
-select_better_agg(ra,phot_error) as ra,
-select_better_agg(dec,phot_error) as dec,
-select_better_agg(position_source,phot_error) as position_source,
-select_better_agg(magnitude_source,phot_error) as magnitude_source,
-select_better_agg(phot_hw_mag,phot_error) as phot_hw_mag,
-select_better_agg(phot_hw_mag_error,phot_error) as phot_hw_mag_error,
 select_better_agg(phot_j_mag,phot_error) as phot_j_mag,
 select_better_agg(phot_j_mag_error,phot_error) as phot_j_mag_error,
 select_better_agg(phot_h_mag,phot_error) as phot_h_mag,
@@ -58,7 +52,51 @@ select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
 select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
 select_better_agg(num_neighbours,phot_error) as num_neighbours,
 COUNT(*) AS counts
-FROM merged_sources_dups_candidates GROUP BY tmass_source_id) AS aux WHERE counts>1;
+FROM merged_sources_dups_candidates WHERE tmass_source_id IS NOT NULL GROUP BY tmass_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
+
+
+
+-- solve sources with a duplicated sirius_source_id
+DROP TABLE IF EXISTS merged_sources_dups_sirius CASCADE;
+
+CREATE TABLE merged_sources_dups_sirius AS --two merged sources sharing the same source from any catalogue
+SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
+select_better_agg(tmass_source_id,phot_error) as tmass_source_id,,
+sirius_source_id,
+select_better_agg(vvv_source_id,phot_error) as vvv_source_id,
+select_better_agg(glon,phot_error) as glon,
+select_better_agg(glat,phot_error) as glat,
+select_better_agg(phot_j_mag,phot_error) as phot_j_mag,
+select_better_agg(phot_j_mag_error,phot_error) as phot_j_mag_error,
+select_better_agg(phot_h_mag,phot_error) as phot_h_mag,
+select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
+select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
+select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
+select_better_agg(num_neighbours,phot_error) as num_neighbours,
+COUNT(*) AS counts
+FROM merged_sources_dups_candidates WHERE sirius_source_id IS NOT NULL GROUP BY sirius_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
+
+
+
+-- solve sources with a duplicated vvv_source_id
+DROP TABLE IF EXISTS merged_sources_dups_vvv CASCADE;
+
+CREATE TABLE merged_sources_dups_vvv AS --two merged sources sharing the same source from any catalogue
+SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
+select_better_agg(tmass_source_id,phot_error) as tmass_source_id,,
+select_better_agg(sirius_source_id,phot_error) as sirius_source_id,
+vvv_source_id,
+select_better_agg(glon,phot_error) as glon,
+select_better_agg(glat,phot_error) as glat,
+select_better_agg(phot_j_mag,phot_error) as phot_j_mag,
+select_better_agg(phot_j_mag_error,phot_error) as phot_j_mag_error,
+select_better_agg(phot_h_mag,phot_error) as phot_h_mag,
+select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
+select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
+select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
+select_better_agg(num_neighbours,phot_error) as num_neighbours,
+COUNT(*) AS counts
+FROM merged_sources_dups_candidates WHERE vvv_source_id IS NOT NULL GROUP BY vvv_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
 --DROP TABLE IF EXISTS merged_sources_clean CASCADE;
 --CREATE TABLE merged_sources_clean (
