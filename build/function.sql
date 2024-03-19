@@ -81,7 +81,7 @@ CREATE OR REPLACE FUNCTION select_better_text(
   FLOAT, -- magnitude uncertainty in the first catalog
   TEXT, -- value in the second catalog
   FLOAT) -- magnitude uncertainty in the second catalog
-RETURNS FLOAT AS $$
+RETURNS TEXT AS $$
   SELECT CASE
     WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
     WHEN COALESCE($2,1000) >= COALESCE($4,1000) THEN $3
@@ -95,7 +95,7 @@ CREATE OR REPLACE FUNCTION select_better_text_statetransition(
   next_err FLOAT) -- error in the contender's mag
 RETURNS FLOAT[] AS $$
   SELECT CASE
-    WHEN COALESCE(agg_state_arr[2],1000) >= COALESCE(next_err,1000) THEN ARRAY[next_val::TEXT,next_err::FLOAT]
+    WHEN COALESCE(agg_state_arr[2],"1000") >= COALESCE(next_err,1000) THEN ARRAY[next_val::TEXT,next_err::FLOAT]
     ELSE agg_state_arr
   END
 $$ LANGUAGE SQL;
@@ -104,7 +104,6 @@ DROP AGGREGATE IF EXISTS select_better_text_agg(TEXT,FLOAT);
 CREATE OR REPLACE AGGREGATE select_better_text_agg(TEXT,FLOAT)(
   sfunc = select_better_text_statetransition,
   stype = my_type[],
-  initcond = '{"VOID",NULL}',
   finalfunc = select_better_final
 );
 
