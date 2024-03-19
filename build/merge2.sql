@@ -98,6 +98,30 @@ MAX(num_neighbours) as num_neighbours,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE vvv_source_id IS NOT NULL GROUP BY vvv_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
+
+
+
+DROP TABLE IF EXISTS merged_sources_dups_candidates2 CASCADE;
+
+CREATE TABLE merged_sources_dups_candidates2 AS
+SELECT m.* FROM merged_sources_dups_candidates AS m 
+LEFT OUTER JOIN merged_sources_dups_tmass AS t ON m.tmass_source_id=t.tmass_source_id 
+LEFT OUTER JOIN merged_sources_dups_sirius AS s ON m.sirius_source_id=s.sirius_source_id 
+LEFT OUTER JOIN merged_sources_dups_vvv AS v ON m.vvv_source_id=v.vvv_source_id;
+
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_source_id
+  ON merged_sources_dups_candidates2 (source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_vvv_source_id
+  ON merged_sources_dups_candidates2 (vvv_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_sirius_source_id
+  ON merged_sources_dups_candidates2 (sirius_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_tmass_source_id
+  ON merged_sources_dups_candidates2 (tmass_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_glonglat
+  ON merged_sources_dups_candidates2 (q3c_ang2ipix(glon,glat));
+CLUSTER merged_sources_dups_candidates2_glonglat ON merged_sources_dups_candidates2;
+ANALYZE merged_sources_dups_candidates2;
+
 --DROP TABLE IF EXISTS merged_sources_clean CASCADE;
 --CREATE TABLE merged_sources_clean (
 --  source_id          BIGSERIAL PRIMARY KEY,
