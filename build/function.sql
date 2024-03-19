@@ -95,7 +95,7 @@ CREATE OR REPLACE FUNCTION select_better_text_statetransition(
   next_err FLOAT) -- error in the contender's mag
 RETURNS FLOAT[] AS $$
   SELECT CASE
-    WHEN COALESCE(agg_state_arr[2],1000) >= COALESCE(next_err,1000) THEN ARRAY[next_val::TEXT,next_err::FLOAT]
+    WHEN COALESCE(agg_state_arr[2],1000.) >= COALESCE(next_err,1000.) THEN my_type[next_val,next_err]
     ELSE agg_state_arr
   END
 $$ LANGUAGE SQL;
