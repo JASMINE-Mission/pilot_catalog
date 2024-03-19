@@ -50,7 +50,7 @@ select_better_agg(phot_h_mag,phot_error) as phot_h_mag,
 select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
 select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
 select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
-select_better_agg(num_neighbours,phot_error) as num_neighbours,
+MAX(num_neighbours) as num_neighbours,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE tmass_source_id IS NOT NULL GROUP BY tmass_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
@@ -72,7 +72,7 @@ select_better_agg(phot_h_mag,phot_error) as phot_h_mag,
 select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
 select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
 select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
-select_better_agg(num_neighbours,phot_error) as num_neighbours,
+MAX(num_neighbours) as num_neighbours,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE sirius_source_id IS NOT NULL GROUP BY sirius_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
@@ -94,7 +94,7 @@ select_better_agg(phot_h_mag,phot_error) as phot_h_mag,
 select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
 select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
 select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
-select_better_agg(num_neighbours,phot_error) as num_neighbours,
+MAX(num_neighbours) as num_neighbours,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE vvv_source_id IS NOT NULL GROUP BY vvv_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
 
