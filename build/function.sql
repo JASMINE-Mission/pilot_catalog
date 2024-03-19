@@ -46,8 +46,8 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION select_better_statetransition(
   agg_state_arr FLOAT[], --current state (mag,mag_error)
-  next_mag FLOAT, -- contendent for best mag
-  next_err FLOAT) -- error in the contendent mag
+  next_mag FLOAT, -- contender for best mag
+  next_err FLOAT) -- error in the contender's mag
 RETURNS FLOAT[] AS $$
   SELECT CASE
     WHEN COALESCE(agg_state_arr[2],1000) >= COALESCE(next_err,1000) THEN ARRAY[next_mag::FLOAT,next_err::FLOAT]
