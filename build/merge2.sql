@@ -38,7 +38,7 @@ ANALYZE merged_sources_dups_candidates;
 DROP TABLE IF EXISTS merged_sources_dups_tmass CASCADE;
 
 CREATE TABLE merged_sources_dups_tmass AS --two merged sources sharing the same source from any catalogue
-SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
+SELECT m.*,aux.num_neighbours,aux.counts,aux.phot_error FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
 tmass_source_id,
 select_better_agg(sirius_source_id,phot_error) as sirius_source_id,
 select_better_agg(vvv_source_id,phot_error) as vvv_source_id,
@@ -53,7 +53,7 @@ select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
 MAX(num_neighbours) as num_neighbours,
 select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
-FROM merged_sources_dups_candidates WHERE tmass_source_id IS NOT NULL GROUP BY tmass_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
+FROM merged_sources_dups_candidates WHERE tmass_source_id IS NOT NULL GROUP BY tmass_source_id) AS aux INNER JOIN merged_sources_raw AS m ON aux.source_id = m.source_id WHERE counts>1;
 
 
 
@@ -61,7 +61,7 @@ FROM merged_sources_dups_candidates WHERE tmass_source_id IS NOT NULL GROUP BY t
 DROP TABLE IF EXISTS merged_sources_dups_sirius CASCADE;
 
 CREATE TABLE merged_sources_dups_sirius AS --two merged sources sharing the same source from any catalogue
-SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
+SELECT m.*,aux.num_neighbours,aux.counts,aux.phot_error FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
 select_better_agg(tmass_source_id,phot_error) as tmass_source_id,
 sirius_source_id,
 select_better_agg(vvv_source_id,phot_error) as vvv_source_id,
@@ -76,7 +76,7 @@ select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
 MAX(num_neighbours) as num_neighbours,
 select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
-FROM merged_sources_dups_candidates WHERE sirius_source_id IS NOT NULL GROUP BY sirius_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
+FROM merged_sources_dups_candidates WHERE sirius_source_id IS NOT NULL GROUP BY sirius_source_id) AS aux INNER JOIN merged_sources_raw AS m ON aux.source_id = m.source_id WHERE counts>1;
 
 
 
@@ -84,7 +84,7 @@ FROM merged_sources_dups_candidates WHERE sirius_source_id IS NOT NULL GROUP BY 
 DROP TABLE IF EXISTS merged_sources_dups_vvv CASCADE;
 
 CREATE TABLE merged_sources_dups_vvv AS --two merged sources sharing the same source from any catalogue
-SELECT m.*,aux.num_neighbours,aux.counts FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
+SELECT m.*,aux.num_neighbours,aux.counts,aux.phot_error FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
 select_better_agg(tmass_source_id,phot_error) as tmass_source_id,
 select_better_agg(sirius_source_id,phot_error) as sirius_source_id,
 vvv_source_id,
@@ -99,7 +99,7 @@ select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
 MAX(num_neighbours) as num_neighbours,
 select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
-FROM merged_sources_dups_candidates WHERE vvv_source_id IS NOT NULL GROUP BY vvv_source_id) AS aux INNER JOIN merged_sources AS m ON aux.source_id = m.source_id WHERE counts>1;
+FROM merged_sources_dups_candidates WHERE vvv_source_id IS NOT NULL GROUP BY vvv_source_id) AS aux INNER JOIN merged_sources_raw AS m ON aux.source_id = m.source_id WHERE counts>1;
 
 
 
