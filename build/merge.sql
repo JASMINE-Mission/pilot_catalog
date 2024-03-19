@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS merged_sources CASCADE;
-CREATE TABLE merged_sources (
+DROP TABLE IF EXISTS merged_sources_raw CASCADE;
+CREATE TABLE merged_sources_raw (
   source_id          BIGSERIAL PRIMARY KEY,
   tmass_source_id    BIGINT,
   sirius_source_id   BIGINT,
@@ -21,20 +21,20 @@ CREATE TABLE merged_sources (
 );
 
 
-ALTER TABLE merged_sources ADD CONSTRAINT
+ALTER TABLE merged_sources_raw ADD CONSTRAINT
   FK_merged_tmass_id FOREIGN KEY (tmass_source_id)
   REFERENCES tmass_sources_clean (source_id) ON DELETE CASCADE;
-ALTER TABLE merged_sources ADD CONSTRAINT
+ALTER TABLE merged_sources_raw ADD CONSTRAINT
   FK_merged_sirius_id FOREIGN KEY  (sirius_source_id)
   REFERENCES sirius_sources_clean (source_id) ON DELETE CASCADE;
-ALTER TABLE merged_sources ADD CONSTRAINT
+ALTER TABLE merged_sources_raw ADD CONSTRAINT
   FK_merged_vvv_id FOREIGN KEY (vvv_source_id)
   REFERENCES vvv4_sources_clean (source_id) ON DELETE CASCADE;
 
 
-INSERT INTO merged_sources
+INSERT INTO merged_sources_raw
 SELECT  --tmass unique sources
-  nextval('merged_sources_source_id_seq') AS source_id,
+  nextval('merged_sources_raw_source_id_seq') AS source_id,
   t.source_id AS tmass_source_id,
   CAST(NULL AS BIGINT) AS sirius_source_id,
   CAST(NULL AS BIGINT) AS vvv_source_id, 
@@ -55,7 +55,7 @@ SELECT  --tmass unique sources
   FROM tmass_sources_clean as t LEFT OUTER JOIN tmass_sirius_xmatch as tsx ON t.source_id=tsx.tmass_source_id LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON t.source_id = tvx.tmass_source_id WHERE tsx.tmass_source_id IS NULL AND tvx.tmass_source_id IS NULL
 UNION
 SELECT  --vvv unique sources  
-  nextval('merged_sources_source_id_seq') AS source_id,
+  nextval('merged_sources_raw_source_id_seq') AS source_id,
   CAST(NULL AS BIGINT) AS tmass_source_id,
   CAST(NULL AS BIGINT) AS sirius_source_id,
   v.source_id AS vvv_source_id, 
@@ -76,7 +76,7 @@ SELECT  --vvv unique sources
   FROM vvv4_sources_clean as v LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON v.source_id = tvx.vvv_source_id LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON v.source_id = vsx.vvv_source_id WHERE tvx.vvv_source_id IS NULL AND vsx.vvv_source_id IS NULL AND (v.phot_j_mag IS NOT NULL OR v.phot_h_mag IS NOT NULL OR v.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --sirius unique sources  
-  nextval('merged_sources_source_id_seq') AS source_id,
+  nextval('merged_sources_raw_source_id_seq') AS source_id,
   CAST(NULL AS BIGINT) AS tmass_source_id,
   s.source_id AS sirius_source_id,
   CAST(NULL AS BIGINT) AS vvv_source_id, 
@@ -97,7 +97,7 @@ SELECT  --sirius unique sources
   FROM sirius_sources_clean as s LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON s.source_id = vsx.sirius_source_id LEFT OUTER JOIN tmass_sirius_xmatch as tsx ON s.source_id = tsx.sirius_source_id WHERE vsx.sirius_source_id IS NULL AND tsx.sirius_source_id IS NULL
 UNION
 SELECT  --2MASSxSIRIUS
-  nextval('merged_sources_source_id_seq') AS source_id,
+  nextval('merged_sources_raw_source_id_seq') AS source_id,
   ts.tmass_source_id AS tmass_source_id,
   ts.sirius_source_id AS sirius_source_id,
   CAST(NULL AS BIGINT) AS vvv_source_id, 
@@ -118,7 +118,7 @@ SELECT  --2MASSxSIRIUS
   FROM tmass_sirius_xmatch as ts LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON ts.xmatch_source_id = tvsx.tmass_x_sirius_id WHERE tvsx.tmass_x_sirius_id IS NULL
 UNION
 SELECT  --2MASSxVVV
-  nextval('merged_sources_source_id_seq') AS source_id,
+  nextval('merged_sources_raw_source_id_seq') AS source_id,
   tv.tmass_source_id AS tmass_source_id,
   CAST(NULL AS BIGINT) AS sirius_source_id,
   tv.vvv_source_id AS vvv_source_id, 
@@ -139,7 +139,7 @@ SELECT  --2MASSxVVV
   FROM tmass_vvv_xmatch as tv LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON tv.xmatch_source_id = tvsx.tmass_x_vvv_id WHERE tvsx.tmass_x_vvv_id IS NULL AND (tv.phot_j_mag IS NOT NULL OR tv.phot_h_mag IS NOT NULL OR tv.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --VVVxSIRIUS  
-  nextval('merged_sources_source_id_seq') AS source_id,
+  nextval('merged_sources_raw_source_id_seq') AS source_id,
   CAST(NULL AS BIGINT) AS tmass_source_id,
   vs.sirius_source_id AS sirius_source_id,
   vs.vvv_source_id AS vvv_source_id, 
@@ -160,7 +160,7 @@ SELECT  --VVVxSIRIUS
   FROM vvv_sirius_xmatch as vs LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON vs.xmatch_source_id = tvsx.vvv_x_sirius_id WHERE tvsx.vvv_x_sirius_id IS NULL AND (vs.phot_j_mag IS NOT NULL OR vs.phot_h_mag IS NOT NULL OR vs.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --2MASSxVVVxSIRIUS  
-  nextval('merged_sources_source_id_seq') AS source_id,
+  nextval('merged_sources_raw_source_id_seq') AS source_id,
   tvs.tmass_source_id AS tmass_source_id,
   tvs.sirius_source_id AS sirius_source_id,
   tvs.vvv_source_id AS vvv_source_id, 
@@ -181,34 +181,34 @@ SELECT  --2MASSxVVVxSIRIUS
   FROM tmass_vvv_sirius_xmatch as tvs WHERE (tvs.phot_j_mag IS NOT NULL OR tvs.phot_h_mag IS NOT NULL OR tvs.phot_ks_mag IS NOT NULL);
 
 
-CREATE INDEX IF NOT EXISTS merged_sources_tmass_source_id
-  ON merged_sources (tmass_source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_vvv_source_id
-  ON merged_sources (vvv_source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_sirius_source_id
-  ON merged_sources (sirius_source_id);
-CREATE INDEX IF NOT EXISTS merged_sources_radec
-  ON merged_sources (q3c_ang2ipix(ra,dec));
-CREATE INDEX IF NOT EXISTS merged_sources_glonglat
-  ON merged_sources (q3c_ang2ipix(glon,glat));
-CREATE INDEX IF NOT EXISTS merged_sources_hwmag
-  ON merged_sources (phot_hw_mag);
-CREATE INDEX IF NOT EXISTS merged_sources_jmag
-  ON merged_sources (phot_j_mag);
-CREATE INDEX IF NOT EXISTS merged_sources_hmag
-  ON merged_sources (phot_h_mag);
-CREATE INDEX IF NOT EXISTS merged_sources_ksmag
-  ON merged_sources (phot_ks_mag);
-CREATE INDEX IF NOT EXISTS merged_sources_ra
-  ON merged_sources (ra);
-CREATE INDEX IF NOT EXISTS merged_sources_dec
-  ON merged_sources (dec);
-CREATE INDEX IF NOT EXISTS merged_sources_glon
-  ON merged_sources (glon);
-CREATE INDEX IF NOT EXISTS merged_sources_glat
-  ON merged_sources (glat);
-CLUSTER merged_sources_glonglat ON merged_sources;
-ANALYZE merged_sources;
+CREATE INDEX IF NOT EXISTS merged_sources_raw_tmass_source_id
+  ON merged_sources_raw (tmass_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_vvv_source_id
+  ON merged_sources_raw (vvv_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_sirius_source_id
+  ON merged_sources_raw (sirius_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_radec
+  ON merged_sources_raw (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS merged_sources_raw_glonglat
+  ON merged_sources_raw (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS merged_sources_raw_hwmag
+  ON merged_sources_raw (phot_hw_mag);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_jmag
+  ON merged_sources_raw (phot_j_mag);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_hmag
+  ON merged_sources_raw (phot_h_mag);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_ksmag
+  ON merged_sources_raw (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_ra
+  ON merged_sources_raw (ra);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_dec
+  ON merged_sources_raw (dec);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_glon
+  ON merged_sources_raw (glon);
+CREATE INDEX IF NOT EXISTS merged_sources_raw_glat
+  ON merged_sources_raw (glat);
+CLUSTER merged_sources_raw_glonglat ON merged_sources_raw;
+ANALYZE merged_sources_raw;
 
 
 --DROP TABLE IF EXISTS tmass_vvv_sirius_xmatch CASCADE;

@@ -123,6 +123,122 @@ CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_glonglat
 CLUSTER merged_sources_dups_candidates2_glonglat ON merged_sources_dups_candidates2;
 ANALYZE merged_sources_dups_candidates2;
 
+DROP TABLE IF EXISTS merged_sources_dups_candidates2_full CASCADE;
+
+CREATE TABLE merged_sources_dups_candidates2_full AS
+SELECT * FROM merged_sources_dups_candidates2
+UNION
+SELECT DISTINCT ON (tmass_source_id,sirius_source_id,vvv_source_id) aux.source_id, aux.tmass_source_id,aux.sirius_source_id,aux.vvv_source_id,aux.glon,aux.glat,aux.ra,aux.dec,aux.position_source,aux.magnitude_source,aux.phot_hw_mag,aux.phot_hw_mag_error,aux.phot_j_mag,aux.phot_j_mag_error,aux.phot_h_mag,aux.phot_h_mag_error,aux.phot_ks_mag,aux.phot_ks_mag_error FROM (SELECT * FROM merged_sources_dups_tmass UNION SELECT * FROM merged_sources_dups_sirius UNION SELECT * FROM merged_sources_dups_vvv) AS aux;
+
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_full_source_id
+  ON merged_sources_dups_candidates2_full (source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_full_vvv_source_id
+  ON merged_sources_dups_candidates2_full (vvv_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_full_sirius_source_id
+  ON merged_sources_dups_candidates2_full (sirius_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_full_tmass_source_id
+  ON merged_sources_dups_candidates2_full (tmass_source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_full_glonglat
+  ON merged_sources_dups_candidates2_full (q3c_ang2ipix(glon,glat));
+CLUSTER merged_sources_dups_candidates2_full_glonglat ON merged_sources_dups_candidates2_full;
+ANALYZE merged_sources_dups_candidates2_full;
+
+
+
+DROP TABLE IF EXISTS merged_sources_dups_clean CASCADE;
+
+CREATE TABLE merged_sources_dups_clean (
+  source_id          BIGSERIAL PRIMARY KEY,
+  tmass_source_id    BIGINT,
+  sirius_source_id   BIGINT,
+  vvv_source_id      BIGINT,
+  glon               FLOAT,
+  glat               FLOAT,
+  ra                 FLOAT,
+  dec                FLOAT,
+  position_source    VARCHAR(1),
+  magnitude_source   VARCHAR(3),
+  phot_hw_mag        FLOAT,
+  phot_hw_mag_error  FLOAT,
+  phot_j_mag         FLOAT,
+  phot_j_mag_error   FLOAT,
+  phot_h_mag         FLOAT,
+  phot_h_mag_error   FLOAT,
+  phot_ks_mag        FLOAT,
+  phot_ks_mag_error  FLOAT
+);
+
+WITH AUX_2 AS (
+SELECT source_id
+FROM (SELECT select_better(d1.source_id,d1.phot_error,d2.source_id,d2.phot_error) as source_id,LEAST(d1.phot_error,d2.phot_error) as phot_error FROM merged_sources_dups_candidates2_full as d1 INNER JOIN merged_sources_dups_candidates2_full as d2 ON q3c_join(d1.ra,d1.dec,d2.ra,d2.dec,1.0/3600) AND jhk_match(d1.phot_j_mag,d2.phot_j_mag,d1.phot_h_mag,d2.phot_h_mag,d1.phot_ks_mag,d2.phot_ks_mag,2.0::FLOAT) WHERE d1.source_id!=d2.source_id) AS aux GROUP BY aux.source_id)
+INSERT INTO merged_sources_dups_clean
+SELECT m.* FROM merged_sources_raw as m INNER JOIN AUX_2 as a ON m.source_id = a.source_id;
+
+
+--update merge catalogue after fixing cases with shared source ids
+
+DROP TABLE IF EXISTS merged_sources CASCADE;
+CREATE TABLE merged_sources (
+  source_id          BIGSERIAL PRIMARY KEY,
+  tmass_source_id    BIGINT,
+  sirius_source_id   BIGINT,
+  vvv_source_id      BIGINT,
+  glon               FLOAT,
+  glat               FLOAT,
+  ra                 FLOAT,
+  dec                FLOAT,
+  position_source    VARCHAR(1),
+  magnitude_source   VARCHAR(3),
+  phot_hw_mag        FLOAT,
+  phot_hw_mag_error  FLOAT,
+  phot_j_mag         FLOAT,
+  phot_j_mag_error   FLOAT,
+  phot_h_mag         FLOAT,
+  phot_h_mag_error   FLOAT,
+  phot_ks_mag        FLOAT,
+  phot_ks_mag_error  FLOAT
+);
+
+INSERT INTO merged_sources
+SELECT * FROM merged_sources_raw AS m
+LEFT OUTER JOIN merged_sources_dups_tmass AS t ON m.tmass_source_id=t.tmass_source_id 
+LEFT OUTER JOIN merged_sources_dups_sirius AS s ON m.sirius_source_id=s.sirius_source_id 
+LEFT OUTER JOIN merged_sources_dups_vvv AS v ON m.vvv_source_id=v.vvv_source_id
+WHERE t.source_id IS NULL AND s.source_id IS NULL AND v.source_id IS NULL
+UNION 
+SELECT DISTINCT ON (tmass_source_id,sirius_source_id,vvv_source_id) aux.source_id, aux.tmass_source_id,aux.sirius_source_id,aux.vvv_source_id,aux.glon,aux.glat,aux.ra,aux.dec,aux.position_source,aux.magnitude_source,aux.phot_hw_mag,aux.phot_hw_mag_error,aux.phot_j_mag,aux.phot_j_mag_error,aux.phot_h_mag,aux.phot_h_mag_error,aux.phot_ks_mag,aux.phot_ks_mag_error FROM (SELECT * FROM merged_sources_dups_tmass UNION SELECT * FROM merged_sources_dups_sirius UNION SELECT * FROM merged_sources_dups_vvv) AS aux;
+
+
+--update merge catalogue after fixing all cases
+DROP TABLE IF EXISTS merged_sources_clean CASCADE;
+CREATE TABLE merged_sources_clean (
+  source_id          BIGSERIAL PRIMARY KEY,
+  tmass_source_id    BIGINT,
+  sirius_source_id   BIGINT,
+  vvv_source_id      BIGINT,
+  glon               FLOAT,
+  glat               FLOAT,
+  ra                 FLOAT,
+  dec                FLOAT,
+  position_source    VARCHAR(1),
+  magnitude_source   VARCHAR(3),
+  phot_hw_mag        FLOAT,
+  phot_hw_mag_error  FLOAT,
+  phot_j_mag         FLOAT,
+  phot_j_mag_error   FLOAT,
+  phot_h_mag         FLOAT,
+  phot_h_mag_error   FLOAT,
+  phot_ks_mag        FLOAT,
+  phot_ks_mag_error  FLOAT
+);
+
+INSERT INTO merged_sources_clean
+SELECT * FROM merged_sources_raw AS m
+LEFT OUTER JOIN merged_sources_dups_candidates AS d WHERE d.source_id IS NULL
+UNION 
+SELECT * FROM merged_sources_dups_clean;
+
+
 --DROP TABLE IF EXISTS merged_sources_clean CASCADE;
 --CREATE TABLE merged_sources_clean (
 --  source_id          BIGSERIAL PRIMARY KEY,
