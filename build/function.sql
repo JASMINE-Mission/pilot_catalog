@@ -55,10 +55,19 @@ RETURNS FLOAT[] AS $$
   END
 $$ LANGUAGE SQL;
 
-CREATE AGGREGATE select_better_agg(FLOAT,FLOAT)(
+CREATE OR REPLACE FUNCTION select_better_final(
+  agg_state_arr FLOAT[] --current state (mag,mag_error)
+)
+RETURNS FLOAT[] AS $$
+  SELECT agg_state_arr[0]
+$$ LANGUAGE SQL;
+
+--DROP AGGREGATE IF EXISTS select_better_agg;
+CREATE OR REPLACE AGGREGATE select_better_agg(FLOAT,FLOAT)(
   sfunc = select_better_statetransition,
   stype = FLOAT[],
-  initcond = '{-1.0,NULL}'
+  initcond = '{-1.0,NULL}',
+  ffunc = select_better_final
 );
 
 CREATE OR REPLACE FUNCTION select_worst(
