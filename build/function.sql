@@ -71,8 +71,8 @@ CREATE OR REPLACE AGGREGATE select_better_agg(FLOAT,FLOAT)(
 );
 
 create type my_type as (
-    field_1        text,
-    field_2        number
+    field_1        TEXT,
+    field_2        FLOAT
 );
 
 
@@ -100,7 +100,7 @@ RETURNS FLOAT[] AS $$
   END
 $$ LANGUAGE SQL;
 
---DROP AGGREGATE IF EXISTS select_better_text_agg(TEXT,FLOAT);
+DROP AGGREGATE IF EXISTS select_better_text_agg(TEXT,FLOAT);
 CREATE OR REPLACE AGGREGATE select_better_text_agg(TEXT,FLOAT)(
   sfunc = select_better_text_statetransition,
   stype = my_type[],
