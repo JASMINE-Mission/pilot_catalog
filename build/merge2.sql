@@ -3,7 +3,7 @@
 DROP TABLE IF EXISTS merged_sources_dups_candidates CASCADE;
 
 CREATE TABLE merged_sources_dups_candidates AS
-SELECT m.*,c.count as num_neighbours,SQRT(POWER(COALESCE(m.phot_j_mag_error,0),2)+POWER(COALESCE(m.phot_h_mag_error,0),2)+POWER(COALESCE(m.phot_ks_mag_error,0),2)) as phot_error FROM merged_sources_confusion_12_5  as c LEFT JOIN merged_sources as m on m.source_id=c.source_id WHERE c.count>1;
+SELECT m.*,c.count as num_neighbours,SQRT(POWER(COALESCE(m.phot_j_mag_error,0),2)+POWER(COALESCE(m.phot_h_mag_error,0),2)+POWER(COALESCE(m.phot_ks_mag_error,0),2)) as phot_error FROM merged_sources_confusion_06_5  as c LEFT JOIN merged_sources as m on m.source_id=c.source_id WHERE c.count>1;
 
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates_source_id
   ON merged_sources_dups_candidates (source_id);
