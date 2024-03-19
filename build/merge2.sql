@@ -107,7 +107,8 @@ CREATE TABLE merged_sources_dups_candidates2 AS
 SELECT m.* FROM merged_sources_dups_candidates AS m 
 LEFT OUTER JOIN merged_sources_dups_tmass AS t ON m.tmass_source_id=t.tmass_source_id 
 LEFT OUTER JOIN merged_sources_dups_sirius AS s ON m.sirius_source_id=s.sirius_source_id 
-LEFT OUTER JOIN merged_sources_dups_vvv AS v ON m.vvv_source_id=v.vvv_source_id;
+LEFT OUTER JOIN merged_sources_dups_vvv AS v ON m.vvv_source_id=v.vvv_source_id
+WHERE t.source_id IS NULL AND s.source_id IS NULL AND v.source_id IS NULL;
 
 CREATE INDEX IF NOT EXISTS merged_sources_dups_candidates2_source_id
   ON merged_sources_dups_candidates2 (source_id);
