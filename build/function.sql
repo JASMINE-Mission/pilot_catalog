@@ -31,6 +31,13 @@ RETURNS FLOAT AS $$
 $$ LANGUAGE SQL;
 
 
+CREATE OR REPLACE FUNCTION select_better_final(
+  agg_state_arr FLOAT[] --current state (mag,mag_error)
+)
+RETURNS FLOAT AS $$
+  SELECT agg_state_arr[1]
+$$ LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION select_better(
   FLOAT, -- magnitude in the first catalog
   FLOAT, -- magnitude uncertainty in the first catalog
@@ -55,18 +62,49 @@ RETURNS FLOAT[] AS $$
   END
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION select_better_final(
-  agg_state_arr FLOAT[] --current state (mag,mag_error)
-)
-RETURNS FLOAT AS $$
-  SELECT agg_state_arr[1]
-$$ LANGUAGE SQL;
-
---DROP AGGREGATE select_better_agg;
+DROP AGGREGATE IF EXISTS select_better_agg(double precision,double precision);
 CREATE OR REPLACE AGGREGATE select_better_agg(FLOAT,FLOAT)(
   sfunc = select_better_statetransition,
   stype = FLOAT[],
   initcond = '{-1.0,NULL}',
+  finalfunc = select_better_final
+);
+
+create type my_type as (
+    field_1        text,
+    field_2        number
+);
+
+
+CREATE OR REPLACE FUNCTION select_better_text(
+  TEXT, -- value in the first catalog
+  FLOAT, -- magnitude uncertainty in the first catalog
+  TEXT, -- value in the second catalog
+  FLOAT) -- magnitude uncertainty in the second catalog
+RETURNS FLOAT AS $$
+  SELECT CASE
+    WHEN COALESCE($2,1000) < COALESCE($4,1000) THEN $1
+    WHEN COALESCE($2,1000) >= COALESCE($4,1000) THEN $3
+    ELSE NULL
+  END
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION select_better_text_statetransition(
+  agg_state_arr my_type[], --current state (quantity,mag_error)
+  next_val TEXT, -- contender for best mag
+  next_err FLOAT) -- error in the contender's mag
+RETURNS FLOAT[] AS $$
+  SELECT CASE
+    WHEN COALESCE(agg_state_arr[2],1000) >= COALESCE(next_err,1000) THEN ARRAY[next_val::TEXT,next_err::FLOAT]
+    ELSE agg_state_arr
+  END
+$$ LANGUAGE SQL;
+
+--DROP AGGREGATE IF EXISTS select_better_text_agg(TEXT,FLOAT);
+CREATE OR REPLACE AGGREGATE select_better_text_agg(TEXT,FLOAT)(
+  sfunc = select_better_text_statetransition,
+  stype = my_type[],
+  initcond = '{"VOID",NULL}',
   finalfunc = select_better_final
 );
 

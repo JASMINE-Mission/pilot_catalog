@@ -19,6 +19,7 @@ CLUSTER merged_sources_dups_candidates_glonglat ON merged_sources_dups_candidate
 ANALYZE merged_sources_dups_candidates;
 
 
+
 --DROP TABLE IF EXISTS merged_sources_dups_typeA CASCADE;
 
 --CREATE TABLE merged_sources_dups_typeA_aux AS
@@ -31,30 +32,33 @@ ANALYZE merged_sources_dups_candidates;
 
 --DROP TABLE merged_sources_dups_typeA_aux CASCADE;
 
--- DROP TABLE IF EXISTS merged_sources_dups_typeB CASCADE;
-
--- CREATE TABLE merged_sources_dups_typeB AS --two merged sources sharing the same source from any catalogue
--- SELECT select_better(t1.source_id,t1.phot_error,t2.source_id,t2.phot_error) as source_id,
--- select_better(t1.count,t1.phot_error,t2.count,t2.phot_error) as count,
--- select_better(t1.glon,t1.phot_error,t2.glon,t2.phot_error) as glon,
--- select_better(t1.glat,t1.phot_error,t2.glat,t2.phot_error) as glat,
--- select_better(t1.phot_j_mag,t1.phot_error,t2.phot_j_mag,t2.phot_error) as phot_j_mag,
--- select_better(t1.phot_h_mag,t1.phot_error,t2.phot_h_mag,t2.phot_error) as phot_h_mag,
--- select_better(t1.phot_ks_mag,t1.phot_error,t2.phot_ks_mag,t2.phot_error) as phot_ks_mag,
--- select_better(t1.phot_hw_mag,t1.phot_error,t2.phot_hw_mag,t2.phot_error) as phot_hw_mag,
--- select_better(t1.phot_error,t1.phot_error,t2.phot_error,t2.phot_error) as phot_error,
--- select_better(t1.position_source,t1.phot_error,t2.position_source,t2.phot_error) as position_source,
--- select_better(t1.magnitude_source,t1.phot_error,t2.magnitude_source,t2.phot_error) as magnitude_source,
--- select_worst(t1.source_id,t1.phot_error,t2.source_id,t2.phot_error) as source_id_neighbour,
--- select_worst(t1.position_source,t1.phot_error,t2.position_source,t2.phot_error) as position_source_neighbour,
--- select_worst(t1.glon,t1.phot_error,t2.glon,t2.phot_error) as glon_neighbour,
--- select_worst(t1.glat,t1.phot_error,t2.glat,t2.phot_error) as glat_neighbour,
--- CASE WHEN t1.source_id<t2.source_id THEN CONCAT(CAST(t1.source_id AS varchar),'-',CAST(t2.source_id AS varchar)) -- ELSE CONCAT(CAST(t2.source_id AS varchar),'-',CAST(t1.source_id AS varchar)) END as pair_id 
--- FROM merged_sources_dups_candidates AS t1, INNER JOIN
--- SELECT t2.* FROM merged_sources_dups_candidates AS t2 WHERE (t1.tmass_source_id = t2.tmass_source_id OR t1.-- vvv_source_id=t2.vvv_source_id OR t1.sirius_source_id = t2.sirius_source_id) AND (t1.source_id != t2.source_id)
--- ;
 
 
+-- solve sources with a duplicated tmass_source_id
+DROP TABLE IF EXISTS merged_sources_dups_tmass CASCADE;
+
+CREATE TABLE merged_sources_dups_tmass AS --two merged sources sharing the same source from any catalogue
+SELECT * FROM (SELECT select_better_agg(source_id,phot_error) as source_id,
+tmass_source_id,
+select_better_agg(sirius_source_id,phot_error) as sirius_source_id,
+select_better_agg(vvv_source_id,phot_error) as vvv_source_id,
+select_better_agg(glon,phot_error) as glon,
+select_better_agg(glat,phot_error) as glat,
+select_better_agg(ra,phot_error) as ra,
+select_better_agg(dec,phot_error) as dec,
+select_better_agg(position_source,phot_error) as position_source,
+select_better_agg(magnitude_source,phot_error) as magnitude_source,
+select_better_agg(phot_hw_mag,phot_error) as phot_hw_mag,
+select_better_agg(phot_hw_mag_error,phot_error) as phot_hw_mag_error,
+select_better_agg(phot_j_mag,phot_error) as phot_j_mag,
+select_better_agg(phot_j_mag_error,phot_error) as phot_j_mag_error,
+select_better_agg(phot_h_mag,phot_error) as phot_h_mag,
+select_better_agg(phot_h_mag_error,phot_error) as phot_h_mag_error,
+select_better_agg(phot_ks_mag,phot_error) as phot_ks_mag,
+select_better_agg(phot_ks_mag_error,phot_error) as phot_ks_mag_error,
+select_better_agg(num_neighbours,phot_error) as num_neighbours,
+COUNT(*) AS counts
+FROM merged_sources_dups_candidates GROUP BY tmass_source_id) AS aux WHERE counts>1;
 
 --DROP TABLE IF EXISTS merged_sources_clean CASCADE;
 --CREATE TABLE merged_sources_clean (
