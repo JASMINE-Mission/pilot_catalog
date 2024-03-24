@@ -184,7 +184,7 @@ CREATE TABLE merged_sources (
 );
 
 INSERT INTO merged_sources
-SELECT * FROM merged_sources_raw AS m
+SELECT m.* FROM merged_sources_raw AS m
 LEFT OUTER JOIN merged_sources_dups_tmass AS t ON m.tmass_source_id=t.tmass_source_id 
 LEFT OUTER JOIN merged_sources_dups_sirius AS s ON m.sirius_source_id=s.sirius_source_id 
 LEFT OUTER JOIN merged_sources_dups_vvv AS v ON m.vvv_source_id=v.vvv_source_id
@@ -248,7 +248,7 @@ CREATE TABLE merged_sources_clean (
 );
 
 INSERT INTO merged_sources_clean
-SELECT * FROM merged_sources AS m
+SELECT m.* FROM merged_sources_raw AS m
 LEFT OUTER JOIN merged_sources_dups_candidates AS d ON m.source_id=d.source_id WHERE d.source_id IS NULL
 UNION 
 SELECT * FROM merged_sources_dups_clean;
