@@ -55,6 +55,13 @@ select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE tmass_source_id IS NOT NULL GROUP BY tmass_source_id) AS aux INNER JOIN merged_sources_raw AS m ON aux.source_id = m.source_id WHERE counts>1;
 
+CREATE INDEX IF NOT EXISTS merged_sources_dups_tmass_source_id
+  ON merged_sources_dups_tmass (source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_tmass_tmass_source_id
+  ON merged_sources_dups_tmass (tmass_source_id);
+CLUSTER merged_sources_dups_tmass_tmass_source_id ON merged_sources_dups_tmass;
+ANALYZE merged_sources_dups_tmass;
+
 
 
 -- solve sources with a duplicated sirius_source_id
@@ -78,6 +85,12 @@ select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE sirius_source_id IS NOT NULL GROUP BY sirius_source_id) AS aux INNER JOIN merged_sources_raw AS m ON aux.source_id = m.source_id WHERE counts>1;
 
+CREATE INDEX IF NOT EXISTS merged_sources_dups_sirius_source_id
+  ON merged_sources_dups_sirius (source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_sirius_sirius_source_id
+  ON merged_sources_dups_sirius (sirius_source_id);
+CLUSTER merged_sources_dups_sirius_sirius_source_id ON merged_sources_dups_sirius;
+ANALYZE merged_sources_dups_sirius;
 
 
 -- solve sources with a duplicated vvv_source_id
@@ -101,6 +114,12 @@ select_better_agg(phot_error,phot_error) as phot_error,
 COUNT(*) AS counts
 FROM merged_sources_dups_candidates WHERE vvv_source_id IS NOT NULL GROUP BY vvv_source_id) AS aux INNER JOIN merged_sources_raw AS m ON aux.source_id = m.source_id WHERE counts>1;
 
+CREATE INDEX IF NOT EXISTS merged_sources_dups_vvv_source_id
+  ON merged_sources_dups_vvv (source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_dups_vvv_vvv_source_id
+  ON merged_sources_dups_vvv (vvv_source_id);
+CLUSTER merged_sources_dups_vvv_vvv_source_id ON merged_sources_dups_vvv;
+ANALYZE merged_sources_dups_vvv;
 
 
 
@@ -183,12 +202,41 @@ CREATE TABLE merged_sources (
   phot_ks_mag_error  FLOAT
 );
 
+
+DROP TABLE IF EXISTS merged_sources_aux_t CASCADE;
+CREATE TABLE merged_sources_aux_t AS
+SELECT m.* FROM merged_sources_raw as m LEFT OUTER JOIN merged_sources_dups_tmass as t ON m.tmass_source_id=t.tmass_source_id WHERE t.source_id IS NULL;
+
+CREATE INDEX IF NOT EXISTS merged_sources_aux_t_source_id
+  ON merged_sources_aux_t (source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_aux_t_sirius_source_id
+  ON merged_sources_aux_t (sirius_source_id);
+CLUSTER merged_sources_aux_t_sirius_source_id ON merged_sources_aux_t;
+ANALYZE merged_sources_aux_t;
+
+DROP TABLE IF EXISTS merged_sources_aux_ts CASCADE;
+CREATE TABLE merged_sources_aux_ts AS
+SELECT m.* FROM merged_sources_aux_t as m LEFT OUTER JOIN merged_sources_dups_sirius as s ON m.sirius_source_id=s.sirius_source_id WHERE s.source_id IS NULL;
+
+CREATE INDEX IF NOT EXISTS merged_sources_aux_ts_source_id
+  ON merged_sources_aux_ts (source_id);
+CREATE INDEX IF NOT EXISTS merged_sources_aux_ts_vvv_source_id
+  ON merged_sources_aux_ts (vvv_source_id);
+CLUSTER merged_sources_aux_ts_vvv_source_id ON merged_sources_aux_ts;
+ANALYZE merged_sources_aux_ts;
+
+DROP TABLE IF EXISTS merged_sources_aux_tsv CASCADE;
+CREATE TABLE merged_sources_aux_tsv AS
+SELECT m.* FROM merged_sources_aux_ts as m LEFT OUTER JOIN merged_sources_dups_vvv as v ON m.vvv_source_id=v.vvv_source_id WHERE v.source_id IS NULL;
+
+CREATE INDEX IF NOT EXISTS merged_sources_aux_tsv_source_id
+  ON merged_sources_aux_tsv (source_id);
+CLUSTER merged_sources_aux_tsv_vvv_source_id ON merged_sources_aux_tsv;
+ANALYZE merged_sources_aux_tsv;
+
+
 INSERT INTO merged_sources
-SELECT m.* FROM merged_sources_raw AS m
-LEFT OUTER JOIN merged_sources_dups_tmass AS t ON m.tmass_source_id=t.tmass_source_id 
-LEFT OUTER JOIN merged_sources_dups_sirius AS s ON m.sirius_source_id=s.sirius_source_id 
-LEFT OUTER JOIN merged_sources_dups_vvv AS v ON m.vvv_source_id=v.vvv_source_id
-WHERE t.source_id IS NULL AND s.source_id IS NULL AND v.source_id IS NULL
+SELECT * FROM merged_sources_aux_tsv
 UNION 
 SELECT DISTINCT ON (tmass_source_id,sirius_source_id,vvv_source_id) aux.source_id, aux.tmass_source_id,aux.sirius_source_id,aux.vvv_source_id,aux.glon,aux.glat,aux.ra,aux.dec,aux.position_source,aux.magnitude_source,aux.phot_hw_mag,aux.phot_hw_mag_error,aux.phot_j_mag,aux.phot_j_mag_error,aux.phot_h_mag,aux.phot_h_mag_error,aux.phot_ks_mag,aux.phot_ks_mag_error FROM (SELECT * FROM merged_sources_dups_tmass UNION SELECT * FROM merged_sources_dups_sirius UNION SELECT * FROM merged_sources_dups_vvv) AS aux;
 
