@@ -293,6 +293,60 @@ RETURNS FLOAT AS $$
 $$ LANGUAGE SQL
 IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION compute_hw_2MASS(
+  FLOAT, -- J mag
+  FLOAT) -- H mag
+RETURNS FLOAT AS $$
+  SELECT 0.7829*$1 + 0.2171*$2- 0.0323*($1-$2)^2
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION compute_hw_error_2MASS(
+  FLOAT, -- J mag
+  FLOAT, -- J mag error
+  FLOAT, -- H mag
+  FLOAT) -- H mag error
+RETURNS FLOAT AS $$
+  SELECT sqrt(0.035^2 + (0.7829*$2)^2 + (0.2171*$4)^2 + (0.0323*2*($1-$3)*$2)^2 + (0.0323*2*($1-$3)*$4)^2)
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION compute_hw_VVV(
+  FLOAT, -- J mag
+  FLOAT) -- H mag
+RETURNS FLOAT AS $$
+  SELECT 0.7988*$1 + 0.2012*$2- 0.0315*($1-$2)^2
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION compute_hw_error_VVV(
+  FLOAT, -- J mag
+  FLOAT, -- J mag error
+  FLOAT, -- H mag
+  FLOAT) -- H mag error
+RETURNS FLOAT AS $$
+  SELECT sqrt(0.033^2 + (0.7988*$2)^2 + (0.2012*$4)^2 + (0.0315*2*($1-$3)*$2)^2 + (0.0315*2*($1-$3)*$4)^2)
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION compute_hw_SIRIUS(
+  FLOAT, -- J mag
+  FLOAT) -- H mag
+RETURNS FLOAT AS $$
+  SELECT 0.7796*$1 + 0.2204*$2- 0.0326*($1-$2)^2
+$$ LANGUAGE SQL
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION compute_hw_error_SIRIUS(
+  FLOAT, -- J mag
+  FLOAT, -- J mag error
+  FLOAT, -- H mag
+  FLOAT) -- H mag error
+RETURNS FLOAT AS $$
+  SELECT sqrt(0.063^2 + (0.7796*$2)^2 + (0.2204*$4)^2 + (0.0326*2*($1-$3)*$2)^2 + (0.0326*2*($1-$3)*$4)^2)
+$$ LANGUAGE SQL
+IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION correct_jmag(
   FLOAT, -- vvv jmag
   FLOAT  -- 2MASS or SIRIUS jmag
