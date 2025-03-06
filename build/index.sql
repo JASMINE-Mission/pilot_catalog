@@ -84,6 +84,27 @@ CREATE INDEX IF NOT EXISTS vvv4_sources_glat
 CLUSTER vvv4_sources_glonglat ON vvv4_sources;
 ANALYZE vvv4_sources;
 
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_full
+  ON vvv42_sources_full (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_glonglat
+  ON vvv42_sources_full (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_jmag
+  ON vvv42_sources_full (phot_j_mag);
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_hmag
+  ON vvv42_sources_full (phot_h_mag);
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_ksmag
+  ON vvv42_sources_full (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_ra
+  ON vvv42_sources_full (ra);
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_dec
+  ON vvv42_sources_full (dec);
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_glon
+  ON vvv42_sources_full (glon);
+CREATE INDEX IF NOT EXISTS vvv42_sources_full_glat
+  ON vvv42_sources_full (glat);
+CLUSTER vvv42_sources_full_glonglat ON vvv42_sources_full;
+ANALYZE vvv42_sources_full;
+
 CREATE INDEX IF NOT EXISTS gdr3_sources_tmass_designation
 ON gdr3_sources (tmass_designation);
 CREATE INDEX IF NOT EXISTS gdr3_sources_radec
@@ -124,3 +145,25 @@ CREATE INDEX IF NOT EXISTS gdr3_sources_glat
   ON gdr3_sources (glat);
 CLUSTER gdr3_sources_glonglat ON gdr3_sources;
 ANALYZE gdr3_sources;
+
+
+CREATE INDEX IF NOT EXISTS virac2_ks16
+  ON virac2_ks16 (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS virac2_ks16_glonglat
+  ON virac2_ks16 (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS virac2_ks16_jmag
+  ON virac2_ks16 (phot_j_mag);
+CREATE INDEX IF NOT EXISTS virac2_ks16_hmag
+  ON virac2_ks16 (phot_h_mag);
+CREATE INDEX IF NOT EXISTS virac2_ks16_ksmag
+  ON virac2_ks16 (phot_ks_mag);
+CREATE INDEX IF NOT EXISTS virac2_ks16_ra
+  ON virac2_ks16 (ra);
+CREATE INDEX IF NOT EXISTS virac2_ks16_dec
+  ON virac2_ks16 (dec);
+CREATE INDEX IF NOT EXISTS virac2_ks16_glon
+  ON virac2_ks16 (glon);
+CREATE INDEX IF NOT EXISTS virac2_ks16_glat
+  ON virac2_ks16 (glat);
+CLUSTER virac2_ks16_glonglat ON virac2_ks16;
+ANALYZE virac2_ks16;
