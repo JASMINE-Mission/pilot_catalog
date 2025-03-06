@@ -101,6 +101,7 @@ CREATE TABLE IF NOT EXISTS vvv42_sources_full (
   glat              FLOAT NOT NULL,
   ra                FLOAT NOT NULL,
   dec               FLOAT NOT NULL,
+  epoch             FLOAT,
   Var               FLOAT,
   Cl                INTEGER NOT NULL,
   phot_z_flag       FLOAT,
