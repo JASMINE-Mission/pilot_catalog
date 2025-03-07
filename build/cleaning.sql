@@ -653,8 +653,8 @@ v.phot_h_mean_mag,phot_h_std_mag,v.phot_h_n_epochs,
 v.phot_ks_mean_mag,phot_ks_std_mag,v.phot_ks_n_epochs,
 v.parallax,v.parallax_error,v.pmra,v.pmra_error,v.pmdec,
 v.pmdec_error,v.parallax_pmra_corr,v.parallax_pmdec_corr,
-v.pmra_pmdec_corr,v.ref_epoch,v.astfit_epochs,v.asfit_params,v.uwe
-FROM virac2_ks16 as v WHERE v.source_id NOT IN (SELECT v2.source_id FROM virac2_ks16_bad AS v2)
+v.pmra_pmdec_corr,v.ref_epoch,v.astfit_epochs,v.astfit_params,v.uwe
+FROM virac2_ks16 as v WHERE v.source_id NOT IN (SELECT v2.source_id FROM virac2_ks16_bad AS v2);
 
 
 CREATE INDEX IF NOT EXISTS virac2_ks16_clean_sourceid
