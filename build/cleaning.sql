@@ -638,7 +638,7 @@ CREATE TABLE virac2_ks16_clean (
   pmra_pmdec_corr    FLOAT,
   ref_epoch          FLOAT,
   astfit_epochs       INTEGER,
-  asfit_params       INTEGER,
+  astfit_params       INTEGER,
   uwe                FLOAT
 );
 
