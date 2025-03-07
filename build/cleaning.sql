@@ -600,15 +600,8 @@ DROP TABLE IF EXISTS sirius_clean_step2 CASCADE;
 
 
 
--- VIRAC v2: just remove sources around (8") 2MASS bright sources (Ks mag <= 10) with bad astrometric solutions (uwe>1)
-DROP TABLE IF EXISTS virac2_bad_sources CASCADE;
-CREATE TABLE virac2_bad_sources AS
-SELECT v.*,t.designation,t.ra as ra_tmass,t.dec as dec_tmass,t.phot_ks_mag as ksmag_tmass,q3c_dist(v.ra,v.dec,t.ra,t.dec)*3600. as ang_dist FROM virac2_ks16 AS v LEFT JOIN tmass_sources AS t ON q3c_join(t.ra,t.dec,v.ra,v.dec,8./3600.) WHERE v.uwe > 1 AND t.phot_ks_mag<=10;
+-- VIRAC v2: just remove sources around (8") 2MASS bright sources (Ks mag <= 10) with bad astrometric solutions (uwe>1) => done offline with TOPCAT because it was x30 times faster.
 
-CREATE INDEX IF NOT EXISTS virac2_bad_sources_sourceid
-ON virac2_bad_sources (source_id);
-CLUSTER virac2_bad_sources_sourceid ON virac2_bad_sources;
-ANALYZE virac2_bad_sources;
 
 DROP TABLE IF EXISTS virac2_ks16_clean CASCADE;
 CREATE TABLE virac2_ks16_clean (
@@ -661,7 +654,7 @@ v.phot_ks_mean_mag,phot_ks_std_mag,v.phot_ks_n_epochs,
 v.parallax,v.parallax_error,v.pmra,v.pmra_error,v.pmdec,
 v.pmdec_error,v.parallax_pmra_corr,v.parallax_pmdec_corr,
 v.pmra_pmdec_corr,v.ref_epoch,v.astfit_epochs,v.asfit_params,v.uwe
-FROM virac2_ks16 as v WHERE v.source_id NOT IN (SELECT v2.source_id FROM virac2_bad_sources)
+FROM virac2_ks16 as v WHERE v.source_id NOT IN (SELECT v2.source_id FROM virac2_ks16_bad AS v2)
 
 
 CREATE INDEX IF NOT EXISTS virac2_ks16_clean_sourceid

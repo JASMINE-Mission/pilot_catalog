@@ -167,3 +167,26 @@ CREATE INDEX IF NOT EXISTS virac2_ks16_glat
   ON virac2_ks16 (glat);
 CLUSTER virac2_ks16_glonglat ON virac2_ks16;
 ANALYZE virac2_ks16;
+
+
+
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_radec
+  ON virac2_ks16_bad (q3c_ang2ipix(ra,dec));
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_glonglat
+  ON virac2_ks16_bad (q3c_ang2ipix(glon,glat));
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_jmag
+  ON virac2_ks16_bad (phot_j_mean_mag);
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_hmag
+  ON virac2_ks16_bad (phot_h_mean_mag);
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_ksmag
+  ON virac2_ks16_bad (phot_ks_mean_mag);
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_ra
+  ON virac2_ks16_bad (ra);
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_dec
+  ON virac2_ks16_bad (dec);
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_glon
+  ON virac2_ks16_bad (glon);
+CREATE INDEX IF NOT EXISTS virac2_ks16_bad_glat
+  ON virac2_ks16_bad (glat);
+CLUSTER virac2_ks16_bad_glonglat ON virac2_ks16_bad;
+ANALYZE virac2_ks16_bad;

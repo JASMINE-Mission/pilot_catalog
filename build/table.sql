@@ -187,6 +187,34 @@ CREATE TABLE IF NOT EXISTS virac2_ks16 (
 );
 
 
+CREATE TABLE IF NOT EXISTS virac2_ks16_bad (
+  source_id         BIGINT PRIMARY KEY,
+  glon              FLOAT NOT NULL,
+  glat              FLOAT NOT NULL,
+  ra                FLOAT NOT NULL,
+  dec               FLOAT NOT NULL,
+  uwe               FLOAT,
+  phot_j_mean_mag   FLOAT,
+  phot_j_std_mag    FLOAT,
+  phot_h_mean_mag   FLOAT,
+  phot_h_std_mag    FLOAT,
+  phot_ks_mean_mag  FLOAT,
+  phot_ks_std_mag   FLOAT,
+  designation       VARCHAR(32) NOT NULL,
+  ra_tmass          FLOAT,
+  dec_tmass         FLOAT,
+  j_m               FLOAT,
+  j_cmsig           FLOAT,
+  h_m               FLOAT,
+  h_cmsig           FLOAT,
+  k_m               FLOAT,
+  k_cmsig           FLOAT,
+  GroupID           INTEGER,
+  GroupSize         INTEGER,
+  Separation        FLOAT
+);
+
+
 CREATE TABLE IF NOT EXISTS gdr3_sources (
   source_id          BIGINT PRIMARY KEY,
   ra                 FLOAT NOT NULL,
