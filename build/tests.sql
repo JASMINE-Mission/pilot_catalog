@@ -89,3 +89,30 @@ CREATE INDEX IF NOT EXISTS merged_sources_glat
   ON merged_sources (glat);
 CLUSTER merged_sources_glonglat ON merged_sources;
 ANALYZE merged_sources;
+
+
+
+WITH neighbours AS (SELECT
+  aux.source_id AS vvv_source_id,
+  v2.source_id AS virac_source_id,
+  aux.distance AS distance,
+  ROW_NUMBER () OVER(PARTITION BY v2.source_id ORDER BY aux.distance ASC) as ordering
+FROM virac2_ks16_clean AS v2, LATERAL(
+  SELECT source_id,3600.0*q3c_dist(v2.ra,v2.dec,v.ra,v.dec) as distance
+      FROM vvv42_sources_full AS v 
+      WHERE q3c_join(v.ra,v.dec,v2.ra,v2.dec,.5/3600.)) as aux) LIMIT 10
+SELECT * FROM neighbours WHERE ordering = 1;
+
+
+SELECT source_id,MIN(glon) as glon,MIN(glat) as glat,MIN(ra) as ra,MIN(dec) as dec,
+MIN(parallax) as parallax,MIN(parallax_error) as parallax_error,
+MIN(pmra) as pmra,MIN(pmra_error) as pmra_error,MIN(pmdec) as pmdec,MIN(pmdec_error) as pmdec_error,MIN(uwe) as uwe,
+  MIN(phot_z_mag) as phot_z_mag,MIN(phot_z_mag_error) as phot_z_mag_error,
+  MIN(phot_y_mag) as phot_y_mag,MIN(phot_y_mag_error) as phot_y_mag_error,
+  MIN(phot_j_mag) as phot_j_mag,MIN(phot_j_mag_error) as phot_j_mag_error,
+  MIN(phot_h_mag) as phot_h_mag,MIN(phot_h_mag_error) as phot_h_mag_error,
+  MIN(phot_ks_mag)as phot_ks_mag,MIN(phot_ks_mag_error)as phot_ks_mag_error,
+  MIN(astfit_epochs) as astfit_epochs,MIN(asfit_params) as astfit_params,MIN(ref_epoch) as ref_epoch,
+  STRING_AGG(aux.vvv_sid,'-') as vvv_source_ids, AVG(Cl) as avg_class, MAX(Cl) as max_class, MAX(Var) as Var, COUNT(*) as n_matches
+ FROM (SELECT v2.*,CAST(v.source_id AS varchar) as vvv_sid,v.Cl,v.Var FROM vvv42_sources_full as v INNER JOIN virac2_ks16_clean as v2 ON q3c_join(v.ra,v.dec,v2.ra,v2.dec,.5/3600.) LIMIT 10000) as aux GROUP BY source_id;
+
