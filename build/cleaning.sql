@@ -605,6 +605,11 @@ DROP TABLE IF EXISTS virac2_bad_sources CASCADE;
 CREATE TABLE virac2_bad_sources AS
 SELECT v.*,t.designation,t.ra as ra_tmass,t.dec as dec_tmass,t.phot_ks_mag as ksmag_tmass,q3c_dist(v.ra,v.dec,t.ra,t.dec)*3600. as ang_dist FROM virac2_ks16 AS v LEFT JOIN tmass_sources AS t ON q3c_join(t.ra,t.dec,v.ra,v.dec,8./3600.) WHERE v.uwe > 1 AND t.phot_ks_mag<=10;
 
+CREATE INDEX IF NOT EXISTS virac2_bad_sources_sourceid
+ON virac2_bad_sources (source_id);
+CLUSTER virac2_bad_sources_sourceid ON virac2_bad_sources;
+ANALYZE virac2_bad_sources;
+
 DROP TABLE IF EXISTS virac2_ks16_clean CASCADE;
 CREATE TABLE virac2_ks16_clean (
   source_id          BIGINT PRIMARY KEY,
