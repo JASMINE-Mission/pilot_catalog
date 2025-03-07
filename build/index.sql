@@ -147,16 +147,16 @@ CLUSTER gdr3_sources_glonglat ON gdr3_sources;
 ANALYZE gdr3_sources;
 
 
-CREATE INDEX IF NOT EXISTS virac2_ks16
+CREATE INDEX IF NOT EXISTS virac2_ks16_radec
   ON virac2_ks16 (q3c_ang2ipix(ra,dec));
 CREATE INDEX IF NOT EXISTS virac2_ks16_glonglat
   ON virac2_ks16 (q3c_ang2ipix(glon,glat));
 CREATE INDEX IF NOT EXISTS virac2_ks16_jmag
-  ON virac2_ks16 (phot_j_mag);
+  ON virac2_ks16 (phot_j_mean_mag);
 CREATE INDEX IF NOT EXISTS virac2_ks16_hmag
-  ON virac2_ks16 (phot_h_mag);
+  ON virac2_ks16 (phot_h_mean_mag);
 CREATE INDEX IF NOT EXISTS virac2_ks16_ksmag
-  ON virac2_ks16 (phot_ks_mag);
+  ON virac2_ks16 (phot_ks_mean_mag);
 CREATE INDEX IF NOT EXISTS virac2_ks16_ra
   ON virac2_ks16 (ra);
 CREATE INDEX IF NOT EXISTS virac2_ks16_dec
