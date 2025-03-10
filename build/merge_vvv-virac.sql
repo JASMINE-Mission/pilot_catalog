@@ -50,8 +50,8 @@ MIN(pmra) as pmra,MIN(pmra_error) as pmra_error,MIN(pmdec) as pmdec,MIN(pmdec_er
   MIN(phot_h_mag) as phot_h_mag,MIN(phot_h_mag_error) as phot_h_mag_error,
   MIN(phot_ks_mag)as phot_ks_mag,MIN(phot_ks_mag_error)as phot_ks_mag_error,
   MIN(astfit_epochs) as astfit_epochs,MIN(asfit_params) as astfit_params,MIN(ref_epoch) as ref_epoch,
-  MIN(aux.vvv_sid) as vvv_source_id1,MAX(aux.vvv_sid) as vvv_source_id2,STRING_AGG(aux.vvv_sid,'-') as vvv_source_ids, AVG(Cl) as avg_class, MAX(Cl) as max_class, MAX(Var) as Var, COUNT(*) as n_matches
- FROM (SELECT v2.*,CAST(v.source_id AS varchar) as vvv_sid,v.Cl,v.Var FROM (SELECT source_id,Cl,Var FROM vvv42_sources_full WHERE phot_ks_mag<18) as v INNER JOIN virac2_ks16_clean as v2 ON q3c_join(v.ra,v.dec,v2.ra,v2.dec,.5/3600.) ) as aux GROUP BY source_id;
+  MIN(aux.vvv_sid) as vvv_source_id1,MAX(aux.vvv_sid) as vvv_source_id2,STRING_AGG(aux.vvv_sid_char,'-') as vvv_source_ids, AVG(Cl) as avg_class, MAX(Cl) as max_class, MAX(Var) as Var, COUNT(*) as n_matches
+ FROM (SELECT v2.*,v.source_id as vvv_sid,CAST(v.source_id AS varchar) as vvv_sid_char,v.Cl,v.Var FROM (SELECT source_id,Cl,Var,ra,dec FROM vvv42_sources_full WHERE phot_ks_mag<18) as v INNER JOIN virac2_ks16_clean as v2 ON q3c_join(v.ra,v.dec,v2.ra,v2.dec,.5/3600.) ) as aux GROUP BY source_id;
 
 CREATE INDEX IF NOT EXISTS vvv_virac_common_radec
   ON vvv_virac_common (q3c_ang2ipix(ra,dec));
