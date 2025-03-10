@@ -208,7 +208,7 @@ UNION
 SELECT source_id,glon,glat,ra,dec,phot_hw_mag,phot_hw_mag_error,phot_z_mag,phot_z_mag_error,phot_y_mag,phot_y_mag_error,phot_j_mag,phot_j_mag_error,phot_h_mag,phot_h_mag_error,phot_ks_mag,phot_ks_mag_error,NULL as parallax,NULL as parallax_error,NULL as pmra,NULL as pmra_error,NULL as pmdec,NULL as pmdec_error,NULL as uwe,NULL as astfit_epochs,NULL as astfit_params,2010 as ref_epoch,Cl,Var,'VVV' as source
 FROM vvv42_sources_full_clean WHERE (phot_ks_mag>16 or phot_ks_mag is null) AND (source_id not in (SELECT vvv_source_id1 FROM vvv_virac_common) OR source_id not in (SELECT vvv_source_id2 FROM vvv_virac_common))
 UNION
-SELECT source_id,glon,glat,ra,dec,phot_hw_mag,phot_hw_mag_error,phot_z_mag,phot_z_mag_error,phot_y_mag,phot_y_mag_error,phot_j_mag,phot_j_mag_error,phot_h_mag,phot_h_mag_error,phot_ks_mag,phot_ks_mag_error,parallax,parallax_error,pmra,pmra_error,pmdec,pmdec_error,uwe,astfit_epochs,asfit_params,ref_epoch,NULL as  Cl,NULL as Var,'VIR' as source
+SELECT source_id,glon,glat,ra,dec,phot_hw_mag,phot_hw_mag_error,phot_z_mag,phot_z_mag_error,phot_y_mag,phot_y_mag_error,phot_j_mag,phot_j_mag_error,phot_h_mag,phot_h_mag_error,phot_ks_mag,phot_ks_mag_error,parallax,parallax_error,pmra,pmra_error,pmdec,pmdec_error,uwe,astfit_epochs,astfit_params,ref_epoch,NULL as  Cl,NULL as Var,'VIR' as source
 FROM virac2_ks16_clean WHERE source_id not in (SELECT source_id FROM vvv_virac_common);
  
 
