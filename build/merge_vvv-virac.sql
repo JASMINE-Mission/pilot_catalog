@@ -27,6 +27,8 @@ CREATE TABLE vvv_virac_common (
   astfit_epochs      INTEGER,
   astfit_params      INTEGER,
   ref_epoch          FLOAT,
+  vvv_source_id1     BIGINT,
+  vvv_source_id2     BIGINT,
   vvv_source_ids     VARCHAR(200),
   avg_class          FLOAT,
   max_class          INTEGER,
