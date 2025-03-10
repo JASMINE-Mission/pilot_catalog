@@ -116,7 +116,7 @@ DROP TABLE IF EXISTS tmass_clean_step2 CASCADE;
 --- only allow merges between sources of the same class. A few percentage of sources are "probable stars (Cl=-2)" or "probable non-stellar source (Cl=-3)". This will not be merging with nearby sources that are Cl=-1 or Cl=1, respectively, which might be not ideal, but the number of occurancies is very low.
 DROP TABLE IF EXISTS vvv42_full_clean_step1 CASCADE;
 CREATE TABLE vvv42_full_clean_step1 AS
-SELECT MIN(aux2.source_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,MAX(aux.Cl) as Cl,MAX(aux2.Var) AS Var,
+SELECT MIN(aux2.source_id) AS source_id,AVG(aux2.ra) AS ra ,AVG(aux2.dec) AS dec,MAX(aux2.Cl) as Cl,MAX(aux2.Var) AS Var,
 SUM(aux2.phot_z_mag/POWER(aux2.phot_z_mag_error,2))/SUM(1/POWER(aux2.phot_z_mag_error,2)) AS phot_z_mag, 1/SQRT(SUM(1/POWER(aux2.phot_z_mag_error,2))) as phot_z_mag_error, SUM(aux2.phot_z_flag) as phot_z_flag,
 SUM(aux2.phot_y_mag/POWER(aux2.phot_y_mag_error,2))/SUM(1/POWER(aux2.phot_y_mag_error,2)) AS phot_y_mag, 1/SQRT(SUM(1/POWER(aux2.phot_y_mag_error,2))) as phot_y_mag_error, SUM(aux2.phot_y_flag) as phot_y_flag,
 SUM(aux2.phot_j_mag/POWER(aux2.phot_j_mag_error,2))/SUM(1/POWER(aux2.phot_j_mag_error,2)) AS phot_j_mag, 1/SQRT(SUM(1/POWER(aux2.phot_j_mag_error,2))) as phot_j_mag_error, SUM(aux2.phot_j_flag) as phot_j_flag,
