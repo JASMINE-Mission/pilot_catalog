@@ -6,7 +6,7 @@ SELECT * FROM vvv_virac WHERE not (source='VIR' AND uwe>1) and (Cl=-1 or Cl=-2 o
 
 CREATE INDEX IF NOT EXISTS vvv_virac_clean_sourceid
   ON vvv_virac_clean (source_id);
-  CREATE INDEX IF NOT EXISTS vvv_virac_clean_source
+CREATE INDEX IF NOT EXISTS vvv_virac_clean_source
   ON vvv_virac_clean (source);
 CREATE INDEX IF NOT EXISTS vvv_virac_clean_radec
   ON vvv_virac_clean (q3c_ang2ipix(ra,dec));
