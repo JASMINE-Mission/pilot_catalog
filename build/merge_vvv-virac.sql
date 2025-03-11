@@ -41,7 +41,7 @@ CREATE TABLE virac2_ks16_clean (
 );
 
 INSERT INTO virac2_ks16_clean
-SELECT v.source_id,v.glon,v.glat,v.ra,v.dec,
+SELECT v.source_id,compute_glon(v.ra,v.dec) as glon,compute_glat(v.ra,v.dec) as glat ,v.ra,v.dec,
 compute_hw_VVV(v.phot_j_mean_mag,v.phot_h_mean_mag) as phot_hw_mag,
 compute_hw_error_VVV(v.phot_j_mean_mag,v.phot_j_std_mag,v.phot_h_mean_mag,v.phot_h_std_mag) as phot_hw_mag_error,
 v.phot_z_mean_mag,phot_z_std_mag,v.phot_z_n_epochs,
