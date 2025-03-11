@@ -199,7 +199,16 @@ CREATE TABLE merged_sources (
   phot_h_mag         FLOAT,
   phot_h_mag_error   FLOAT,
   phot_ks_mag        FLOAT,
-  phot_ks_mag_error  FLOAT
+  phot_ks_mag_error  FLOAT,
+  parallax           FLOAT,
+  parallax_error     FLOAT,
+  pmra               FLOAT,
+  pmra_error         FLOAT,
+  pmdec              FLOAT,
+  pmdec_error        FLOAT,
+  uwe                FLOAT,
+  ref_epoch          INTEGER,
+  vvv_source         VARCHAR(3)
 );
 
 
@@ -238,7 +247,9 @@ ANALYZE merged_sources_aux_tsv;
 INSERT INTO merged_sources
 SELECT * FROM merged_sources_aux_tsv
 UNION 
-SELECT DISTINCT ON (tmass_source_id,sirius_source_id,vvv_source_id) aux.source_id, aux.tmass_source_id,aux.sirius_source_id,aux.vvv_source_id,aux.glon,aux.glat,aux.ra,aux.dec,aux.position_source,aux.magnitude_source,aux.phot_hw_mag,aux.phot_hw_mag_error,aux.phot_j_mag,aux.phot_j_mag_error,aux.phot_h_mag,aux.phot_h_mag_error,aux.phot_ks_mag,aux.phot_ks_mag_error FROM (SELECT * FROM merged_sources_dups_tmass UNION SELECT * FROM merged_sources_dups_sirius UNION SELECT * FROM merged_sources_dups_vvv) AS aux;
+SELECT DISTINCT ON (tmass_source_id,sirius_source_id,vvv_source_id) aux.source_id, aux.tmass_source_id,aux.sirius_source_id,aux.vvv_source_id,aux.glon,aux.glat,aux.ra,aux.dec,aux.position_source,aux.magnitude_source,aux.phot_hw_mag,aux.phot_hw_mag_error,aux.phot_j_mag,aux.phot_j_mag_error,aux.phot_h_mag,aux.phot_h_mag_error,aux.phot_ks_mag,aux.phot_ks_mag_error,
+aux.parallax,aux.parallax_error,aux.pmra,aux.pmra_error,aux.pmdec,aux.pmdec_error,aux.uwe,aux.ref_epoch,aux.vvv_source     
+ FROM (SELECT * FROM merged_sources_dups_tmass UNION SELECT * FROM merged_sources_dups_sirius UNION SELECT * FROM merged_sources_dups_vvv) AS aux;
 
 
 CREATE INDEX IF NOT EXISTS merged_sources_tmass_source_id

@@ -10,14 +10,23 @@ CREATE TABLE merged_sources_raw (
   dec                FLOAT,
   position_source    VARCHAR(1),
   magnitude_source   VARCHAR(3),
-  phot_hw_mag        FLOAT,
+  phot_hw_mag        FLOAT, --recompute for the crossmatch sources only
   phot_hw_mag_error  FLOAT,
   phot_j_mag         FLOAT,
   phot_j_mag_error   FLOAT,
   phot_h_mag         FLOAT,
   phot_h_mag_error   FLOAT,
   phot_ks_mag        FLOAT,
-  phot_ks_mag_error  FLOAT
+  phot_ks_mag_error  FLOAT,
+  parallax           FLOAT,
+  parallax_error     FLOAT,
+  pmra               FLOAT,
+  pmra_error         FLOAT,
+  pmdec              FLOAT,
+  pmdec_error        FLOAT,
+  uwe                FLOAT,
+  ref_epoch          INTEGER,
+  vvv_source         VARCHAR(3)
 );
 
 
@@ -44,14 +53,23 @@ SELECT  --tmass unique sources
   t.dec,
   CAST('T' AS VARCHAR) AS position_source,
   CAST('T' AS VARCHAR) AS magnitude_source,
-  compute_hw( t.phot_j_mag, t.phot_h_mag) AS phot_hw_mag,
-  compute_hw_error( t.phot_j_mag, t.phot_j_mag_error, t.phot_h_mag, t.phot_h_mag_error) AS phot_hw_mag_error, 
+  t. phot_hw_mag,
+  t.phot_hw_mag_error, 
   t.phot_j_mag, 
   t.phot_j_mag_error, 
   t.phot_h_mag, 
   t.phot_h_mag_error, 
   t.phot_ks_mag, 
-  t.phot_ks_mag_error 
+  t.phot_ks_mag_error ,
+  NULL as parallax       ,
+  NULL as parallax_error ,
+  NULL as pmra           ,
+  NULL as pmra_error     ,
+  NULL as pmdec          ,
+  NULL as pmdec_error    ,
+  NULL as uwe            ,
+  1999 as ref_epoch      ,
+  NULL as vvv_source     
   FROM tmass_sources_clean as t LEFT OUTER JOIN tmass_sirius_xmatch as tsx ON t.source_id=tsx.tmass_source_id LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON t.source_id = tvx.tmass_source_id WHERE tsx.tmass_source_id IS NULL AND tvx.tmass_source_id IS NULL
 UNION
 SELECT  --vvv unique sources  
@@ -65,14 +83,23 @@ SELECT  --vvv unique sources
   v.dec,
   CAST('V' AS VARCHAR) AS position_source,
   CAST('V' AS VARCHAR) AS magnitude_source,
-  compute_hw( v.phot_j_mag, v.phot_h_mag) AS phot_hw_mag,
-  compute_hw_error( v.phot_j_mag, v.phot_j_mag_error, v.phot_h_mag, v.phot_h_mag_error) AS phot_hw_mag_error, 
+  v.phot_hw_mag,
+  v.phot_hw_mag_error, 
   v.phot_j_mag, 
   v.phot_j_mag_error, 
   v.phot_h_mag, 
   v.phot_h_mag_error, 
   v.phot_ks_mag, 
-  v.phot_ks_mag_error 
+  v.phot_ks_mag_error  ,
+  v.parallax       ,
+  v.parallax_error ,
+  v.pmra           ,
+  v.pmra_error     ,
+  v.pmdec          ,
+  v.pmdec_error    ,
+  v.uwe            ,
+  v.ref_epoch      ,
+  v.vvv_source     
   FROM vvv4_sources_clean as v LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON v.source_id = tvx.vvv_source_id LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON v.source_id = vsx.vvv_source_id WHERE tvx.vvv_source_id IS NULL AND vsx.vvv_source_id IS NULL AND (v.phot_j_mag IS NOT NULL OR v.phot_h_mag IS NOT NULL OR v.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --sirius unique sources  
@@ -86,14 +113,23 @@ SELECT  --sirius unique sources
   s.dec,
   CAST('S' AS VARCHAR) AS position_source,
   CAST('S' AS VARCHAR) AS magnitude_source,
-  compute_hw( s.phot_j_mag, s.phot_h_mag) AS phot_hw_mag,
-  compute_hw_error( s.phot_j_mag, s.phot_j_mag_error, s.phot_h_mag, s.phot_h_mag_error) AS phot_hw_mag_error, 
+  s.phot_hw_mag,
+  s.phot_hw_mag_error, 
   s.phot_j_mag, 
   s.phot_j_mag_error, 
   s.phot_h_mag, 
   s.phot_h_mag_error, 
   s.phot_ks_mag, 
-  s.phot_ks_mag_error 
+  s.phot_ks_mag_error  ,
+  NULL as parallax       ,
+  NULL as parallax_error ,
+  NULL as pmra           ,
+  NULL as pmra_error     ,
+  NULL as pmdec          ,
+  NULL as pmdec_error    ,
+  NULL as uwe            ,
+  2002 as ref_epoch      ,
+  NULL as vvv_source     
   FROM sirius_sources_clean as s LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON s.source_id = vsx.sirius_source_id LEFT OUTER JOIN tmass_sirius_xmatch as tsx ON s.source_id = tsx.sirius_source_id WHERE vsx.sirius_source_id IS NULL AND tsx.sirius_source_id IS NULL
 UNION
 SELECT  --2MASSxSIRIUS
@@ -114,7 +150,16 @@ SELECT  --2MASSxSIRIUS
   ts.phot_h_mag, 
   ts.phot_h_mag_error, 
   ts.phot_ks_mag, 
-  ts.phot_ks_mag_error 
+  ts.phot_ks_mag_error ,
+  NULL as parallax       ,
+  NULL as parallax_error ,
+  NULL as pmra           ,
+  NULL as pmra_error     ,
+  NULL as pmdec          ,
+  NULL as pmdec_error    ,
+  NULL as uwe            ,
+  2002 as ref_epoch      ,
+  NULL as vvv_source     
   FROM tmass_sirius_xmatch as ts LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON ts.xmatch_source_id = tvsx.tmass_x_sirius_id WHERE tvsx.tmass_x_sirius_id IS NULL
 UNION
 SELECT  --2MASSxVVV
@@ -135,7 +180,16 @@ SELECT  --2MASSxVVV
   tv.phot_h_mag, 
   tv.phot_h_mag_error, 
   tv.phot_ks_mag, 
-  tv.phot_ks_mag_error 
+  tv.phot_ks_mag_error ,
+  tv.parallax       ,
+  tv.parallax_error ,
+  tv.pmra           ,
+  tv.pmra_error     ,
+  tv.pmdec          ,
+  tv.pmdec_error    ,
+  tv.uwe            ,
+  tv.ref_epoch      ,
+  tv.vvv_source     
   FROM tmass_vvv_xmatch as tv LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON tv.xmatch_source_id = tvsx.tmass_x_vvv_id WHERE tvsx.tmass_x_vvv_id IS NULL AND (tv.phot_j_mag IS NOT NULL OR tv.phot_h_mag IS NOT NULL OR tv.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --VVVxSIRIUS  
@@ -156,7 +210,16 @@ SELECT  --VVVxSIRIUS
   vs.phot_h_mag, 
   vs.phot_h_mag_error, 
   vs.phot_ks_mag, 
-  vs.phot_ks_mag_error 
+  vs.phot_ks_mag_error ,
+  vs.parallax       ,
+  vs.parallax_error ,
+  vs.pmra           ,
+  vs.pmra_error     ,
+  vs.pmdec          ,
+  vs.pmdec_error    ,
+  vs.uwe            ,
+  vs.ref_epoch      ,
+  vs.vvv_source     
   FROM vvv_sirius_xmatch as vs LEFT OUTER JOIN tmass_vvv_sirius_xmatch as tvsx ON vs.xmatch_source_id = tvsx.vvv_x_sirius_id WHERE tvsx.vvv_x_sirius_id IS NULL AND (vs.phot_j_mag IS NOT NULL OR vs.phot_h_mag IS NOT NULL OR vs.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --2MASSxVVVxSIRIUS  
@@ -177,7 +240,16 @@ SELECT  --2MASSxVVVxSIRIUS
   phot_h_mag, 
   phot_h_mag_error, 
   phot_ks_mag, 
-  phot_ks_mag_error 
+  phot_ks_mag_error  ,
+  tvs.parallax       ,
+  tvs.parallax_error ,
+  tvs.pmra           ,
+  tvs.pmra_error     ,
+  tvs.pmdec          ,
+  tvs.pmdec_error    ,
+  tvs.uwe            ,
+  tvs.ref_epoch      ,
+  tvs.vvv_source     
   FROM tmass_vvv_sirius_xmatch as tvs WHERE (tvs.phot_j_mag IS NOT NULL OR tvs.phot_h_mag IS NOT NULL OR tvs.phot_ks_mag IS NOT NULL);
 
 
