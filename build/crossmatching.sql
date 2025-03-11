@@ -40,9 +40,9 @@ CREATE TABLE tmass_vvv_xmatch (
 ALTER TABLE tmass_vvv_xmatch ADD CONSTRAINT
   FK_tmass_vvv_xmatch_tmass_id FOREIGN KEY (tmass_source_id)
   REFERENCES tmass_sources_clean (source_id) ON DELETE CASCADE;
-ALTER TABLE tmass_vvv_xmatch ADD CONSTRAINT
-  FK_tmass_vvv_xmatch_vvv_id FOREIGN KEY (vvv_source_id)
-  REFERENCES vvv_virac_clean (source_id) ON DELETE CASCADE;
+--ALTER TABLE tmass_vvv_xmatch ADD CONSTRAINT
+--  FK_tmass_vvv_xmatch_vvv_id FOREIGN KEY (vvv_source_id)
+--  REFERENCES vvv_virac_clean (source_id) ON DELETE CASCADE;
 
 -- Ignore any 2MASS magnitude band if it is brighter than 12 (VVV is saturated). For the bright, ignore magnitudes of VVV
 INSERT INTO tmass_vvv_xmatch
