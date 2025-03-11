@@ -57,7 +57,7 @@ CREATE INDEX IF NOT EXISTS link_gdr3_sirius_gdr3_id
 ON link_gdr3_sirius (gdr3_source_id);
 
 
--- Link Gaia DR3 <-> VVV
+-- Link Gaia DR3 <-> VVV: using gaia DR3 positions unchanged since they are close in epoch
 DROP TABLE IF EXISTS link_gdr3_vvv CASCADE;
 CREATE TABLE link_gdr3_vvv (
   link_id          BIGSERIAL PRIMARY KEY,
@@ -72,14 +72,14 @@ WITH neighbours AS (SELECT
   aux.distance AS distance,
   ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
 FROM gdr3_sources AS g, LATERAL(
-  SELECT source_id,3600.0*q3c_dist(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv) as distance,
+  SELECT source_id,3600.0*q3c_dist(v0.ra,v0.dec,g.ra,g.dec) as distance,
     CASE WHEN (v0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
       (CASE WHEN (v0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
         CASE WHEN (v0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE v0.phot_j_mag-g.phot_j_mag_pred END)
           ELSE v0.phot_h_mag-g.phot_h_mag_pred END) 
             ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
-      FROM vvv4_sources_clean AS v0 
-      WHERE q3c_join(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv,1./3600.)) as aux WHERE ABS(aux.mag_diff) < 1.0)
+      FROM vvv_virac_clean AS v0 
+      WHERE q3c_join(v0.ra,v0.dec,g.ra,g.dec,1./3600.)) as aux WHERE ABS(aux.mag_diff) < 1.0)
 INSERT INTO link_gdr3_vvv
   (vvv_source_id,gdr3_source_id,distance)
 SELECT vvv_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
