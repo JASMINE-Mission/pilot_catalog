@@ -178,9 +178,9 @@ ALTER TABLE vvv_sirius_xmatch ADD CONSTRAINT
 -- Ignore any SIRIUS magnitude band if it is brighter than 12 (VVV is saturated). For the bright, ignore magnitudes of VVV.
 INSERT INTO vvv_sirius_xmatch
 SELECT nextval('vvv_sirius_xmatch_xmatch_source_id_seq') AS xmatch_source_id,v.source_id as vvv_source_id,s.source_id as sirius_source_id, 
-CASE WHEN v.sourve != 'VVV' THEN v.ra ELSE s.ra END as ra, 
-CASE WHEN v.sourve != 'VVV' THEN v.dec ELSE s.dec END as dec, 
-CASE WHEN v.sourve != 'VVV' THEN CAST('V' AS VARCHAR(1)) ELSE CAST('S' AS VARCHAR(1)) END AS position_source,
+CASE WHEN v.sourse != 'VVV' THEN v.ra ELSE s.ra END as ra, 
+CASE WHEN v.sourse != 'VVV' THEN v.dec ELSE s.dec END as dec, 
+CASE WHEN v.sourse != 'VVV' THEN CAST('V' AS VARCHAR(1)) ELSE CAST('S' AS VARCHAR(1)) END AS position_source,
 CASE WHEN s.phot_j_mag<=12 THEN s.phot_j_mag ELSE weighted_avg(v.phot_j_mag,1/POWER(v.phot_j_mag_error,2),s.phot_j_mag,1/POWER(s.phot_j_mag_error,2)) END as phot_j_mag, 
 CASE WHEN s.phot_j_mag<=12 THEN s.phot_j_mag_error ELSE SQRT(weighted_avg_error(1/POWER(v.phot_j_mag_error,2),1/POWER(s.phot_j_mag_error,2))) END as phot_j_mag_error,
 CASE WHEN s.phot_h_mag<=12 THEN s.phot_h_mag ELSE weighted_avg(v.phot_h_mag,1/POWER(v.phot_h_mag_error,2),s.phot_h_mag,1/POWER(s.phot_h_mag_error,2)) END as phot_h_mag,
@@ -192,7 +192,7 @@ v.phot_j_mag_error as vvv_j_mag_error,v.phot_h_mag_error as vvv_h_mag_error,v.ph
 s.phot_j_mag as sirius_j_mag,s.phot_h_mag as sirius_h_mag,s.phot_ks_mag as sirius_ks_mag,
 s.phot_j_mag_error as sirius_j_mag_error,s.phot_h_mag_error as sirius_h_mag_error,s.phot_ks_mag_error as sirius_ks_mag_error,
 v.parallax,v.parallax_error,v.pmra,v.pmra_error,v.pmdec,v.pmdec_error,v.uwe,
-CASE WHEN v.sourve != 'VVV' THEN v.ref_epoch ELSE 2002 END as ref_epoch,
+CASE WHEN v.sourse != 'VVV' THEN v.ref_epoch ELSE 2002 END as ref_epoch,
 v.source as vvv_source,
 q3c_dist(s.ra,s.dec,v.ra,v.dec)*3600. as separation
 FROM sirius_sources_clean as s INNER JOIN vvv_virac_clean as v ON q3c_join(s.ra,s.dec,v.ra,v.dec,1./3600.) AND jhk_match(v.phot_j_mag,NULLIF(GREATEST(s.phot_j_mag,12),12),v.phot_h_mag,NULLIF(GREATEST(s.phot_h_mag,12),12), v.phot_ks_mag,NULLIF(GREATEST(s.phot_ks_mag,12),12),1.0::FLOAT);
@@ -219,7 +219,7 @@ ts.xmatch_source_id as tmass_x_sirius_id,
 vs.xmatch_source_id as vvv_x_sirius_id,
 tv.xmatch_source_id as tmass_x_vvv_id,
 vs.parallax,vs.parallax_error,vs.pmra,vs.pmra_error,vs.pmdec,vs.pmdec_error,vs.uwe,
-vs.ref_epoch,vs.source as vvv_source
+vs.ref_epoch,vs.vvv_source as vvv_source
 FROM vvv_sirius_xmatch as vs INNER JOIN tmass_sirius_xmatch as ts ON ts.sirius_source_id=vs.sirius_source_id
 INNER JOIN tmass_vvv_xmatch as tv ON tv.vvv_source_id = vs.vvv_source_id
 WHERE tv.tmass_source_id = ts.tmass_source_id;
