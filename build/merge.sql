@@ -36,9 +36,9 @@ ALTER TABLE merged_sources_raw ADD CONSTRAINT
 ALTER TABLE merged_sources_raw ADD CONSTRAINT
   FK_merged_sirius_id FOREIGN KEY  (sirius_source_id)
   REFERENCES sirius_sources_clean (source_id) ON DELETE CASCADE;
-ALTER TABLE merged_sources_raw ADD CONSTRAINT
-  FK_merged_vvv_id FOREIGN KEY (vvv_source_id)
-  REFERENCES vvv4_sources_clean (source_id) ON DELETE CASCADE;
+--ALTER TABLE merged_sources_raw ADD CONSTRAINT
+--  FK_merged_vvv_id FOREIGN KEY (vvv_source_id)
+--  REFERENCES vvv_virac_clean (source_id) ON DELETE CASCADE;
 
 
 INSERT INTO merged_sources_raw
@@ -100,7 +100,7 @@ SELECT  --vvv unique sources
   v.uwe            ,
   v.ref_epoch      ,
   v.vvv_source     
-  FROM vvv4_sources_clean as v LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON v.source_id = tvx.vvv_source_id LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON v.source_id = vsx.vvv_source_id WHERE tvx.vvv_source_id IS NULL AND vsx.vvv_source_id IS NULL AND (v.phot_j_mag IS NOT NULL OR v.phot_h_mag IS NOT NULL OR v.phot_ks_mag IS NOT NULL)
+  FROM vvv_virac_clean as v LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON v.source_id = tvx.vvv_source_id LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON v.source_id = vsx.vvv_source_id WHERE tvx.vvv_source_id IS NULL AND vsx.vvv_source_id IS NULL AND (v.phot_j_mag IS NOT NULL OR v.phot_h_mag IS NOT NULL OR v.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --sirius unique sources  
   nextval('merged_sources_raw_source_id_seq') AS source_id,
