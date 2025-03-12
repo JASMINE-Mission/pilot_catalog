@@ -99,7 +99,7 @@ SELECT  --vvv unique sources
   v.pmdec_error    ,
   v.uwe            ,
   v.ref_epoch      ,
-  v.vvv_source     
+  v.source     
   FROM vvv_virac_clean as v LEFT OUTER JOIN tmass_vvv_xmatch as tvx ON v.source_id = tvx.vvv_source_id LEFT OUTER JOIN vvv_sirius_xmatch as vsx ON v.source_id = vsx.vvv_source_id WHERE tvx.vvv_source_id IS NULL AND vsx.vvv_source_id IS NULL AND (v.phot_j_mag IS NOT NULL OR v.phot_h_mag IS NOT NULL OR v.phot_ks_mag IS NOT NULL)
 UNION
 SELECT  --sirius unique sources  
