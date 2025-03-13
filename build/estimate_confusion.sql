@@ -10,9 +10,21 @@ CASE WHEN MIN(ang_dist_mas)<0.1 THEN CASE WHEN COUNT(aux.sid)=1 THEN 1 ELSE 3 EN
 select_better_agg(sid,phot_error) as best_neighbour_source_id,
 CASE WHEN (m.tmass_source_id IS NOT NULL OR SUM(has_tmass)>0) --if there is a tmass source involved, select the brighter
   THEN 
-    CASE WHEN (MIN(brightest_mag)<LEAST(m.phot_j_mag,m.phot_h_mag,m.phot_ks_mag)) THEN 1 ElSE 0 END
+    CASE WHEN (MIN(brightest_mag)<LEAST(m.phot_j_mag,m.phot_h_mag,m.phot_ks_mag)) THEN 1 ElSE 
+      CASE WHEN (MIN(brightest_mag)=LEAST(m.phot_j_mag,m.phot_h_mag,m.phot_ks_mag)) THEN --in the unlikely case that they are equal (probably one band informed by the same source), then select based on error
+        CASE WHEN MIN(aux.phot_error)<SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1),2)+POWER(COALESCE(m.phot_ks_mag_error,1),2)) THEN 1 ELSE 
+          CASE WHEN MIN(aux.phot_error)=SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1),2)+POWER(COALESCE(m.phot_ks_mag_error,1),2)) THEN --if even the errors are the same, then select based on source_id
+            CASE WHEN select_better_agg(sid,phot_error)>m.source_id THEN 0 ELSE 1 END
+          ELSE 0 END 
+        END 
+      ELSE 0 END
+    END
   ELSE --if not, select the source with the smallest photometric error
-    CASE WHEN MIN(aux.phot_error)<SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1),2)+POWER(COALESCE(m.phot_ks_mag_error,1),2)) THEN 1 ELSE 0 END
+    CASE WHEN MIN(aux.phot_error)<SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1),2)+POWER(COALESCE(m.phot_ks_mag_error,1),2)) THEN 1 ELSE 
+      CASE WHEN MIN(aux.phot_error)=SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1),2)+POWER(COALESCE(m.phot_ks_mag_error,1),2)) THEN --if even the errors are the same, then select based on source_id
+        CASE WHEN select_better_agg(sid,phot_error)>m.source_id THEN 0 ELSE 1 END
+      ELSE 0 END  
+    END
 END as select_neighbour
 FROM merged_sources_raw as m, LATERAL (
   SELECT m1.source_id as sid,m1.tmass_source_id/m1.tmass_source_id as has_tmass,m1.glon,m1.glat,m1.phot_j_mag,m1.phot_h_mag,m1.phot_ks_mag,
