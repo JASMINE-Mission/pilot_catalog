@@ -14,7 +14,7 @@ CASE WHEN MIN(aux.phot_error)<SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER
 FROM merged_sources_raw as m, LATERAL (
   SELECT m1.source_id as sid,m1.tmass_source_id/m1.tmass_source_id as has_tmass,m1.glon,m1.glat,m1.phot_j_mag,m1.phot_h_mag,m1.phot_ks_mag,
   SQRT(POWER(COALESCE(m1.phot_j_mag_error,1),2)+POWER(COALESCE(m1.phot_h_mag_error,1),2)+POWER(COALESCE(m1.phot_ks_mag_error,1),2)) as phot_error, -- compute photometric error budget of the source for comparison, penalise not having a measurement
-  SQRT(POWER(COALESCE(m1.phot_j_mag,0)-COALESCE(m.phot_j_mag,0),2)+POWER(COALESCE(m1.phot_h_mag,0)-COALESCE(m.phot_h_mag,0),2)+POWER(COALESCE(m1.phot_ks_mag,0)-COALESCE(m.phot_ks_mag,0),2)) as mag_diff,
+  SQRT(POWER(COALESCE(m1.phot_j_mag-m.phot_j_mag,0),2)+POWER(COALESCE(m1.phot_h_mag-m.phot_h_mag,0),2)+POWER(COALESCE(m1.phot_ks_mag-m.phot_ks_mag,0),2)) as mag_diff,
   LEAST(m1.phot_j_mag,m1.phot_h_mag,m1.phot_ks_mag) as brightest_mag,
   q3c_dist(m.ra,m.dec,m1.ra,m1.dec)*3600*1000 as ang_dist_mas
   FROM merged_sources_raw as m1 WHERE q3c_join(m.ra,m.dec,m1.ra,m1.dec,:angdist_threshold) AND m.source_id!=m1.source_id
