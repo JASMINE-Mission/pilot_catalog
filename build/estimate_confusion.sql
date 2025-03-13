@@ -8,9 +8,12 @@ SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1
 MIN(aux.phot_error) as min_phot_error_neighbours,
 CASE WHEN MIN(ang_dist_mas)<0.1 THEN CASE WHEN COUNT(aux.sid)=1 THEN 1 ELSE 3 END ELSE 2 END AS dups,
 select_better_agg(sid,phot_error) as best_neighbour_source_id,
-CASE WHEN MIN(aux.phot_error)<SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1),2)+POWER(COALESCE(m.phot_ks_mag_error,1),2)) THEN (
-  CASE WHEN (m.tmass_source_id IS NOT NULL OR SUM(has_tmass)>0) AND (MIN(brightest_mag)<LEAST(m.phot_j_mag,m.phot_h_mag,m.phot_ks_mag)) THEN 1 ElSE 0 END -- there is a tmass source involved: if neighbour is brighter, selecte it
-) ELSE 0 END as select_neighbour
+CASE WHEN (m.tmass_source_id IS NOT NULL OR SUM(has_tmass)>0) AND (MIN(brightest_mag)<13 OR LEAST(m.phot_j_mag,m.phot_h_mag,m.phot_ks_mag)<13) --if there is a brigtht tmass source involved, select the brighter
+  THEN 
+    CASE WHEN (MIN(brightest_mag)<LEAST(m.phot_j_mag,m.phot_h_mag,m.phot_ks_mag)) THEN 1 ElSE 0 END
+  ELSE --if not, select the source with the smallest photometric error
+    CASE WHEN MIN(aux.phot_error)<SQRT(POWER(COALESCE(m.phot_j_mag_error,1),2)+POWER(COALESCE(m.phot_h_mag_error,1),2)+POWER(COALESCE(m.phot_ks_mag_error,1),2)) THEN 1 ELSE 0 END
+END as select_neighbour
 FROM merged_sources_raw as m, LATERAL (
   SELECT m1.source_id as sid,m1.tmass_source_id/m1.tmass_source_id as has_tmass,m1.glon,m1.glat,m1.phot_j_mag,m1.phot_h_mag,m1.phot_ks_mag,
   SQRT(POWER(COALESCE(m1.phot_j_mag_error,1),2)+POWER(COALESCE(m1.phot_h_mag_error,1),2)+POWER(COALESCE(m1.phot_ks_mag_error,1),2)) as phot_error, -- compute photometric error budget of the source for comparison, penalise not having a measurement
