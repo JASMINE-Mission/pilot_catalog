@@ -39,13 +39,15 @@ WITH neighbours AS (SELECT
   ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
 FROM gdr3_sources AS g, LATERAL(
   SELECT source_id,3600.0*q3c_dist(s0.ra,s0.dec,g.ra_sirius,g.dec_sirius) as distance,
+  CASE WHEN (0<s0.phot_j_mag-s0.phot_h_mag) AND (s0.phot_j_mag-s0.phot_h_mag<1.2) THEN
     CASE WHEN (s0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
       (CASE WHEN (s0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
         CASE WHEN (s0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE s0.phot_j_mag-g.phot_j_mag_pred END)
           ELSE s0.phot_h_mag-g.phot_h_mag_pred END) 
-            ELSE s0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
+            ELSE s0.phot_ks_mag-g.phot_ks_mag_pred END 
+  ELSE 0 END AS mag_diff
       FROM sirius_sources_clean AS s0 
-      WHERE q3c_join(s0.ra,s0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) as aux WHERE ABS(aux.mag_diff) < 1.0)
+      WHERE q3c_join(s0.ra,s0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) as aux WHERE ABS(aux.mag_diff) < 2.0)
 INSERT INTO link_gdr3_sirius
   (sirius_source_id,gdr3_source_id,distance)
 SELECT sirius_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
@@ -73,13 +75,15 @@ WITH neighbours AS (SELECT
   ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
 FROM gdr3_sources AS g, LATERAL(
   SELECT source_id,3600.0*q3c_dist(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv) as distance,
+  CASE WHEN (0<v0.phot_j_mag-v0.phot_h_mag) AND (v0.phot_j_mag-v0.phot_h_mag<1.2) THEN
     CASE WHEN (v0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
       (CASE WHEN (v0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
         CASE WHEN (v0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE v0.phot_j_mag-g.phot_j_mag_pred END)
           ELSE v0.phot_h_mag-g.phot_h_mag_pred END) 
-            ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
+            ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END 
+  ELSE 0 END AS mag_diff
       FROM vvv_virac_clean AS v0 
-      WHERE q3c_join(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv,1./3600.) AND source='VVV') as aux WHERE ABS(aux.mag_diff) < 1.0)
+      WHERE q3c_join(v0.ra,v0.dec,g.ra_vvv,g.dec_vvv,1./3600.) AND source='VVV') as aux WHERE ABS(aux.mag_diff) < 2.0)
 INSERT INTO link_gdr3_vav_vvv
   (vvv_source_id,gdr3_source_id,distance)
 SELECT vvv_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
@@ -105,13 +109,15 @@ WITH neighbours AS (SELECT
   ROW_NUMBER () OVER(PARTITION BY g.source_id ORDER BY aux.distance ASC) as ordering
 FROM gdr3_sources AS g, LATERAL(
   SELECT source_id,3600.0*q3c_dist(v0.ra,v0.dec,g.ra_vir,g.dec_vir) as distance,
+  CASE WHEN (0<v0.phot_j_mag-v0.phot_h_mag) AND (v0.phot_j_mag-v0.phot_h_mag<1.2) THEN
     CASE WHEN (v0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL THEN 
       (CASE WHEN (v0.phot_h_mag-g.phot_h_mag_pred) IS NULL THEN (
         CASE WHEN (v0.phot_j_mag-g.phot_j_mag_pred) IS NULL THEN 0 ELSE v0.phot_j_mag-g.phot_j_mag_pred END)
           ELSE v0.phot_h_mag-g.phot_h_mag_pred END) 
-            ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END AS mag_diff
+            ELSE v0.phot_ks_mag-g.phot_ks_mag_pred END 
+  ELSE 0 END AS mag_diff
       FROM vvv_virac_clean AS v0 
-      WHERE q3c_join(v0.ra,v0.dec,g.ra_vir,g.dec_vir,1./3600.) AND source!='VVV') as aux WHERE ABS(aux.mag_diff) < 1.0)
+      WHERE q3c_join(v0.ra,v0.dec,g.ra_vir,g.dec_vir,1./3600.) AND source!='VVV') as aux WHERE ABS(aux.mag_diff) < 2.0)
 INSERT INTO link_gdr3_vav_vir
   (vir_source_id,gdr3_source_id,distance)
 SELECT vir_source_id, gdr3_source_id, distance FROM neighbours WHERE ordering = 1;
@@ -217,13 +223,14 @@ aux.sirius_source_id AS sirius_source_id
 FROM gdr3_sources AS g, LATERAL(
     SELECT m0.source_id,m0.tmass_source_id,m0.vvv_source_id,m0.sirius_source_id,
         3600.0*q3c_dist(g.ra_tmass,g.dec_tmass,m0.ra,m0.dec) AS distance,
-        CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
+        CASE WHEN (0<m0.phot_j_mag-m0.phot_h_mag) AND (m0.phot_j_mag-m0.phot_h_mag<1.2) THEN
+          CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NOT NULL THEN m0.phot_h_mag-g.phot_h_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL AND (m0.phot_j_mag-g.phot_j_mag_pred) IS NOT NULL THEN m0.phot_j_mag-g.phot_j_mag_pred
-            ELSE 0
-        END AS mag_diff
+            ELSE 0 END 
+        ELSE 0 END AS mag_diff
     FROM (SELECT * FROM merged_sources WHERE position_source='T') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_tmass,g.dec_tmass,1./3600.)) AS aux 
-    WHERE ABS(aux.mag_diff) < 1.0
+    WHERE ABS(aux.mag_diff) < 2.0
 UNION
 SELECT
 aux.source_id AS merged_source_id,
@@ -235,13 +242,14 @@ aux.sirius_source_id AS sirius_source_id
 FROM gdr3_sources AS g, LATERAL(
     SELECT m0.source_id,m0.tmass_source_id,m0.vvv_source_id,m0.sirius_source_id,
         3600.0*q3c_dist(g.ra_vvv,g.dec_vvv,m0.ra,m0.dec) AS distance,
-        CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
+        CASE WHEN (0<m0.phot_j_mag-m0.phot_h_mag) AND (m0.phot_j_mag-m0.phot_h_mag<1.2) THEN
+          CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NOT NULL THEN m0.phot_h_mag-g.phot_h_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL AND (m0.phot_j_mag-g.phot_j_mag_pred) IS NOT NULL THEN m0.phot_j_mag-g.phot_j_mag_pred
-            ELSE 0
-        END AS mag_diff
+            ELSE 0 END 
+        ELSE 0 END AS mag_diff
     FROM (SELECT * FROM merged_sources WHERE position_source='V' AND vvv_source='VVV') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_vvv,g.dec_vvv,1./3600.)) AS aux 
-    WHERE ABS(aux.mag_diff) < 1.0
+    WHERE ABS(aux.mag_diff) < 2.0
 UNION
 SELECT
 aux.source_id AS merged_source_id,
@@ -253,13 +261,14 @@ aux.sirius_source_id AS sirius_source_id
 FROM gdr3_sources AS g, LATERAL(
     SELECT m0.source_id,m0.tmass_source_id,m0.vvv_source_id,m0.sirius_source_id,
         3600.0*q3c_dist(g.ra_vir,g.dec_vir,m0.ra,m0.dec) AS distance,
-        CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
+        CASE WHEN (0<m0.phot_j_mag-m0.phot_h_mag) AND (m0.phot_j_mag-m0.phot_h_mag<1.2) THEN
+          CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NOT NULL THEN m0.phot_h_mag-g.phot_h_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL AND (m0.phot_j_mag-g.phot_j_mag_pred) IS NOT NULL THEN m0.phot_j_mag-g.phot_j_mag_pred
-            ELSE 0
-        END AS mag_diff
+            ELSE 0 END
+        ELSE 0 END AS mag_diff
     FROM (SELECT * FROM merged_sources WHERE position_source='V' AND vvv_source!='VVV') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_vir,g.dec_vir,1./3600.)) AS aux 
-    WHERE ABS(aux.mag_diff) < 1.0
+    WHERE ABS(aux.mag_diff) < 2.0
 UNION
 SELECT
 aux.source_id AS merged_source_id,
@@ -271,13 +280,14 @@ aux.sirius_source_id AS sirius_source_id
 FROM gdr3_sources AS g, LATERAL(
     SELECT m0.source_id,m0.tmass_source_id,m0.vvv_source_id,m0.sirius_source_id,
         3600.0*q3c_dist(g.ra_sirius,g.dec_sirius,m0.ra,m0.dec) AS distance,
-        CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
+        CASE WHEN (0<m0.phot_j_mag-m0.phot_h_mag) AND (m0.phot_j_mag-m0.phot_h_mag<1.2) THEN
+          CASE WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NOT NULL THEN m0.phot_ks_mag-g.phot_ks_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NOT NULL THEN m0.phot_h_mag-g.phot_h_mag_pred
             WHEN (m0.phot_ks_mag-g.phot_ks_mag_pred) IS NULL AND (m0.phot_h_mag-g.phot_h_mag_pred) IS NULL AND (m0.phot_j_mag-g.phot_j_mag_pred) IS NOT NULL THEN m0.phot_j_mag-g.phot_j_mag_pred
-            ELSE 0
-        END AS mag_diff
+            ELSE 0 END 
+        ELSE 0 END AS mag_diff
     FROM (SELECT * FROM merged_sources WHERE position_source='S') AS m0 WHERE q3c_join(m0.ra,m0.dec,g.ra_sirius,g.dec_sirius,1./3600.)) AS aux 
-    WHERE ABS(aux.mag_diff) < 1.0);
+    WHERE ABS(aux.mag_diff) < 2.0);
 
 DROP TABLE IF EXISTS neighbours2 CASCADE;
 CREATE TABLE neighbours2 AS (
