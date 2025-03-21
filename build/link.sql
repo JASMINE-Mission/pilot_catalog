@@ -140,7 +140,7 @@ INSERT INTO link_gdr3_vav
   (vav_source_id,gdr3_source_id,distance)
 SELECT vir_source_id as vav_source_id, gdr3_source_id, distance FROM link_gdr3_vav_vir
 UNION
-SELECT vvv_source_id as vav_source_id, gdr3_source_id, distance FROM link_gdr3_vav_vvv
+SELECT vvv_source_id as vav_source_id, gdr3_source_id, distance FROM link_gdr3_vav_vvv;
 
 
 --- FIRST: create a table of all possibilities
