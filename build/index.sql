@@ -123,14 +123,22 @@ CREATE INDEX IF NOT EXISTS gdr3_sources_hmag
   ON gdr3_sources (phot_h_mag_pred);
 CREATE INDEX IF NOT EXISTS gdr3_sources_ksmag
   ON gdr3_sources (phot_ks_mag_pred);
+  CREATE INDEX IF NOT EXISTS gdr3_sources_radec_tmass
+  ON gdr3_sources (q3c_ang2ipix(ra_tmass,dec_tmass));
 CREATE INDEX IF NOT EXISTS gdr3_sources_radec_sirius
   ON gdr3_sources (q3c_ang2ipix(ra_sirius,dec_sirius));
 CREATE INDEX IF NOT EXISTS gdr3_sources_radec_vvv
   ON gdr3_sources (q3c_ang2ipix(ra_vvv,dec_vvv));
+CREATE INDEX IF NOT EXISTS gdr3_sources_radec_vir
+  ON gdr3_sources (q3c_ang2ipix(ra_vir,dec_vir));
 CREATE INDEX IF NOT EXISTS gdr3_sources_ra
   ON gdr3_sources (ra);
 CREATE INDEX IF NOT EXISTS gdr3_sources_dec
   ON gdr3_sources (dec);
+CREATE INDEX IF NOT EXISTS gdr3_sources_ra_tmass
+  ON gdr3_sources (ra_tmass);
+CREATE INDEX IF NOT EXISTS gdr3_sources_dec_tmass
+  ON gdr3_sources (dec_tmass);
 CREATE INDEX IF NOT EXISTS gdr3_sources_ra_sirius
   ON gdr3_sources (ra_sirius);
 CREATE INDEX IF NOT EXISTS gdr3_sources_dec_sirius
@@ -139,6 +147,10 @@ CREATE INDEX IF NOT EXISTS gdr3_sources_ra_vvv
   ON gdr3_sources (ra_vvv);
 CREATE INDEX IF NOT EXISTS gdr3_sources_dec_vvv
   ON gdr3_sources (dec_vvv);
+CREATE INDEX IF NOT EXISTS gdr3_sources_ra_vir
+  ON gdr3_sources (ra_vir);
+CREATE INDEX IF NOT EXISTS gdr3_sources_dec_vir
+  ON gdr3_sources (dec_vir);
 CREATE INDEX IF NOT EXISTS gdr3_sources_glon
   ON gdr3_sources (glon);
 CREATE INDEX IF NOT EXISTS gdr3_sources_glat

@@ -227,10 +227,14 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
   ecl_lon            FLOAT NOT NULL,
   ecl_lat            FLOAT NOT NULL,
   ref_epoch          FLOAT NOT NULL,
+  ra_tmass           FLOAT NOT NULL,
+  dec_tmass          FLOAT NOT NULL,
   ra_sirius          FLOAT NOT NULL,
   dec_sirius         FLOAT NOT NULL,
   ra_vvv             FLOAT NOT NULL,
   dec_vvv            FLOAT NOT NULL,
+  ra_vir             FLOAT NOT NULL,
+  dec_vir            FLOAT NOT NULL,
   parallax           FLOAT,
   parallax_error     FLOAT,
   ruwe               FLOAT,
@@ -274,4 +278,3 @@ CREATE TABLE IF NOT EXISTS gdr3_sources (
   phot_h_mag_pred    FLOAT,
   phot_ks_mag_pred   FLOAT
 );
-
